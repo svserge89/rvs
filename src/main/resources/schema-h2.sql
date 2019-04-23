@@ -38,6 +38,7 @@ CREATE TABLE menu_entry (
 );
 
 CREATE TABLE vote_entry (
+    id LONG PRIMARY KEY AUTO_INCREMENT,
     user_id LONG REFERENCES user(id) ON DELETE CASCADE,
     restaurant_id LONG REFERENCES restaurant(id) ON DELETE CASCADE,
     date DATE NOT NULL DEFAULT NOW(),
