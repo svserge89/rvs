@@ -27,4 +27,6 @@ public class UserTo {
     private final String password;
 
     public final boolean admin;
+
+    public final boolean regular;
 }
