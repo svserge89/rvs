@@ -1,6 +1,6 @@
 package sergesv.rvs.util;
 
-public class WebSecurityUtil {
+public final class WebSecurityUtil {
     public static long getAuthUserId() {
         return 1;
     }

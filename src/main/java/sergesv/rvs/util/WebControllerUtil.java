@@ -3,7 +3,7 @@ package sergesv.rvs.util;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class WebControllerUtil {
+public final class WebControllerUtil {
     public enum ParamsCondition {
         DEFAULT,
         BY_DATE,
