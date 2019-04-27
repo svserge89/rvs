@@ -33,26 +33,26 @@ public class PublicRestaurantController {
         switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
             case MENU:
                 return restaurantService.getAllWithMenu(
-                        Optional.of(menuDate).orElse(LocalDate.now()));
+                        Optional.ofNullable(menuDate).orElse(LocalDate.now()));
             case RATING:
                 return restaurantService.getAllWithRating();
             case RATING_BY_DATE:
                 return restaurantService.getAllWithRating(ratingDate);
             case RATING_BETWEEN_DATES:
                 return restaurantService.getAllWithRating(
-                        Optional.of(ratingDateStart).orElse(LocalDate.MIN),
-                        Optional.of(ratingDateEnd).orElse(LocalDate.MAX));
+                        Optional.ofNullable(ratingDateStart).orElse(LocalDate.MIN),
+                        Optional.ofNullable(ratingDateEnd).orElse(LocalDate.MAX));
             case MENU_AND_RATING:
                 return restaurantService.getAllWithMenuAndRating(
-                        Optional.of(menuDate).orElse(LocalDate.now()));
+                        Optional.ofNullable(menuDate).orElse(LocalDate.now()));
             case MENU_AND_RATING_BY_DATE:
                 return restaurantService.getAllWithMenuAndRating(
-                        Optional.of(menuDate).orElse(LocalDate.now()), ratingDate);
+                        Optional.ofNullable(menuDate).orElse(LocalDate.now()), ratingDate);
             case MENU_AND_RATING_BETWEEN_DATES:
                 return restaurantService.getAllWithMenuAndRating(
-                        Optional.of(menuDate).orElse(LocalDate.now()),
-                        Optional.of(ratingDateStart).orElse(LocalDate.MIN),
-                        Optional.of(ratingDateEnd).orElse(LocalDate.MAX));
+                        Optional.ofNullable(menuDate).orElse(LocalDate.now()),
+                        Optional.ofNullable(ratingDateStart).orElse(LocalDate.MIN),
+                        Optional.ofNullable(ratingDateEnd).orElse(LocalDate.MAX));
             default:
                 return restaurantService.getAll();
         }
@@ -70,26 +70,26 @@ public class PublicRestaurantController {
         switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
             case MENU:
                 return restaurantService.getOneWithMenu(id,
-                        Optional.of(menuDate).orElse(LocalDate.now()));
+                        Optional.ofNullable(menuDate).orElse(LocalDate.now()));
             case RATING:
                 return restaurantService.getOneWithRating(id);
             case RATING_BY_DATE:
                 return restaurantService.getOneWithRating(id, ratingDate);
             case RATING_BETWEEN_DATES:
                 return restaurantService.getOneWithRating(id,
-                        Optional.of(ratingDateStart).orElse(LocalDate.MIN),
-                        Optional.of(ratingDateEnd).orElse(LocalDate.MAX));
+                        Optional.ofNullable(ratingDateStart).orElse(LocalDate.MIN),
+                        Optional.ofNullable(ratingDateEnd).orElse(LocalDate.MAX));
             case MENU_AND_RATING:
                 return restaurantService.getOneWithMenuAndRating(id,
-                        Optional.of(menuDate).orElse(LocalDate.now()));
+                        Optional.ofNullable(menuDate).orElse(LocalDate.now()));
             case MENU_AND_RATING_BY_DATE:
                 return restaurantService.getOneWithMenuAndRating(id,
-                        Optional.of(menuDate).orElse(LocalDate.now()), ratingDate);
+                        Optional.ofNullable(menuDate).orElse(LocalDate.now()), ratingDate);
             case MENU_AND_RATING_BETWEEN_DATES:
                 restaurantService.getOneWithMenuAndRating(id,
-                        Optional.of(menuDate).orElse(LocalDate.now()),
-                        Optional.of(ratingDateStart).orElse(LocalDate.MIN),
-                        Optional.of(ratingDateEnd).orElse(LocalDate.MAX));
+                        Optional.ofNullable(menuDate).orElse(LocalDate.now()),
+                        Optional.ofNullable(ratingDateStart).orElse(LocalDate.MIN),
+                        Optional.ofNullable(ratingDateEnd).orElse(LocalDate.MAX));
             default:
                 return restaurantService.getOne(id);
         }
@@ -99,7 +99,7 @@ public class PublicRestaurantController {
     public List<MenuEntryTo> getMenu(@PathVariable long restaurantId,
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate) {
         return menuEntryService.getAllByRestaurant(restaurantId,
-                Optional.of(menuDate).orElse(LocalDate.now()));
+                Optional.ofNullable(menuDate).orElse(LocalDate.now()));
     }
 
     @GetMapping("/{restaurantId}/menu/{id}")
@@ -117,8 +117,8 @@ public class PublicRestaurantController {
                 return restaurantService.getRating(restaurantId, date);
             case BETWEEN_DATES:
                 return restaurantService.getRating(restaurantId,
-                        Optional.of(dateStart).orElse(LocalDate.MIN),
-                        Optional.of(dateEnd).orElse(LocalDate.MAX));
+                        Optional.ofNullable(dateStart).orElse(LocalDate.MIN),
+                        Optional.ofNullable(dateEnd).orElse(LocalDate.MAX));
             default:
                 return restaurantService.getRating(restaurantId);
         }

@@ -28,8 +28,8 @@ public class UserVoteController {
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd) {
         if (resolveParams(dateStart, dateEnd) == BETWEEN_DATES) {
             return voteEntryService.getAll(getAuthUserId(),
-                    Optional.of(dateStart).orElse(LocalDate.MIN),
-                    Optional.of(dateEnd).orElse(LocalDate.MAX));
+                    Optional.ofNullable(dateStart).orElse(LocalDate.MIN),
+                    Optional.ofNullable(dateEnd).orElse(LocalDate.MAX));
         } else {
             return voteEntryService.getAll(getAuthUserId());
         }

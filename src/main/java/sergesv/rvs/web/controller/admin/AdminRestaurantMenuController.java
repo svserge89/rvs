@@ -49,11 +49,11 @@ public class AdminRestaurantMenuController {
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd) {
         if (resolveParams(date, dateStart, dateEnd) == BETWEEN_DATES) {
             menuEntryService.deleteAllByRestaurant(restaurantId,
-                    Optional.of(dateStart).orElse(LocalDate.MIN),
-                    Optional.of(dateEnd).orElse(LocalDate.MAX));
+                    Optional.ofNullable(dateStart).orElse(LocalDate.MIN),
+                    Optional.ofNullable(dateEnd).orElse(LocalDate.MAX));
         } else {
             menuEntryService.deleteAllByRestaurant(restaurantId,
-                    Optional.of(date).orElse(LocalDate.now()));
+                    Optional.ofNullable(date).orElse(LocalDate.now()));
         }
     }
 }
