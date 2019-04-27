@@ -86,7 +86,7 @@ public class PublicRestaurantController {
                 return restaurantService.getOneWithMenuAndRating(id,
                         Optional.ofNullable(menuDate).orElse(LocalDate.now()), ratingDate);
             case MENU_AND_RATING_BETWEEN_DATES:
-                restaurantService.getOneWithMenuAndRating(id,
+                return restaurantService.getOneWithMenuAndRating(id,
                         Optional.ofNullable(menuDate).orElse(LocalDate.now()),
                         Optional.ofNullable(ratingDateStart).orElse(LocalDate.MIN),
                         Optional.ofNullable(ratingDateEnd).orElse(LocalDate.MAX));
