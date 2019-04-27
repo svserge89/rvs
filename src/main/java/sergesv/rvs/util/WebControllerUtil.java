@@ -19,8 +19,8 @@ public final class WebControllerUtil {
 
     public static ParamsCondition resolveParams(Boolean rating, Boolean menu, LocalDate ratingDate,
                                           LocalDate ratingDateStart, LocalDate ratingDateEnd) {
-        boolean ratingOption = Optional.of(rating).orElse(false);
-        boolean menuOption = Optional.of(menu).orElse(false);
+        boolean ratingOption = Optional.ofNullable(rating).orElse(false);
+        boolean menuOption = Optional.ofNullable(menu).orElse(false);
 
         if (!ratingOption && !menuOption) {
             return ParamsCondition.DEFAULT;
