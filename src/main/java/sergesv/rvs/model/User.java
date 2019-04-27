@@ -3,8 +3,7 @@ package sergesv.rvs.model;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.*;
 import java.util.Set;
 
 @Entity
@@ -35,6 +34,10 @@ public class User {
     @Email
     @Column(name = "email")
     private String email;
+
+    @NotNull
+    @Column(name = "encrypted_password")
+    private String encryptedPassword;
 
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))

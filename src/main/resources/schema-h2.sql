@@ -10,6 +10,7 @@ CREATE TABLE user (
     first_name VARCHAR(30),
     last_name VARCHAR(30),
     email VARCHAR(60) UNIQUE NOT NULL,
+    encrypted_password VARCHAR(60) NOT NULL,
     CHECK (TRIM(nick_name) <> ''),
     CHECK (email REGEXP '^[A-Za-z0-9._%\-+!#$&/=?^|~]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
 );

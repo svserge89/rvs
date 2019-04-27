@@ -1,8 +1,8 @@
 DELETE FROM user;
-INSERT INTO user (id, nick_name, first_name, last_name, email) VALUES
-    (1, 'admin', NULL, NULL, 'admin@mail.com'),
-    (2, 'user_1', 'first_name_1', 'last_name_1', 'user1@mail.com'),
-    (3, 'user_2', 'first_name_2', 'last_name_2', 'user2@mail.com');
+INSERT INTO user (id, nick_name, first_name, last_name, email, encrypted_password) VALUES
+    (1, 'admin', NULL, NULL, 'admin@mail.com', '$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG'),
+    (2, 'user_1', 'first_name_1', 'last_name_1', 'user1@mail.com', '$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG'),
+    (3, 'user_2', 'first_name_2', 'last_name_2', 'user2@mail.com', '$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG');
 
 DELETE FROM user_role;
 INSERT INTO user_role (user_id, role) VALUES

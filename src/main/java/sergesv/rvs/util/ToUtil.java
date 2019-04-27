@@ -1,5 +1,6 @@
 package sergesv.rvs.util;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import sergesv.rvs.model.*;
 import sergesv.rvs.web.to.MenuEntryTo;
 import sergesv.rvs.web.to.RestaurantTo;
@@ -25,7 +26,7 @@ public final class ToUtil {
     }
 
     // From UserTo to User
-    public static User toModel(UserTo userTo) {
+    public static User toModel(UserTo userTo, PasswordEncoder passwordEncoder) {
         Set<Role> roles = new HashSet<>();
 
         if (userTo.isAdmin()) {
@@ -36,8 +37,8 @@ public final class ToUtil {
         }
 
         return new User(userTo.getId(), userTo.getNickName(), userTo.getFirstName(),
-                userTo.getLastName(), userTo.getEmail(), roles);
-
+                userTo.getLastName(), userTo.getEmail(),
+                passwordEncoder.encode(userTo.getPassword()), roles);
     }
 
     // From VoteEntryTo to VoteEntry with user
