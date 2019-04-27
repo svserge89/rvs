@@ -48,15 +48,15 @@ public final class ToUtil {
     }
 
     // From Restaurant to RestaurantTo without rating
-    public static RestaurantTo toTo(Restaurant restaurant) {
-        return toTo(restaurant, null);
+    public static RestaurantTo toTo(Restaurant restaurant, boolean withMenu) {
+        return toTo(restaurant, withMenu,null);
     }
 
     // From Restaurant to RestaurantTo with rating
-    public static RestaurantTo toTo(Restaurant restaurant, Long rating) {
+    public static RestaurantTo toTo(Restaurant restaurant, boolean withMenu, Long rating) {
         List<MenuEntryTo> menuEntryTos = null;
 
-        if (restaurant.getMenuEntries() != null) {
+        if (withMenu) {
             menuEntryTos = restaurant.getMenuEntries().stream()
                     .map(ToUtil::toTo)
                     .collect(Collectors.toList());
@@ -80,7 +80,7 @@ public final class ToUtil {
 
     // From VoteEntry to VoteEntryTo
     public static VoteEntryTo toTo(VoteEntry voteEntry) {
-        return new VoteEntryTo(toTo(voteEntry.getRestaurant()),
+        return new VoteEntryTo(toTo(voteEntry.getRestaurant(), false),
                 LocalDateTime.of(voteEntry.getDate(), voteEntry.getTime()));
     }
 
