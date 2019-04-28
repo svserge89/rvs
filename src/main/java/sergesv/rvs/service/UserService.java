@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sergesv.rvs.model.User;
 import sergesv.rvs.repository.UserRepository;
 import sergesv.rvs.util.ToUtil;
 import sergesv.rvs.web.to.UserTo;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.ToUtil.toModel;
@@ -31,8 +33,10 @@ public class UserService {
         return toTo(userRepository.getOne(id));
     }
 
-    public UserTo getByEmail(String email) {
-        return toTo(userRepository.getByEmail(email));
+    public Optional<User> findByUserName(String userName) {
+        var user = userRepository.findByNickName(userName);
+
+        return user.isPresent() ? user : userRepository.findByEmail(userName);
     }
 
     @Transactional
