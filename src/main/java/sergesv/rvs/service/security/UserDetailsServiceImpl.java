@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import sergesv.rvs.model.User;
+import sergesv.rvs.model.security.UserDetailsImpl;
 import sergesv.rvs.service.UserService;
 
 import java.util.Set;
@@ -27,7 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toSet());
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getNickName(), user.getEncryptedPassword(), roles);
+        return new UserDetailsImpl(user.getId(), user.getNickName(), user.getEncryptedPassword(),
+                roles);
     }
 }
