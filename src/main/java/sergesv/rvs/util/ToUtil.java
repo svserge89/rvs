@@ -34,6 +34,11 @@ public final class ToUtil {
 
     // From UserTo to User
     public static User toModel(UserTo userTo, PasswordEncoder passwordEncoder) {
+        return toModel(userTo.getId(), userTo, passwordEncoder);
+    }
+
+    // From UserTo to User with id
+    public static User toModel(long id, UserTo userTo, PasswordEncoder passwordEncoder) {
         Set<Role> roles = new HashSet<>();
 
         if (userTo.isAdmin()) {
@@ -43,7 +48,7 @@ public final class ToUtil {
             roles.add(Role.ROLE_USER);
         }
 
-        return new User(userTo.getId(), userTo.getNickName(), userTo.getFirstName(),
+        return new User(id, userTo.getNickName(), userTo.getFirstName(),
                 userTo.getLastName(), userTo.getEmail(),
                 passwordEncoder.encode(userTo.getPassword()), roles);
     }
