@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sergesv.rvs.model.Restaurant;
+import sergesv.rvs.model.RatingPair;
 import sergesv.rvs.repository.RestaurantRepository;
 import sergesv.rvs.repository.VoteEntryRepository;
 import sergesv.rvs.web.to.RestaurantTo;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.ToUtil.toModel;
@@ -19,64 +21,49 @@ import static sergesv.rvs.util.ToUtil.toTo;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class RestaurantService {
+    private static final long DEFAULT_RATING = 0L;
+
     private final RestaurantRepository restaurantRepository;
     private final VoteEntryRepository voteEntryRepository;
 
     public List<RestaurantTo> getAll() {
-        return restaurantRepository.findAll().stream()
-                .map(restaurant -> toTo(restaurant, false))
-                .collect(Collectors.toList());
+        return toRestaurantTos(restaurantRepository.findAll(), false);
     }
 
     public List<RestaurantTo> getAllWithRating() {
-        return restaurantRepository.findAll().stream()
-                .map(restaurant -> toTo(restaurant, false,
-                        voteEntryRepository.countByRestaurant(restaurant)))
-                .collect(Collectors.toList());
+        return toRestaurantTos(restaurantRepository.findAll(), voteEntryRepository.getRatingPairs(),
+                false);
     }
 
     public List<RestaurantTo> getAllWithRating(LocalDate date) {
-        return restaurantRepository.findAll().stream()
-                .map(restaurant -> toTo(restaurant, false,
-                        voteEntryRepository.countByRestaurantAndDateEquals(restaurant, date)))
-                .collect(Collectors.toList());
+        return toRestaurantTos(restaurantRepository.findAll(),
+                voteEntryRepository.getRatingPairsByDate(date), false);
     }
 
     public List<RestaurantTo> getAllWithRating(LocalDate dateStart, LocalDate dateEnd) {
-        return restaurantRepository.findAll().stream()
-                .map(restaurant -> toTo(restaurant, false,
-                        voteEntryRepository.countByRestaurantAndDateBetween(restaurant, dateStart,
-                                dateEnd)))
-                .collect(Collectors.toList());
+        return toRestaurantTos(restaurantRepository.findAll(),
+                voteEntryRepository.getRatingPairsByDateBetween(dateStart, dateEnd), false);
     }
 
     public List<RestaurantTo> getAllWithMenu(LocalDate menuDate) {
-        return restaurantRepository.findAllWithMenu(menuDate).stream()
-                .map(restaurant -> toTo(restaurant, true))
-                .collect(Collectors.toList());
+        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate), true);
     }
 
     public List<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate) {
-        return restaurantRepository.findAllWithMenu(menuDate).stream()
-                .map(restaurant -> toTo(restaurant, true,
-                        voteEntryRepository.countByRestaurant(restaurant)))
-                .collect(Collectors.toList());
+        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate),
+                voteEntryRepository.getRatingPairs(), true);
     }
 
     public List<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, LocalDate ratingDate) {
-        return restaurantRepository.findAllWithMenu(menuDate).stream()
-                .map(restaurant -> toTo(restaurant, true,
-                        voteEntryRepository.countByRestaurantAndDateEquals(restaurant, ratingDate)))
-                .collect(Collectors.toList());
+        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate),
+                voteEntryRepository.getRatingPairsByDate(ratingDate), true);
     }
 
     public List<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, LocalDate ratingDateStart,
                                                       LocalDate ratingDateEnd) {
-        return restaurantRepository.findAllWithMenu(menuDate).stream()
-                .map(restaurant -> toTo(restaurant, true,
-                        voteEntryRepository.countByRestaurantAndDateBetween(restaurant,
-                                ratingDateStart, ratingDateEnd)))
-                .collect(Collectors.toList());
+        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate),
+                voteEntryRepository.getRatingPairsByDateBetween(ratingDateStart, ratingDateEnd),
+                true);
     }
 
     public RestaurantTo getOne(long id) {
@@ -163,5 +150,24 @@ public class RestaurantService {
     @Transactional
     public void deleteAll() {
         restaurantRepository.deleteAll();
+    }
+
+    private static List<RestaurantTo> toRestaurantTos(List<Restaurant> restaurants,
+                                                      Set<RatingPair> ratingPairs,
+                                                      boolean withMenu) {
+        var ratingMap = ratingPairs.stream()
+                .collect(Collectors.toMap(RatingPair::getRestaurant, RatingPair::getRating));
+
+        return restaurants.stream()
+                .map(restaurant -> toTo(restaurant, withMenu,
+                        ratingMap.getOrDefault(restaurant, DEFAULT_RATING)))
+                .collect(Collectors.toList());
+    }
+
+    private static List<RestaurantTo> toRestaurantTos(List<Restaurant> restaurants,
+                                                      boolean withMenu) {
+        return restaurants.stream()
+                .map(restaurant -> toTo(restaurant, withMenu))
+                .collect(Collectors.toList());
     }
 }
