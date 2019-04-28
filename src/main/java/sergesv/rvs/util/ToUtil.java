@@ -21,7 +21,12 @@ public final class ToUtil {
 
     // From MenuEntryTo to MenuEntry with restaurant
     public static MenuEntry toModel(MenuEntryTo menuEntryTo, Restaurant restaurant) {
-        return new MenuEntry(menuEntryTo.getId(), menuEntryTo.getName(), menuEntryTo.getPrice(),
+        return toModel(menuEntryTo.getId(), menuEntryTo, restaurant);
+    }
+
+    // From MenuEntryTo to MenuEntry with id and restaurant
+    public static MenuEntry toModel(long id, MenuEntryTo menuEntryTo, Restaurant restaurant) {
+        return new MenuEntry(id, menuEntryTo.getName(), menuEntryTo.getPrice(),
                 menuEntryTo.getDate(), restaurant);
     }
 
