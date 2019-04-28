@@ -1,9 +1,9 @@
-package sergesv.rvs.util;
+package sergesv.rvs.util.web;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-public final class WebControllerUtil {
+public final class ControllerUtil {
     public enum ParamsCondition {
         DEFAULT,
         BY_DATE,
@@ -62,6 +62,6 @@ public final class WebControllerUtil {
         return resolveParams(null, dateStart, dateEnd);
     }
 
-    private WebControllerUtil() {
+    private ControllerUtil() {
     }
 }

@@ -8,7 +8,7 @@ import sergesv.rvs.web.to.UserTo;
 
 import java.util.List;
 
-import static sergesv.rvs.util.WebSecurityUtil.getAuthUserId;
+import static sergesv.rvs.util.web.SecurityUtil.getAuthUserId;
 
 @RestController
 @RequestMapping("/api/admin/users")

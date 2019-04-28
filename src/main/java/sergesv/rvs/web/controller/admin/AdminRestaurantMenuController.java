@@ -13,8 +13,8 @@ import java.util.Optional;
 import static org.springframework.format.annotation.DateTimeFormat.*;
 import static sergesv.rvs.util.DateUtil.MAX_DATE;
 import static sergesv.rvs.util.DateUtil.MIN_DATE;
-import static sergesv.rvs.util.WebControllerUtil.ParamsCondition.BETWEEN_DATES;
-import static sergesv.rvs.util.WebControllerUtil.resolveParams;
+import static sergesv.rvs.util.web.ControllerUtil.ParamsCondition.BETWEEN_DATES;
+import static sergesv.rvs.util.web.ControllerUtil.resolveParams;
 
 @RestController
 @RequestMapping("/api/admin/restaurants/{restaurantId}/menu")
