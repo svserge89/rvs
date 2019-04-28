@@ -8,6 +8,8 @@ import sergesv.rvs.web.to.UserTo;
 
 import java.util.List;
 
+import static sergesv.rvs.util.WebSecurityUtil.getAuthUserId;
+
 @RestController
 @RequestMapping("/api/admin/users")
 @RequiredArgsConstructor
@@ -39,12 +41,12 @@ public class AdminUserController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id) {
-        userService.delete(id);
+        userService.delete(id, getAuthUserId());
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAll() {
-        userService.deleteAll();
+        userService.deleteAll(getAuthUserId());
     }
 }

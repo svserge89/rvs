@@ -1,45 +1,59 @@
 package sergesv.rvs.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sergesv.rvs.repository.UserRepository;
+import sergesv.rvs.util.ToUtil;
 import sergesv.rvs.web.to.UserTo;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static sergesv.rvs.util.ToUtil.toModel;
+import static sergesv.rvs.util.ToUtil.toTo;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<UserTo> getAll() {
-        return null;
+        return userRepository.findAll().stream()
+                .map(ToUtil::toTo)
+                .collect(Collectors.toList());
     }
 
     public UserTo getOne(long id) {
-        return null;
+        return toTo(userRepository.getOne(id));
     }
 
     public UserTo getByEmail(String email) {
-        return null;
+        return toTo(userRepository.getByEmail(email));
     }
 
     @Transactional
     public UserTo create(UserTo userTo) {
-        return null;
+        return toTo(userRepository.save(toModel(userTo, passwordEncoder)));
     }
 
     @Transactional
     public void update(long id, UserTo userTo) {
+        userRepository.save(toModel(id, userTo, passwordEncoder));
     }
 
     @Transactional
-    public void delete(long id) {
+    public void delete(long id, long authUserId) {
+        if (id != authUserId) {
+            userRepository.deleteById(id);
+        }
     }
 
     @Transactional
-    public void deleteAll() {
+    public void deleteAll(long authUserId) {
+        userRepository.deleteAllByIdNot(authUserId);
     }
 }
