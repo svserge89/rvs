@@ -11,6 +11,8 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.springframework.format.annotation.DateTimeFormat.*;
+import static sergesv.rvs.util.DateUtil.MAX_DATE;
+import static sergesv.rvs.util.DateUtil.MIN_DATE;
 import static sergesv.rvs.util.WebControllerUtil.ParamsCondition.BETWEEN_DATES;
 import static sergesv.rvs.util.WebControllerUtil.resolveParams;
 
@@ -49,8 +51,8 @@ public class AdminRestaurantMenuController {
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd) {
         if (resolveParams(date, dateStart, dateEnd) == BETWEEN_DATES) {
             menuEntryService.deleteAllByRestaurant(restaurantId,
-                    Optional.ofNullable(dateStart).orElse(LocalDate.MIN),
-                    Optional.ofNullable(dateEnd).orElse(LocalDate.MAX));
+                    Optional.ofNullable(dateStart).orElse(MIN_DATE),
+                    Optional.ofNullable(dateEnd).orElse(MAX_DATE));
         } else {
             menuEntryService.deleteAllByRestaurant(restaurantId,
                     Optional.ofNullable(date).orElse(LocalDate.now()));

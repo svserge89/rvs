@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.format.annotation.DateTimeFormat.*;
+import static sergesv.rvs.util.DateUtil.MAX_DATE;
+import static sergesv.rvs.util.DateUtil.MIN_DATE;
 import static sergesv.rvs.util.WebControllerUtil.ParamsCondition.BETWEEN_DATES;
 import static sergesv.rvs.util.WebControllerUtil.resolveParams;
 import static sergesv.rvs.util.WebSecurityUtil.getAuthUserId;
@@ -28,8 +30,8 @@ public class UserVoteController {
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd) {
         if (resolveParams(dateStart, dateEnd) == BETWEEN_DATES) {
             return voteEntryService.getAll(getAuthUserId(),
-                    Optional.ofNullable(dateStart).orElse(LocalDate.MIN),
-                    Optional.ofNullable(dateEnd).orElse(LocalDate.MAX));
+                    Optional.ofNullable(dateStart).orElse(MIN_DATE),
+                    Optional.ofNullable(dateEnd).orElse(MAX_DATE));
         } else {
             return voteEntryService.getAll(getAuthUserId());
         }
