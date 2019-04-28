@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.format.annotation.DateTimeFormat.*;
-import static sergesv.rvs.util.DateUtil.MAX_DATE;
-import static sergesv.rvs.util.DateUtil.MIN_DATE;
+import static sergesv.rvs.util.DateTimeUtil.MAX_DATE;
+import static sergesv.rvs.util.DateTimeUtil.MIN_DATE;
 import static sergesv.rvs.util.web.ControllerUtil.ParamsCondition.BETWEEN_DATES;
 import static sergesv.rvs.util.web.ControllerUtil.resolveParams;
 import static sergesv.rvs.util.web.SecurityUtil.getAuthUserId;

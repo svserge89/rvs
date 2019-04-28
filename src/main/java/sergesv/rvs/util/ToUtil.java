@@ -8,13 +8,14 @@ import sergesv.rvs.web.to.RestaurantTo;
 import sergesv.rvs.web.to.UserTo;
 import sergesv.rvs.web.to.VoteEntryTo;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static sergesv.rvs.util.DateTimeUtil.getCurrentDate;
 
 public final class ToUtil {
     // From RestaurantTo to Restaurant
@@ -30,7 +31,7 @@ public final class ToUtil {
     // From MenuEntryTo to MenuEntry with id and restaurant
     public static MenuEntry toModel(long id, MenuEntryTo menuEntryTo, Restaurant restaurant) {
         return new MenuEntry(id, menuEntryTo.getName(), menuEntryTo.getPrice(),
-                Optional.ofNullable(menuEntryTo.getDate()).orElse(LocalDate.now()), restaurant);
+                Optional.ofNullable(menuEntryTo.getDate()).orElse(getCurrentDate()), restaurant);
     }
 
     // From UserTo to User

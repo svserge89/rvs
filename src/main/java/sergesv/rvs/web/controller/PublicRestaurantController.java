@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.format.annotation.DateTimeFormat.*;
-import static sergesv.rvs.util.DateUtil.MAX_DATE;
-import static sergesv.rvs.util.DateUtil.MIN_DATE;
+import static sergesv.rvs.util.DateTimeUtil.*;
 import static sergesv.rvs.util.web.ControllerUtil.resolveParams;
 
 @RestController
@@ -35,7 +34,7 @@ public class PublicRestaurantController {
         switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
             case MENU:
                 return restaurantService.getAllWithMenu(
-                        Optional.ofNullable(menuDate).orElse(LocalDate.now()));
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()));
             case RATING:
                 return restaurantService.getAllWithRating();
             case RATING_BY_DATE:
@@ -46,13 +45,13 @@ public class PublicRestaurantController {
                         Optional.ofNullable(ratingDateEnd).orElse(MAX_DATE));
             case MENU_AND_RATING:
                 return restaurantService.getAllWithMenuAndRating(
-                        Optional.ofNullable(menuDate).orElse(LocalDate.now()));
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()));
             case MENU_AND_RATING_BY_DATE:
                 return restaurantService.getAllWithMenuAndRating(
-                        Optional.ofNullable(menuDate).orElse(LocalDate.now()), ratingDate);
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), ratingDate);
             case MENU_AND_RATING_BETWEEN_DATES:
                 return restaurantService.getAllWithMenuAndRating(
-                        Optional.ofNullable(menuDate).orElse(LocalDate.now()),
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()),
                         Optional.ofNullable(ratingDateStart).orElse(MIN_DATE),
                         Optional.ofNullable(ratingDateEnd).orElse(MAX_DATE));
             default:
@@ -72,7 +71,7 @@ public class PublicRestaurantController {
         switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
             case MENU:
                 return restaurantService.getOneWithMenu(id,
-                        Optional.ofNullable(menuDate).orElse(LocalDate.now()));
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()));
             case RATING:
                 return restaurantService.getOneWithRating(id);
             case RATING_BY_DATE:
@@ -83,13 +82,13 @@ public class PublicRestaurantController {
                         Optional.ofNullable(ratingDateEnd).orElse(MAX_DATE));
             case MENU_AND_RATING:
                 return restaurantService.getOneWithMenuAndRating(id,
-                        Optional.ofNullable(menuDate).orElse(LocalDate.now()));
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()));
             case MENU_AND_RATING_BY_DATE:
                 return restaurantService.getOneWithMenuAndRating(id,
-                        Optional.ofNullable(menuDate).orElse(LocalDate.now()), ratingDate);
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), ratingDate);
             case MENU_AND_RATING_BETWEEN_DATES:
                 return restaurantService.getOneWithMenuAndRating(id,
-                        Optional.ofNullable(menuDate).orElse(LocalDate.now()),
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()),
                         Optional.ofNullable(ratingDateStart).orElse(MIN_DATE),
                         Optional.ofNullable(ratingDateEnd).orElse(MAX_DATE));
             default:
@@ -101,7 +100,7 @@ public class PublicRestaurantController {
     public List<MenuEntryTo> getMenu(@PathVariable long restaurantId,
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate) {
         return menuEntryService.getAllByRestaurant(restaurantId,
-                Optional.ofNullable(menuDate).orElse(LocalDate.now()));
+                Optional.ofNullable(menuDate).orElse(getCurrentDate()));
     }
 
     @GetMapping("/{restaurantId}/menu/{id}")

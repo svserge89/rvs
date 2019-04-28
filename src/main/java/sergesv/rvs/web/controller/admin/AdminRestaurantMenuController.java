@@ -11,8 +11,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.springframework.format.annotation.DateTimeFormat.*;
-import static sergesv.rvs.util.DateUtil.MAX_DATE;
-import static sergesv.rvs.util.DateUtil.MIN_DATE;
+import static sergesv.rvs.util.DateTimeUtil.*;
 import static sergesv.rvs.util.web.ControllerUtil.ParamsCondition.BETWEEN_DATES;
 import static sergesv.rvs.util.web.ControllerUtil.resolveParams;
 
@@ -55,7 +54,7 @@ public class AdminRestaurantMenuController {
                     Optional.ofNullable(dateEnd).orElse(MAX_DATE));
         } else {
             menuEntryService.deleteAllByRestaurant(restaurantId,
-                    Optional.ofNullable(date).orElse(LocalDate.now()));
+                    Optional.ofNullable(date).orElse(getCurrentDate()));
         }
     }
 }
