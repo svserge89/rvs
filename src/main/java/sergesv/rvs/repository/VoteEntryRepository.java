@@ -8,6 +8,7 @@ import sergesv.rvs.model.RatingPair;
 import sergesv.rvs.model.VoteEntry;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -34,4 +35,15 @@ public interface VoteEntryRepository extends JpaRepository<VoteEntry, Long> {
 
     @Query(name = VoteEntry.GET_RATING_PAIRS_BY_DATE_BETWEEN)
     Set<RatingPair> getRatingPairsByDateBetween(LocalDate dateStart, LocalDate dateEnd);
+
+    List<VoteEntry> findAllByUserId(Long userId);
+
+    List<VoteEntry> findAllByUserIdAndDateBetween(Long userId, LocalDate dateStart,
+                                                  LocalDate dateEnd);
+
+    boolean existsByUserIdAndDate(Long userId, LocalDate date);
+
+    void deleteByUserIdAndDate(Long userId, LocalDate date);
+
+    void deleteByUserIdAndRestaurantIdAndDate(Long userId, Long restaurantId, LocalDate date);
 }
