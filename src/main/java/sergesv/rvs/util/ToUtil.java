@@ -2,6 +2,7 @@ package sergesv.rvs.util;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import sergesv.rvs.model.*;
+import sergesv.rvs.model.security.Role;
 import sergesv.rvs.web.to.MenuEntryTo;
 import sergesv.rvs.web.to.RestaurantTo;
 import sergesv.rvs.web.to.UserTo;

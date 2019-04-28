@@ -1,6 +1,7 @@
 package sergesv.rvs.model;
 
 import lombok.*;
+import sergesv.rvs.model.security.Role;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
