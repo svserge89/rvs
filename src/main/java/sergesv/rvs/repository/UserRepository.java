@@ -6,4 +6,7 @@ import sergesv.rvs.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    User getByEmail(String email);
+
+    void deleteAllByIdNot(Long id);
 }
