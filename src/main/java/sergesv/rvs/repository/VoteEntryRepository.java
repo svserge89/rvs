@@ -1,6 +1,7 @@
 package sergesv.rvs.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import sergesv.rvs.model.Restaurant;
@@ -43,7 +44,11 @@ public interface VoteEntryRepository extends JpaRepository<VoteEntry, Long> {
 
     boolean existsByUserIdAndDate(Long userId, LocalDate date);
 
+    @Modifying
+    @Query(name = VoteEntry.DELETE_BY_USER_ID_AND_DATE)
     void deleteByUserIdAndDate(Long userId, LocalDate date);
 
+    @Modifying
+    @Query(name = VoteEntry.DELETE_BY_USER_ID_AND_RESTAURANT_ID_AND_DATE)
     void deleteByUserIdAndRestaurantIdAndDate(Long userId, Long restaurantId, LocalDate date);
 }
