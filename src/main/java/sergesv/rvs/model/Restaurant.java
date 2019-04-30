@@ -12,7 +12,7 @@ import java.util.List;
             query = "SELECT DISTINCT restaurant FROM Restaurant restaurant " +
                     "JOIN FETCH restaurant.menuEntries menuEntry " +
                     "WHERE menuEntry.date = :menuDate"),
-        @NamedQuery(name = Restaurant.GET_ONE_WITH_MENU,
+        @NamedQuery(name = Restaurant.FIND_ONE_WITH_MENU,
             query = "SELECT restaurant FROM Restaurant restaurant " +
                     "JOIN FETCH restaurant.menuEntries menuEntry " +
                     "WHERE restaurant.id = :id AND menuEntry.date = :menuDate")
@@ -26,7 +26,7 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Restaurant {
     public static final String FIND_ALL_WITH_MENU = "Restaurant.findAllWithMenu";
-    public static final String GET_ONE_WITH_MENU = "Restaurant.getOneWithMenu";
+    public static final String FIND_ONE_WITH_MENU = "Restaurant.findByIdWithMenu";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
