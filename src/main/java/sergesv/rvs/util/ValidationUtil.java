@@ -1,8 +1,11 @@
 package sergesv.rvs.util;
 
+import sergesv.rvs.exception.EntityConflictException;
 import sergesv.rvs.exception.EntityNotFoundException;
 
 import java.util.function.Supplier;
+
+import static sergesv.rvs.util.DateTimeUtil.MAX_CHANGE_TIME;
 
 public final class ValidationUtil {
     public static Supplier<EntityNotFoundException> restaurantNotFoundSupplier(long menuEntryId) {
@@ -22,8 +25,13 @@ public final class ValidationUtil {
                 String.format("Not found User with id = %d", userId));
     }
 
-    public static void checkExists(boolean exists,
-                                   Supplier<? extends RuntimeException> supplier) {
+    public static Supplier<EntityConflictException> voteAgainSupplier() {
+        return () -> new EntityConflictException(
+                String.format("Can not vote again after %s", MAX_CHANGE_TIME));
+    }
+
+    public static void checkException(boolean exists,
+                                      Supplier<? extends RuntimeException> supplier) {
         if (!exists) {
             throw supplier.get();
         }

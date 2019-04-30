@@ -37,7 +37,7 @@ public class MenuEntryService {
 
     @Transactional
     public MenuEntryTo create(MenuEntryTo menuEntryTo, long restaurantId) {
-        checkExists(restaurantRepository.existsById(restaurantId),
+        checkException(restaurantRepository.existsById(restaurantId),
                 restaurantNotFoundSupplier(restaurantId));
 
         Restaurant restaurant = restaurantRepository.getOne(restaurantId);
@@ -47,9 +47,9 @@ public class MenuEntryService {
 
     @Transactional
     public void update(long id, MenuEntryTo menuEntryTo, long restaurantId) {
-        checkExists(restaurantRepository.existsById(restaurantId),
+        checkException(restaurantRepository.existsById(restaurantId),
                 restaurantNotFoundSupplier(restaurantId));
-        checkExists(menuEntryRepository.existsByIdAndRestaurantId(id, restaurantId),
+        checkException(menuEntryRepository.existsByIdAndRestaurantId(id, restaurantId),
                 menuEntryNotFoundSupplier(id, restaurantId));
 
         Restaurant restaurant = restaurantRepository.getOne(restaurantId);

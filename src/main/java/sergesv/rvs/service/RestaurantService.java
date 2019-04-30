@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.ToUtil.toModel;
 import static sergesv.rvs.util.ToUtil.toTo;
-import static sergesv.rvs.util.ValidationUtil.checkExists;
+import static sergesv.rvs.util.ValidationUtil.checkException;
 import static sergesv.rvs.util.ValidationUtil.restaurantNotFoundSupplier;
 
 @Service
@@ -146,7 +146,7 @@ public class RestaurantService {
 
     @Transactional
     public void update(long id, RestaurantTo restaurantTo) {
-        checkExists(restaurantRepository.existsById(id), restaurantNotFoundSupplier(id));
+        checkException(restaurantRepository.existsById(id), restaurantNotFoundSupplier(id));
 
         Restaurant restaurant = toModel(restaurantTo);
 

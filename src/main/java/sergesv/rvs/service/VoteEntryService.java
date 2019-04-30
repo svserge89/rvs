@@ -3,6 +3,7 @@ package sergesv.rvs.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sergesv.rvs.exception.EntityConflictException;
 import sergesv.rvs.model.Restaurant;
 import sergesv.rvs.model.User;
 import sergesv.rvs.model.VoteEntry;
@@ -40,28 +41,23 @@ public class VoteEntryService {
 
     @Transactional
     public VoteEntryTo create(long userId, long restaurantId) {
-        checkExists(userRepository.existsById(userId), userNotFoundSupplier(userId));
-        checkExists(restaurantRepository.existsById(restaurantId),
+        checkException(userRepository.existsById(userId), userNotFoundSupplier(userId));
+        checkException(restaurantRepository.existsById(restaurantId),
                 restaurantNotFoundSupplier(restaurantId));
 
         LocalDate currentDate = getCurrentDate();
         LocalTime currentTime = getCurrentTime();
 
         if (voteEntryRepository.existsByUserIdAndDate(userId, currentDate)) {
-            if (checkTime(currentTime)) {
-                voteEntryRepository.deleteByUserIdAndDate(userId, currentDate);
-
-                return toTo(saveVote(userId, restaurantId, currentDate, currentTime));
-            }
-        } else {
-            return toTo(saveVote(userId, restaurantId, currentDate, currentTime));
+            checkException(checkTime(currentTime), voteAgainSupplier());
+            voteEntryRepository.deleteByUserIdAndDate(userId, currentDate);
         }
 
-        return null;
+        return toTo(saveVote(userId, restaurantId, currentDate, currentTime));
     }
 
     @Transactional
-    public void deleteVote(long userId, long restaurantId) {
+    public void delete(long userId, long restaurantId) {
         if (checkTime(getCurrentTime())) {
             voteEntryRepository.deleteByUserIdAndRestaurantIdAndDate(userId, restaurantId,
                     getCurrentDate());

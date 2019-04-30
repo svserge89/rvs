@@ -46,6 +46,6 @@ public class UserVoteController {
     @DeleteMapping("/restaurants/{restaurantId}/vote")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long restaurantId) {
-        voteEntryService.deleteVote(getAuthUserId(), restaurantId);
+        voteEntryService.delete(getAuthUserId(), restaurantId);
     }
 }
