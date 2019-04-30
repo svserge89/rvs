@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.ToUtil.toModel;
 import static sergesv.rvs.util.ToUtil.toTo;
+import static sergesv.rvs.util.ValidationUtil.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,11 +31,15 @@ public class MenuEntryService {
     }
 
     public MenuEntryTo getOneByRestaurant(long id, long restaurantId) {
-        return toTo(menuEntryRepository.getByIdAndRestaurantId(id, restaurantId));
+        return toTo(menuEntryRepository.findByIdAndRestaurantId(id, restaurantId)
+                .orElseThrow(menuEntryNotFoundSupplier(id, restaurantId)));
     }
 
     @Transactional
     public MenuEntryTo create(MenuEntryTo menuEntryTo, long restaurantId) {
+        checkExists(restaurantRepository.existsById(restaurantId),
+                restaurantNotFoundSupplier(restaurantId));
+
         Restaurant restaurant = restaurantRepository.getOne(restaurantId);
 
         return toTo(menuEntryRepository.save(toModel(menuEntryTo, restaurant)));
@@ -42,6 +47,11 @@ public class MenuEntryService {
 
     @Transactional
     public void update(long id, MenuEntryTo menuEntryTo, long restaurantId) {
+        checkExists(restaurantRepository.existsById(restaurantId),
+                restaurantNotFoundSupplier(restaurantId));
+        checkExists(menuEntryRepository.existsByIdAndRestaurantId(id, restaurantId),
+                menuEntryNotFoundSupplier(id, restaurantId));
+
         Restaurant restaurant = restaurantRepository.getOne(restaurantId);
 
         menuEntryRepository.save(toModel(id, menuEntryTo, restaurant));
