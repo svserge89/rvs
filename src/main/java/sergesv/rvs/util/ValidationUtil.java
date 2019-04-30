@@ -1,9 +1,14 @@
 package sergesv.rvs.util;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import sergesv.rvs.exception.BadRequestException;
 import sergesv.rvs.exception.EntityConflictException;
 import sergesv.rvs.exception.EntityNotFoundException;
+import sergesv.rvs.model.User;
 
+import javax.validation.ConstraintViolationException;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.DateTimeUtil.MAX_CHANGE_TIME;
 
@@ -34,6 +39,26 @@ public final class ValidationUtil {
                                       Supplier<? extends RuntimeException> supplier) {
         if (!exists) {
             throw supplier.get();
+        }
+    }
+
+    public static User checkException(Supplier<User> userSupplier) {
+        try {
+            return userSupplier.get();
+        } catch (DataIntegrityViolationException exception) {
+            throw new EntityConflictException(
+                    "User with the same nickname or email is already exists", exception);
+        } catch (ConstraintViolationException exception) {
+            var constraintViolations = exception.getConstraintViolations();
+
+            String message = constraintViolations.stream()
+                    .map(constraintViolation ->
+                            String.format("Field '%s': '%s' - %s",
+                                    constraintViolation.getPropertyPath(),
+                                    constraintViolation.getInvalidValue(),
+                                    constraintViolation.getMessage()))
+                    .collect(Collectors.joining(". "));
+            throw new BadRequestException(message, exception);
         }
     }
 

@@ -15,8 +15,7 @@ import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.ToUtil.toModel;
 import static sergesv.rvs.util.ToUtil.toTo;
-import static sergesv.rvs.util.ValidationUtil.checkException;
-import static sergesv.rvs.util.ValidationUtil.userNotFoundSupplier;
+import static sergesv.rvs.util.ValidationUtil.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,14 +42,13 @@ public class UserService {
 
     @Transactional
     public UserTo create(UserTo userTo) {
-        return toTo(userRepository.save(toModel(userTo, passwordEncoder)));
+        return toTo(checkException(() -> userRepository.save(toModel(userTo, passwordEncoder))));
     }
 
     @Transactional
     public void update(long id, UserTo userTo) {
         checkException(userRepository.existsById(id), userNotFoundSupplier(id));
-
-        userRepository.save(toModel(id, userTo, passwordEncoder));
+        checkException(() -> userRepository.save(toModel(id, userTo, passwordEncoder)));
     }
 
     @Transactional
