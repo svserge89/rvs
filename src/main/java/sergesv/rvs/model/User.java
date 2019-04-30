@@ -32,7 +32,7 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Email
+    @Email(regexp = "^[A-Za-z0-9._%\\-+!#$&/=?^|~]+@[A-Za-z0-9.-]+[.][A-Za-z]+$")
     @Column(name = "email")
     private String email;
 
