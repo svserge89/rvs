@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.ToUtil.toModel;
 import static sergesv.rvs.util.ToUtil.toTo;
+import static sergesv.rvs.util.ValidationUtil.checkExists;
+import static sergesv.rvs.util.ValidationUtil.userNotFoundSupplier;
 
 @Service
 @Transactional(readOnly = true)
@@ -30,7 +32,7 @@ public class UserService {
     }
 
     public UserTo getOne(long id) {
-        return toTo(userRepository.getOne(id));
+        return toTo(userRepository.findById(id).orElseThrow(userNotFoundSupplier(id)));
     }
 
     public Optional<User> findByUserName(String userName) {
@@ -46,6 +48,8 @@ public class UserService {
 
     @Transactional
     public void update(long id, UserTo userTo) {
+        checkExists(userRepository.existsById(id), userNotFoundSupplier(id));
+
         userRepository.save(toModel(id, userTo, passwordEncoder));
     }
 

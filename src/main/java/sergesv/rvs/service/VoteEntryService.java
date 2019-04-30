@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.DateTimeUtil.*;
 import static sergesv.rvs.util.ToUtil.toTo;
+import static sergesv.rvs.util.ValidationUtil.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -39,6 +40,10 @@ public class VoteEntryService {
 
     @Transactional
     public VoteEntryTo create(long userId, long restaurantId) {
+        checkExists(userRepository.existsById(userId), userNotFoundSupplier(userId));
+        checkExists(restaurantRepository.existsById(restaurantId),
+                restaurantNotFoundSupplier(restaurantId));
+
         LocalDate currentDate = getCurrentDate();
         LocalTime currentTime = getCurrentTime();
 
