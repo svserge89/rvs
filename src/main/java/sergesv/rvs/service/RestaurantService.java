@@ -16,7 +16,8 @@ import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.ToUtil.toModel;
 import static sergesv.rvs.util.ToUtil.toTo;
-import static sergesv.rvs.util.ValidationUtil.getNotFoundSupplier;
+import static sergesv.rvs.util.ValidationUtil.checkExists;
+import static sergesv.rvs.util.ValidationUtil.restaurantNotFoundSupplier;
 
 @Service
 @Transactional(readOnly = true)
@@ -69,19 +70,19 @@ public class RestaurantService {
 
     public RestaurantTo getOne(long id) {
         return toTo(restaurantRepository.findById(id)
-                .orElseThrow(getNotFoundSupplier(id)), false);
+                .orElseThrow(restaurantNotFoundSupplier(id)), false);
     }
 
     public RestaurantTo getOneWithRating(long id) {
         Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(getNotFoundSupplier(id));
+                .orElseThrow(restaurantNotFoundSupplier(id));
 
         return toTo(restaurant, false, voteEntryRepository.countByRestaurant(restaurant));
     }
 
     public RestaurantTo getOneWithRating(long id, LocalDate date) {
         Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(getNotFoundSupplier(id));
+                .orElseThrow(restaurantNotFoundSupplier(id));
 
         return toTo(restaurant, false,
                 voteEntryRepository.countByRestaurantAndDateEquals(restaurant, date));
@@ -89,7 +90,7 @@ public class RestaurantService {
 
     public RestaurantTo getOneWithRating(long id, LocalDate startDate, LocalDate endDate) {
         Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(getNotFoundSupplier(id));
+                .orElseThrow(restaurantNotFoundSupplier(id));
 
         return toTo(restaurant, false, voteEntryRepository.countByRestaurantAndDateBetween(
                 restaurant, startDate, endDate));
@@ -97,19 +98,19 @@ public class RestaurantService {
 
     public RestaurantTo getOneWithMenu(long id, LocalDate menuDate) {
         return toTo(restaurantRepository.findByIdWithMenu(id, menuDate)
-                .orElseThrow(getNotFoundSupplier(id)), true);
+                .orElseThrow(restaurantNotFoundSupplier(id)), true);
     }
 
     public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate) {
         Restaurant restaurant = restaurantRepository.findByIdWithMenu(id, menuDate)
-                .orElseThrow(getNotFoundSupplier(id));
+                .orElseThrow(restaurantNotFoundSupplier(id));
 
         return toTo(restaurant, true, voteEntryRepository.countByRestaurant(restaurant));
     }
 
     public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate, LocalDate ratingDate) {
         Restaurant restaurant = restaurantRepository.findByIdWithMenu(id, menuDate)
-                .orElseThrow(getNotFoundSupplier(id));
+                .orElseThrow(restaurantNotFoundSupplier(id));
 
         return toTo(restaurant, true,
                 voteEntryRepository.countByRestaurantAndDateEquals(restaurant, ratingDate));
@@ -119,7 +120,7 @@ public class RestaurantService {
                                                 LocalDate ratingDateStart,
                                                 LocalDate ratingDateEnd) {
         Restaurant restaurant = restaurantRepository.findByIdWithMenu(id, menuDate)
-                .orElseThrow(getNotFoundSupplier(id));
+                .orElseThrow(restaurantNotFoundSupplier(id));
 
         return toTo(restaurant, true, voteEntryRepository.countByRestaurantAndDateBetween(
                 restaurant, ratingDateStart, ratingDateEnd));
@@ -145,10 +146,8 @@ public class RestaurantService {
 
     @Transactional
     public void update(long id, RestaurantTo restaurantTo) {
-        if (!restaurantRepository.existsById(id)) {
-            throw getNotFoundSupplier(id).get();
-        }
-        
+        checkExists(restaurantRepository.existsById(id), restaurantNotFoundSupplier(id));
+
         Restaurant restaurant = toModel(restaurantTo);
 
         restaurant.setId(id);
