@@ -42,13 +42,15 @@ public class UserService {
 
     @Transactional
     public UserTo create(UserTo userTo) {
-        return toTo(checkException(() -> userRepository.save(toModel(userTo, passwordEncoder))));
+        return toTo(checkException(() -> userRepository.save(toModel(userTo, passwordEncoder)),
+                userAlreadyExistsSupplier()));
     }
 
     @Transactional
     public void update(long id, UserTo userTo) {
         checkException(userRepository.existsById(id), userNotFoundSupplier(id));
-        checkException(() -> userRepository.save(toModel(id, userTo, passwordEncoder)));
+        checkException(() -> userRepository.save(toModel(id, userTo, passwordEncoder)),
+                userAlreadyExistsSupplier());
     }
 
     @Transactional

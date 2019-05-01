@@ -4,6 +4,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import sergesv.rvs.exception.BadRequestException;
 import sergesv.rvs.exception.EntityConflictException;
 import sergesv.rvs.exception.EntityNotFoundException;
+import sergesv.rvs.model.Restaurant;
 import sergesv.rvs.model.User;
 
 import javax.validation.ConstraintViolationException;
@@ -35,6 +36,11 @@ public final class ValidationUtil {
                 String.format("Can not vote again after %s", MAX_CHANGE_TIME));
     }
 
+    public static Supplier<EntityConflictException> userAlreadyExistsSupplier() {
+        return () -> new EntityConflictException(
+                "User with the same nickname or email is already exists");
+    }
+
     public static void checkException(boolean exists,
                                       Supplier<? extends RuntimeException> supplier) {
         if (!exists) {
@@ -42,12 +48,15 @@ public final class ValidationUtil {
         }
     }
 
-    public static User checkException(Supplier<User> userSupplier) {
+    public static <T> T checkException(Supplier<T> userSupplier,
+                                       Supplier<EntityConflictException> conflictSupplier) {
         try {
             return userSupplier.get();
         } catch (DataIntegrityViolationException exception) {
-            throw new EntityConflictException(
-                    "User with the same nickname or email is already exists", exception);
+            var conflictException = conflictSupplier.get();
+
+            conflictException.initCause(exception);
+            throw conflictException;
         } catch (ConstraintViolationException exception) {
             var constraintViolations = exception.getConstraintViolations();
 
