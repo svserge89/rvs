@@ -42,7 +42,8 @@ public class MenuEntryService {
 
         Restaurant restaurant = restaurantRepository.getOne(restaurantId);
 
-        return toTo(menuEntryRepository.save(toModel(menuEntryTo, restaurant)));
+        return toTo(checkException(() -> menuEntryRepository.save(toModel(menuEntryTo, restaurant)),
+                menuEntryAlreadyExistsSupplier()));
     }
 
     @Transactional
@@ -54,7 +55,8 @@ public class MenuEntryService {
 
         Restaurant restaurant = restaurantRepository.getOne(restaurantId);
 
-        menuEntryRepository.save(toModel(id, menuEntryTo, restaurant));
+        checkException(() -> menuEntryRepository.save(toModel(id, menuEntryTo, restaurant)),
+                menuEntryAlreadyExistsSupplier());
     }
 
     @Transactional

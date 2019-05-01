@@ -42,6 +42,11 @@ public final class ValidationUtil {
         return () -> new EntityConflictException("Restaurant with the same name is already exists");
     }
 
+    public static Supplier<EntityConflictException> menuEntryAlreadyExistsSupplier() {
+        return () -> new EntityConflictException(
+                "MenuEntry with the same name, date, and restaurantId is already exists");
+    }
+
     public static void checkException(boolean exists,
                                       Supplier<? extends RuntimeException> supplier) {
         if (!exists) {
