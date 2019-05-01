@@ -11,11 +11,10 @@ import sergesv.rvs.web.to.UserTo;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
+import java.time.LocalTime;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import static sergesv.rvs.util.DateTimeUtil.MAX_CHANGE_TIME;
 
 public final class ValidationUtil {
     public static final String CHECK_EMAIL_REGEXP =
@@ -34,9 +33,9 @@ public final class ValidationUtil {
                         MenuEntry.class.getCanonicalName(), menuEntryId, restaurantId));
     }
 
-    public static Supplier<EntityConflictException> voteAgainSupplier() {
+    public static Supplier<EntityConflictException> voteAgainSupplier(LocalTime maxVoteTime) {
         return () -> new EntityConflictException(
-                String.format("Can not change vote again after %s", MAX_CHANGE_TIME));
+                String.format("Can not change vote again after %s", maxVoteTime));
     }
 
     public static void checkException(boolean exists,
