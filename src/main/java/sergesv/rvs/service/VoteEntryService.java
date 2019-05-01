@@ -1,11 +1,9 @@
 package sergesv.rvs.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sergesv.rvs.RvsPropertyResolver;
 import sergesv.rvs.model.VoteEntry;
 import sergesv.rvs.repository.RestaurantRepository;
 import sergesv.rvs.repository.UserRepository;
@@ -30,9 +28,7 @@ public class VoteEntryService {
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
 
-    @Value("${rvs.maxVoteTime}")
-    @DateTimeFormat(iso = ISO.TIME)
-    private LocalTime maxVoteTime;
+    private final RvsPropertyResolver propertyResolver;
 
     public List<VoteEntryTo> getAll(long userId) {
         return toVoteEntryTos(voteEntryRepository.findAllByUserId(userId));
@@ -45,14 +41,15 @@ public class VoteEntryService {
 
     @Transactional
     public VoteEntryTo create(long userId, long restaurantId) {
-        System.out.println(maxVoteTime);
+        System.out.println(propertyResolver.getMaxVoteTime());
         LocalDate currentDate = getCurrentDate();
         LocalTime currentTime = getCurrentTime();
 
         var voteEntryOptional = voteEntryRepository.findByUserIdAndDate(userId, currentDate);
 
         if (voteEntryOptional.isPresent()) {
-            checkException(checkTime(currentTime, maxVoteTime), voteAgainSupplier(maxVoteTime));
+            checkException(checkTime(currentTime, propertyResolver.getMaxVoteTime()),
+                    voteAgainSupplier(propertyResolver.getMaxVoteTime()));
             VoteEntry voteEntry = voteEntryOptional.get();
             voteEntry.setDate(currentDate);
             voteEntry.setTime(currentTime);
@@ -68,7 +65,8 @@ public class VoteEntryService {
 
     @Transactional
     public void delete(long userId, long restaurantId) {
-        checkException(checkTime(getCurrentTime(), maxVoteTime), voteAgainSupplier(maxVoteTime));
+        checkException(checkTime(getCurrentTime(), propertyResolver.getMaxVoteTime()),
+                voteAgainSupplier(propertyResolver.getMaxVoteTime()));
         voteEntryRepository.deleteByUserIdAndRestaurantIdAndDate(userId, restaurantId,
                 getCurrentDate());
     }
