@@ -7,7 +7,6 @@ import sergesv.rvs.model.MenuEntry;
 import sergesv.rvs.repository.MenuEntryRepository;
 import sergesv.rvs.repository.RestaurantRepository;
 import sergesv.rvs.util.ToUtil;
-import sergesv.rvs.util.ValidationUtil;
 import sergesv.rvs.web.to.MenuEntryTo;
 
 import java.time.LocalDate;
@@ -34,7 +33,7 @@ public class MenuEntryService {
 
     public MenuEntryTo getOneByRestaurant(long id, long restaurantId) {
         return toTo(menuEntryRepository.findByIdAndRestaurantId(id, restaurantId)
-                .orElseThrow(ValidationUtil.entityNotFoundSupplier(id, restaurantId)));
+                .orElseThrow(entityNotFoundSupplier(id, restaurantId)));
     }
 
     @Transactional
