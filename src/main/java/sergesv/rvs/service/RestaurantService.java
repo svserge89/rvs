@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.ToUtil.toModel;
 import static sergesv.rvs.util.ToUtil.toTo;
-import static sergesv.rvs.util.ValidationUtil.checkException;
-import static sergesv.rvs.util.ValidationUtil.restaurantNotFoundSupplier;
+import static sergesv.rvs.util.ValidationUtil.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -141,17 +140,15 @@ public class RestaurantService {
 
     @Transactional
     public RestaurantTo create(RestaurantTo restaurantTo) {
-        return toTo(restaurantRepository.save(toModel(restaurantTo)), false);
+        return toTo(checkException(() -> restaurantRepository.save(toModel(restaurantTo)),
+                restaurantAlreadyExistsSupplier()), false);
     }
 
     @Transactional
     public void update(long id, RestaurantTo restaurantTo) {
         checkException(restaurantRepository.existsById(id), restaurantNotFoundSupplier(id));
-
-        Restaurant restaurant = toModel(restaurantTo);
-
-        restaurant.setId(id);
-        restaurantRepository.save(restaurant);
+        checkException(() -> restaurantRepository.save(toModel(id, restaurantTo)),
+                restaurantAlreadyExistsSupplier());
     }
 
     @Transactional

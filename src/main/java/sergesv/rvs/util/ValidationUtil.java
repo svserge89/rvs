@@ -1,11 +1,8 @@
 package sergesv.rvs.util;
 
 import org.springframework.dao.DataIntegrityViolationException;
-import sergesv.rvs.exception.BadRequestException;
 import sergesv.rvs.exception.EntityConflictException;
 import sergesv.rvs.exception.EntityNotFoundException;
-import sergesv.rvs.model.Restaurant;
-import sergesv.rvs.model.User;
 
 import javax.validation.ConstraintViolationException;
 import java.util.function.Supplier;
@@ -41,6 +38,10 @@ public final class ValidationUtil {
                 "User with the same nickname or email is already exists");
     }
 
+    public static Supplier<EntityConflictException> restaurantAlreadyExistsSupplier() {
+        return () -> new EntityConflictException("Restaurant with the same name is already exists");
+    }
+
     public static void checkException(boolean exists,
                                       Supplier<? extends RuntimeException> supplier) {
         if (!exists) {
@@ -57,18 +58,15 @@ public final class ValidationUtil {
 
             conflictException.initCause(exception);
             throw conflictException;
-        } catch (ConstraintViolationException exception) {
-            var constraintViolations = exception.getConstraintViolations();
-
-            String message = constraintViolations.stream()
-                    .map(constraintViolation ->
-                            String.format("Field '%s': '%s' - %s",
-                                    constraintViolation.getPropertyPath(),
-                                    constraintViolation.getInvalidValue(),
-                                    constraintViolation.getMessage()))
-                    .collect(Collectors.joining(". "));
-            throw new BadRequestException(message, exception);
         }
+    }
+
+    public static String getConstraintViolationsMessage(ConstraintViolationException exception) {
+        return exception.getConstraintViolations().stream()
+                .map(constraintViolation -> String.format("Field '%s': '%s' - %s",
+                        constraintViolation.getPropertyPath(),
+                        constraintViolation.getInvalidValue(), constraintViolation.getMessage()))
+                .collect(Collectors.joining(". "));
     }
 
     private ValidationUtil() {

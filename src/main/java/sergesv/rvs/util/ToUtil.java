@@ -20,7 +20,12 @@ import static sergesv.rvs.util.DateTimeUtil.getCurrentDate;
 public final class ToUtil {
     // From RestaurantTo to Restaurant
     public static Restaurant toModel(RestaurantTo restaurantTo) {
-        return new Restaurant(restaurantTo.getId(), restaurantTo.getName(), null);
+        return toModel(restaurantTo.getId(), restaurantTo);
+    }
+
+    // From RestaurantTo to Restaurant with id
+    public static Restaurant toModel(long id, RestaurantTo restaurantTo) {
+        return new Restaurant(id, restaurantTo.getName(), null);
     }
 
     // From MenuEntryTo to MenuEntry with restaurant
