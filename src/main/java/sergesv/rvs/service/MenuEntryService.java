@@ -3,14 +3,16 @@ package sergesv.rvs.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sergesv.rvs.model.Restaurant;
+import sergesv.rvs.model.MenuEntry;
 import sergesv.rvs.repository.MenuEntryRepository;
 import sergesv.rvs.repository.RestaurantRepository;
 import sergesv.rvs.util.ToUtil;
+import sergesv.rvs.util.ValidationUtil;
 import sergesv.rvs.web.to.MenuEntryTo;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.ToUtil.toModel;
@@ -32,31 +34,24 @@ public class MenuEntryService {
 
     public MenuEntryTo getOneByRestaurant(long id, long restaurantId) {
         return toTo(menuEntryRepository.findByIdAndRestaurantId(id, restaurantId)
-                .orElseThrow(menuEntryNotFoundSupplier(id, restaurantId)));
+                .orElseThrow(ValidationUtil.entityNotFoundSupplier(id, restaurantId)));
     }
 
     @Transactional
     public MenuEntryTo create(MenuEntryTo menuEntryTo, long restaurantId) {
-        checkException(restaurantRepository.existsById(restaurantId),
-                restaurantNotFoundSupplier(restaurantId));
-
-        Restaurant restaurant = restaurantRepository.getOne(restaurantId);
-
-        return toTo(checkException(() -> menuEntryRepository.save(toModel(menuEntryTo, restaurant)),
-                menuEntryAlreadyExistsSupplier()));
+        return toTo(checkExistsException(() -> menuEntryRepository.save(
+                toModel(menuEntryTo, restaurantRepository.getOne(restaurantId))), MenuEntry.class));
     }
 
     @Transactional
     public void update(long id, MenuEntryTo menuEntryTo, long restaurantId) {
-        checkException(restaurantRepository.existsById(restaurantId),
-                restaurantNotFoundSupplier(restaurantId));
-        checkException(menuEntryRepository.existsByIdAndRestaurantId(id, restaurantId),
-                menuEntryNotFoundSupplier(id, restaurantId));
+        MenuEntry menuEntry = menuEntryRepository.findByIdAndRestaurantId(id, restaurantId)
+                .orElseThrow(entityNotFoundSupplier(id, restaurantId));
+        Optional.ofNullable(menuEntryTo.getName()).ifPresent(menuEntry::setName);
+        Optional.ofNullable(menuEntryTo.getPrice()).ifPresent(menuEntry::setPrice);
+        Optional.ofNullable(menuEntryTo.getDate()).ifPresent(menuEntry::setDate);
 
-        Restaurant restaurant = restaurantRepository.getOne(restaurantId);
-
-        checkException(() -> menuEntryRepository.save(toModel(id, menuEntryTo, restaurant)),
-                menuEntryAlreadyExistsSupplier());
+        menuEntryRepository.save(menuEntry);
     }
 
     @Transactional

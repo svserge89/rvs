@@ -7,6 +7,8 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.Set;
 
+import static sergesv.rvs.util.ValidationUtil.CHECK_EMAIL_REGEXP;
+
 @Entity
 @Table(name = "user")
 @Getter
@@ -15,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class User {
+public class User implements EntityWithId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -32,7 +34,8 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Email(regexp = "^[A-Za-z0-9._%\\-+!#$&/=?^|~]+@[A-Za-z0-9.-]+[.][A-Za-z]+$")
+    @NotNull
+    @Email(regexp = CHECK_EMAIL_REGEXP)
     @Column(name = "email")
     private String email;
 

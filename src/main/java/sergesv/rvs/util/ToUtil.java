@@ -20,42 +20,27 @@ import static sergesv.rvs.util.DateTimeUtil.getCurrentDate;
 public final class ToUtil {
     // From RestaurantTo to Restaurant
     public static Restaurant toModel(RestaurantTo restaurantTo) {
-        return toModel(restaurantTo.getId(), restaurantTo);
-    }
-
-    // From RestaurantTo to Restaurant with id
-    public static Restaurant toModel(long id, RestaurantTo restaurantTo) {
-        return new Restaurant(id, restaurantTo.getName(), null);
+        return new Restaurant(0, restaurantTo.getName(), null);
     }
 
     // From MenuEntryTo to MenuEntry with restaurant
     public static MenuEntry toModel(MenuEntryTo menuEntryTo, Restaurant restaurant) {
-        return toModel(menuEntryTo.getId(), menuEntryTo, restaurant);
-    }
-
-    // From MenuEntryTo to MenuEntry with id and restaurant
-    public static MenuEntry toModel(long id, MenuEntryTo menuEntryTo, Restaurant restaurant) {
-        return new MenuEntry(id, menuEntryTo.getName(), menuEntryTo.getPrice(),
+        return new MenuEntry(0, menuEntryTo.getName(), menuEntryTo.getPrice(),
                 Optional.ofNullable(menuEntryTo.getDate()).orElse(getCurrentDate()), restaurant);
     }
 
     // From UserTo to User
     public static User toModel(UserTo userTo, PasswordEncoder passwordEncoder) {
-        return toModel(userTo.getId(), userTo, passwordEncoder);
-    }
-
-    // From UserTo to User with id
-    public static User toModel(long id, UserTo userTo, PasswordEncoder passwordEncoder) {
         Set<Role> roles = new HashSet<>();
 
-        if (userTo.isAdmin()) {
+        if (Optional.ofNullable(userTo.getAdmin()).orElse(false)) {
             roles.add(Role.ROLE_ADMIN);
         }
-        if (userTo.isRegular()) {
+        if (Optional.ofNullable(userTo.getRegular()).orElse(false)) {
             roles.add(Role.ROLE_USER);
         }
 
-        return new User(id, userTo.getNickName(), userTo.getFirstName(),
+        return new User(0, userTo.getNickName(), userTo.getFirstName(),
                 userTo.getLastName(), userTo.getEmail(),
                 passwordEncoder.encode(userTo.getPassword()), roles);
     }

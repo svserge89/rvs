@@ -7,6 +7,7 @@ import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.RollbackException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
@@ -39,5 +40,12 @@ public class RestExceptionHandler {
             throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value(),
                 getConstraintViolationsMessage(exception));
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public void handleEntityNotFoundException(HttpServletResponse response,
+                                              EntityNotFoundException exception)
+            throws IOException {
+        response.sendError(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
 }

@@ -16,7 +16,7 @@ public class MenuEntryTo {
 
     private final String name;
 
-    private final double price;
+    private final Double price;
 
     private final LocalDate date;
 }

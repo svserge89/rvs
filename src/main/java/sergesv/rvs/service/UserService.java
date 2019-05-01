@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sergesv.rvs.model.User;
+import sergesv.rvs.model.security.Role;
 import sergesv.rvs.repository.UserRepository;
 import sergesv.rvs.util.ToUtil;
 import sergesv.rvs.web.to.UserTo;
@@ -31,7 +32,8 @@ public class UserService {
     }
 
     public UserTo getOne(long id) {
-        return toTo(userRepository.findById(id).orElseThrow(userNotFoundSupplier(id)));
+        return toTo(userRepository.findById(id)
+                .orElseThrow(entityNotFoundSupplier(User.class, id)));
     }
 
     public Optional<User> findByUserName(String userName) {
@@ -42,15 +44,30 @@ public class UserService {
 
     @Transactional
     public UserTo create(UserTo userTo) {
-        return toTo(checkException(() -> userRepository.save(toModel(userTo, passwordEncoder)),
-                userAlreadyExistsSupplier()));
+        checkPassword(userTo);
+
+        return toTo(checkExistsException(
+                () -> userRepository.save(toModel(userTo, passwordEncoder)), User.class));
     }
 
     @Transactional
     public void update(long id, UserTo userTo) {
-        checkException(userRepository.existsById(id), userNotFoundSupplier(id));
-        checkException(() -> userRepository.save(toModel(id, userTo, passwordEncoder)),
-                userAlreadyExistsSupplier());
+        User user = userRepository.findById(id)
+                .orElseThrow(entityNotFoundSupplier(User.class, id));
+
+        Optional.ofNullable(userTo.getNickName()).ifPresent(user::setNickName);
+        Optional.ofNullable(userTo.getFirstName()).ifPresent(user::setFirstName);
+        Optional.ofNullable(userTo.getLastName()).ifPresent(user::setLastName);
+        Optional.ofNullable(userTo.getEmail()).ifPresent(user::setEmail);
+        Optional.ofNullable(userTo.getPassword())
+                .ifPresent(password -> user.setEncryptedPassword(
+                        passwordEncoder.encode(checkPassword(userTo))));
+        Optional.ofNullable(userTo.getAdmin())
+                .ifPresent(enable -> updateUserRole(user, Role.ROLE_ADMIN, enable));
+        Optional.ofNullable(userTo.getRegular())
+                .ifPresent(enable -> updateUserRole(user, Role.ROLE_USER, enable));
+
+        userRepository.save(user);
     }
 
     @Transactional
@@ -63,5 +80,13 @@ public class UserService {
     @Transactional
     public void deleteAll(long authUserId) {
         userRepository.deleteAllByIdNot(authUserId);
+    }
+
+    private void updateUserRole(User user, Role role, boolean enable) {
+        if (enable) {
+            user.getRoles().add(role);
+        } else {
+            user.getRoles().remove(role);
+        }
     }
 }

@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class MenuEntry {
+public class MenuEntry implements EntityWithId {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

@@ -26,7 +26,7 @@ public class UserTo {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String password;
 
-    private final boolean admin;
+    private final Boolean admin;
 
-    private final boolean regular;
+    private final Boolean regular;
 }

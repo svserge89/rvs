@@ -3,9 +3,6 @@ package sergesv.rvs.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sergesv.rvs.exception.EntityConflictException;
-import sergesv.rvs.model.Restaurant;
-import sergesv.rvs.model.User;
 import sergesv.rvs.model.VoteEntry;
 import sergesv.rvs.repository.RestaurantRepository;
 import sergesv.rvs.repository.UserRepository;
@@ -41,35 +38,31 @@ public class VoteEntryService {
 
     @Transactional
     public VoteEntryTo create(long userId, long restaurantId) {
-        checkException(userRepository.existsById(userId), userNotFoundSupplier(userId));
-        checkException(restaurantRepository.existsById(restaurantId),
-                restaurantNotFoundSupplier(restaurantId));
-
         LocalDate currentDate = getCurrentDate();
         LocalTime currentTime = getCurrentTime();
 
-        if (voteEntryRepository.existsByUserIdAndDate(userId, currentDate)) {
+        var voteEntryOptional = voteEntryRepository.findByUserIdAndDate(userId, currentDate);
+
+        if (voteEntryOptional.isPresent()) {
             checkException(checkTime(currentTime), voteAgainSupplier());
-            voteEntryRepository.deleteByUserIdAndDate(userId, currentDate);
+            VoteEntry voteEntry = voteEntryOptional.get();
+            voteEntry.setDate(currentDate);
+            voteEntry.setTime(currentTime);
+            voteEntry.setRestaurant(restaurantRepository.getOne(restaurantId));
+
+            return toTo(voteEntryRepository.save(voteEntry));
         }
 
-        return toTo(saveVote(userId, restaurantId, currentDate, currentTime));
+        return toTo(voteEntryRepository.save(new VoteEntry(0,
+                userRepository.getOne(userId), restaurantRepository.getOne(restaurantId),
+                currentDate, currentTime)));
     }
 
     @Transactional
     public void delete(long userId, long restaurantId) {
-        if (checkTime(getCurrentTime())) {
-            voteEntryRepository.deleteByUserIdAndRestaurantIdAndDate(userId, restaurantId,
-                    getCurrentDate());
-        }
-    }
-
-    private VoteEntry saveVote(long userId, long restaurantId, LocalDate date, LocalTime time) {
-        User user = userRepository.getOne(userId);
-        Restaurant restaurant = restaurantRepository.getOne(restaurantId);
-        VoteEntry voteEntry = new VoteEntry(0, user, restaurant, date, time);
-
-        return voteEntryRepository.save(voteEntry);
+        checkException(checkTime(getCurrentTime()), voteAgainSupplier());
+        voteEntryRepository.deleteByUserIdAndRestaurantIdAndDate(userId, restaurantId,
+                getCurrentDate());
     }
 
     private static List<VoteEntryTo> toVoteEntryTos(List<VoteEntry> voteEntries) {

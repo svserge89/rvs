@@ -11,6 +11,7 @@ import sergesv.rvs.web.to.RestaurantTo;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -69,19 +70,19 @@ public class RestaurantService {
 
     public RestaurantTo getOne(long id) {
         return toTo(restaurantRepository.findById(id)
-                .orElseThrow(restaurantNotFoundSupplier(id)), false);
+                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id)), false);
     }
 
     public RestaurantTo getOneWithRating(long id) {
         Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(restaurantNotFoundSupplier(id));
+                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, false, voteEntryRepository.countByRestaurant(restaurant));
     }
 
     public RestaurantTo getOneWithRating(long id, LocalDate date) {
         Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(restaurantNotFoundSupplier(id));
+                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, false,
                 voteEntryRepository.countByRestaurantAndDateEquals(restaurant, date));
@@ -89,7 +90,7 @@ public class RestaurantService {
 
     public RestaurantTo getOneWithRating(long id, LocalDate startDate, LocalDate endDate) {
         Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(restaurantNotFoundSupplier(id));
+                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, false, voteEntryRepository.countByRestaurantAndDateBetween(
                 restaurant, startDate, endDate));
@@ -97,19 +98,19 @@ public class RestaurantService {
 
     public RestaurantTo getOneWithMenu(long id, LocalDate menuDate) {
         return toTo(restaurantRepository.findByIdWithMenu(id, menuDate)
-                .orElseThrow(restaurantNotFoundSupplier(id)), true);
+                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id)), true);
     }
 
     public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate) {
         Restaurant restaurant = restaurantRepository.findByIdWithMenu(id, menuDate)
-                .orElseThrow(restaurantNotFoundSupplier(id));
+                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, true, voteEntryRepository.countByRestaurant(restaurant));
     }
 
     public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate, LocalDate ratingDate) {
         Restaurant restaurant = restaurantRepository.findByIdWithMenu(id, menuDate)
-                .orElseThrow(restaurantNotFoundSupplier(id));
+                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, true,
                 voteEntryRepository.countByRestaurantAndDateEquals(restaurant, ratingDate));
@@ -119,7 +120,7 @@ public class RestaurantService {
                                                 LocalDate ratingDateStart,
                                                 LocalDate ratingDateEnd) {
         Restaurant restaurant = restaurantRepository.findByIdWithMenu(id, menuDate)
-                .orElseThrow(restaurantNotFoundSupplier(id));
+                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, true, voteEntryRepository.countByRestaurantAndDateBetween(
                 restaurant, ratingDateStart, ratingDateEnd));
@@ -140,15 +141,18 @@ public class RestaurantService {
 
     @Transactional
     public RestaurantTo create(RestaurantTo restaurantTo) {
-        return toTo(checkException(() -> restaurantRepository.save(toModel(restaurantTo)),
-                restaurantAlreadyExistsSupplier()), false);
+        return toTo(checkExistsException(
+                () -> restaurantRepository.save(toModel(restaurantTo)), Restaurant.class),
+                false);
     }
 
     @Transactional
     public void update(long id, RestaurantTo restaurantTo) {
-        checkException(restaurantRepository.existsById(id), restaurantNotFoundSupplier(id));
-        checkException(() -> restaurantRepository.save(toModel(id, restaurantTo)),
-                restaurantAlreadyExistsSupplier());
+        Restaurant restaurant = restaurantRepository.findById(id)
+                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
+
+        Optional.ofNullable(restaurantTo.getName()).ifPresent(restaurant::setName);
+        restaurantRepository.save(restaurant);
     }
 
     @Transactional

@@ -26,9 +26,6 @@ import java.time.LocalTime;
                     "FROM VoteEntry voteEntry " +
                     "WHERE voteEntry.date BETWEEN :dateStart AND :dateEnd " +
                     "GROUP BY voteEntry.restaurant"),
-        @NamedQuery(name = VoteEntry.DELETE_BY_USER_ID_AND_DATE,
-            query = "DELETE FROM VoteEntry voteEntry " +
-                    "WHERE voteEntry.user.id = :userId AND voteEntry.date = :date"),
         @NamedQuery(name = VoteEntry.DELETE_BY_USER_ID_AND_RESTAURANT_ID_AND_DATE,
             query = "DELETE FROM VoteEntry voteEntry " +
                     "WHERE voteEntry.user.id = :userId " +
@@ -42,12 +39,11 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class VoteEntry {
+public class VoteEntry implements EntityWithId {
     public static final String GET_RATING_PAIRS = "VoteEntry.getRatingPairs";
     public static final String GET_RATING_PAIRS_BY_DATE = "VoteEntry.getRatingPairsByDate";
     public static final String GET_RATING_PAIRS_BY_DATE_BETWEEN =
             "VoteEntry.getRatingPairsByDateBetween";
-    public static final String DELETE_BY_USER_ID_AND_DATE = "VoteEntry.deleteByUserIdAndDate";
     public static final String DELETE_BY_USER_ID_AND_RESTAURANT_ID_AND_DATE =
             "VoteEntry.deleteByUserIdAndRestaurantIdAndDate";
 

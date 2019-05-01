@@ -24,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Restaurant {
+public class Restaurant implements EntityWithId {
     public static final String FIND_ALL_WITH_MENU = "Restaurant.findAllWithMenu";
     public static final String FIND_ONE_WITH_MENU = "Restaurant.findByIdWithMenu";
 

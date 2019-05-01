@@ -10,6 +10,7 @@ import sergesv.rvs.model.VoteEntry;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -42,11 +43,7 @@ public interface VoteEntryRepository extends JpaRepository<VoteEntry, Long> {
     List<VoteEntry> findAllByUserIdAndDateBetween(Long userId, LocalDate dateStart,
                                                   LocalDate dateEnd);
 
-    boolean existsByUserIdAndDate(Long userId, LocalDate date);
-
-    @Modifying
-    @Query(name = VoteEntry.DELETE_BY_USER_ID_AND_DATE)
-    void deleteByUserIdAndDate(Long userId, LocalDate date);
+    Optional<VoteEntry> findByUserIdAndDate(Long userId, LocalDate date);
 
     @Modifying
     @Query(name = VoteEntry.DELETE_BY_USER_ID_AND_RESTAURANT_ID_AND_DATE)
