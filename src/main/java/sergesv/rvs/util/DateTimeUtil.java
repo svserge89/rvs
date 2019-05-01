@@ -10,7 +10,7 @@ public final class DateTimeUtil {
     static final LocalTime MAX_CHANGE_TIME = LocalTime.of(11, 0);
 
     public static boolean checkTime(LocalTime localTime) {
-        return localTime.getSecond() <= MAX_CHANGE_TIME.getSecond();
+        return localTime.toSecondOfDay() <= MAX_CHANGE_TIME.toSecondOfDay();
     }
 
     public static LocalDate getCurrentDate() {
