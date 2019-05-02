@@ -48,4 +48,11 @@ public class RestExceptionHandler {
             throws IOException {
         response.sendError(HttpStatus.NOT_FOUND.value(), exception.getMessage());
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public void handleIllegalArgumentException(HttpServletResponse response,
+                                               IllegalArgumentException exception)
+            throws IOException{
+       response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
 }

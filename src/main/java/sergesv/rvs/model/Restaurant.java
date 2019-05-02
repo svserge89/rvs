@@ -10,12 +10,16 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = Restaurant.FIND_ALL_WITH_MENU,
             query = "SELECT DISTINCT restaurant FROM Restaurant restaurant " +
-                    "JOIN FETCH restaurant.menuEntries menuEntry " +
+                    "INNER JOIN FETCH restaurant.menuEntries menuEntry " +
                     "WHERE menuEntry.date = :menuDate"),
         @NamedQuery(name = Restaurant.FIND_ONE_WITH_MENU,
             query = "SELECT restaurant FROM Restaurant restaurant " +
-                    "JOIN FETCH restaurant.menuEntries menuEntry " +
-                    "WHERE restaurant.id = :id AND menuEntry.date = :menuDate")
+                    "INNER JOIN FETCH restaurant.menuEntries menuEntry " +
+                    "WHERE restaurant.id = :id AND menuEntry.date = :menuDate"),
+        @NamedQuery(name = Restaurant.COUNT_ALL_WITH_MENU,
+            query = "SELECT COUNT(DISTINCT restaurant) FROM Restaurant restaurant " +
+                    "INNER JOIN restaurant.menuEntries menuEntry " +
+                    "WHERE menuEntry.date = :menuDate")
 })
 @Table(name = "restaurant")
 @Getter
@@ -27,6 +31,7 @@ import java.util.List;
 public class Restaurant implements EntityWithId {
     public static final String FIND_ALL_WITH_MENU = "Restaurant.findAllWithMenu";
     public static final String FIND_ONE_WITH_MENU = "Restaurant.findByIdWithMenu";
+    public static final String COUNT_ALL_WITH_MENU = "Restaurant.countAllWithMenu";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,8 +1,10 @@
 package sergesv.rvs.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import sergesv.rvs.RvsPropertyResolver;
 import sergesv.rvs.service.MenuEntryService;
 import sergesv.rvs.service.RestaurantService;
 import sergesv.rvs.web.to.MenuEntryTo;
@@ -14,6 +16,7 @@ import java.util.Optional;
 
 import static org.springframework.format.annotation.DateTimeFormat.*;
 import static sergesv.rvs.util.DateTimeUtil.*;
+import static sergesv.rvs.util.web.ControllerUtil.getPageable;
 import static sergesv.rvs.util.web.ControllerUtil.resolveParams;
 
 @RestController
@@ -22,6 +25,7 @@ import static sergesv.rvs.util.web.ControllerUtil.resolveParams;
 public class PublicRestaurantController {
     private final RestaurantService restaurantService;
     private final MenuEntryService menuEntryService;
+    private final RvsPropertyResolver propertyResolver;
 
     @GetMapping
     public List<RestaurantTo> getAll(
@@ -30,32 +34,37 @@ public class PublicRestaurantController {
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDate,
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateStart,
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateEnd,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate) {
+            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        Pageable pageable = getPageable(page, size, propertyResolver);
+
         switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
             case MENU:
                 return restaurantService.getAllWithMenu(
-                        Optional.ofNullable(menuDate).orElse(getCurrentDate()));
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), pageable);
             case RATING:
-                return restaurantService.getAllWithRating();
+                return restaurantService.getAllWithRating(pageable);
             case RATING_BY_DATE:
-                return restaurantService.getAllWithRating(ratingDate);
+                return restaurantService.getAllWithRating(ratingDate, pageable);
             case RATING_BETWEEN_DATES:
                 return restaurantService.getAllWithRating(
                         Optional.ofNullable(ratingDateStart).orElse(MIN_DATE),
-                        Optional.ofNullable(ratingDateEnd).orElse(MAX_DATE));
+                        Optional.ofNullable(ratingDateEnd).orElse(MAX_DATE), pageable);
             case MENU_AND_RATING:
                 return restaurantService.getAllWithMenuAndRating(
-                        Optional.ofNullable(menuDate).orElse(getCurrentDate()));
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), pageable);
             case MENU_AND_RATING_BY_DATE:
                 return restaurantService.getAllWithMenuAndRating(
-                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), ratingDate);
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), ratingDate,
+                        pageable);
             case MENU_AND_RATING_BETWEEN_DATES:
                 return restaurantService.getAllWithMenuAndRating(
                         Optional.ofNullable(menuDate).orElse(getCurrentDate()),
                         Optional.ofNullable(ratingDateStart).orElse(MIN_DATE),
-                        Optional.ofNullable(ratingDateEnd).orElse(MAX_DATE));
+                        Optional.ofNullable(ratingDateEnd).orElse(MAX_DATE), pageable);
             default:
-                return restaurantService.getAll();
+                return restaurantService.getAll(pageable);
         }
     }
 

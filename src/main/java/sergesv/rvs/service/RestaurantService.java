@@ -1,6 +1,7 @@
 package sergesv.rvs.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sergesv.rvs.model.Restaurant;
@@ -28,42 +29,49 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final VoteEntryRepository voteEntryRepository;
 
-    public List<RestaurantTo> getAll() {
-        return toRestaurantTos(restaurantRepository.findAll(), false);
-    }
-
-    public List<RestaurantTo> getAllWithRating() {
-        return toRestaurantTos(restaurantRepository.findAll(), voteEntryRepository.getRatingPairs(),
+    public List<RestaurantTo> getAll(Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAll(pageable).getContent(),
                 false);
     }
 
-    public List<RestaurantTo> getAllWithRating(LocalDate date) {
-        return toRestaurantTos(restaurantRepository.findAll(),
+    public List<RestaurantTo> getAllWithRating(Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAll(pageable).getContent(),
+                voteEntryRepository.getRatingPairs(), false);
+    }
+
+    public List<RestaurantTo> getAllWithRating(LocalDate date, Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAll(pageable).getContent(),
                 voteEntryRepository.getRatingPairsByDate(date), false);
     }
 
-    public List<RestaurantTo> getAllWithRating(LocalDate dateStart, LocalDate dateEnd) {
-        return toRestaurantTos(restaurantRepository.findAll(),
+    public List<RestaurantTo> getAllWithRating(LocalDate dateStart, LocalDate dateEnd,
+                                               Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAll(pageable).getContent(),
                 voteEntryRepository.getRatingPairsByDateBetween(dateStart, dateEnd), false);
     }
 
-    public List<RestaurantTo> getAllWithMenu(LocalDate menuDate) {
-        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate), true);
+    public List<RestaurantTo> getAllWithMenu(LocalDate menuDate, Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate,
+                pageable).getContent(), true);
     }
 
-    public List<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate) {
-        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate),
-                voteEntryRepository.getRatingPairs(), true);
+    public List<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate,
+                pageable).getContent(), voteEntryRepository.getRatingPairs(),
+                true);
     }
 
-    public List<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, LocalDate ratingDate) {
-        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate),
+    public List<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, LocalDate ratingDate,
+                                                      Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate,
+                pageable).getContent(),
                 voteEntryRepository.getRatingPairsByDate(ratingDate), true);
     }
 
     public List<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, LocalDate ratingDateStart,
-                                                      LocalDate ratingDateEnd) {
-        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate),
+                                                      LocalDate ratingDateEnd, Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate,
+                pageable).getContent(),
                 voteEntryRepository.getRatingPairsByDateBetween(ratingDateStart, ratingDateEnd),
                 true);
     }
