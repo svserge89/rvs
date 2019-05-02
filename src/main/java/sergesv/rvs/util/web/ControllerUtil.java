@@ -66,14 +66,8 @@ public final class ControllerUtil {
     }
 
     public static Pageable getPageable(Integer page, Integer size, int defaultPageSize) {
-        var pageOptional = Optional.ofNullable(page);
-        var sizeOptional = Optional.ofNullable(size);
-
-        if (pageOptional.isEmpty() && sizeOptional.isEmpty()) {
-            return Pageable.unpaged();
-        }
-
-        return PageRequest.of(pageOptional.orElse(0), sizeOptional.orElse(defaultPageSize));
+        return PageRequest.of(Optional.ofNullable(page).orElse(0),
+                Optional.ofNullable(size).orElse(defaultPageSize));
     }
 
     private ControllerUtil() {

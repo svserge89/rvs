@@ -89,12 +89,8 @@ public final class ToUtil {
 
     // From Page<Entity> to PageTo<EntityTo>
     public static <T, E> PageTo<T> toTo(Page<E> page, Function<Page<E>, List<T>> function) {
-        if (page.getPageable().isUnpaged()) {
-            return new PageTo<>(function.apply(page), null, null, null);
-        } else {
-            return new PageTo<>(function.apply(page), page.getNumber(), page.getSize(),
-                    page.getTotalPages());
-        }
+        return new PageTo<>(function.apply(page), page.getNumber(), page.getSize(),
+                page.getTotalPages());
     }
 
     private ToUtil() {
