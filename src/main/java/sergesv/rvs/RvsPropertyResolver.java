@@ -15,6 +15,7 @@ import static org.springframework.format.annotation.DateTimeFormat.*;
 @Setter
 public class RvsPropertyResolver {
     private static final int DEFAULT_RESTAURANT_PAGE_SIZE = 20;
+    private static final int DEFAULT_MENU_ENTRY_PAGE_SIZE = 10;
     private static final LocalTime DEFAULT_MAX_VOTE_TIME = LocalTime.of(11, 0);
 
     @DateTimeFormat(iso = ISO.TIME)
@@ -22,11 +23,17 @@ public class RvsPropertyResolver {
 
     private int restaurantPageSize;
 
+    private int menuEntryPageSize;
+
     public LocalTime getMaxVoteTime() {
         return Optional.ofNullable(maxVoteTime).orElse(DEFAULT_MAX_VOTE_TIME);
     }
 
     public int getRestaurantPageSize() {
         return restaurantPageSize == 0 ? DEFAULT_RESTAURANT_PAGE_SIZE : restaurantPageSize;
+    }
+
+    public int getMenuEntryPageSize() {
+        return menuEntryPageSize == 0 ? DEFAULT_MENU_ENTRY_PAGE_SIZE : menuEntryPageSize;
     }
 }

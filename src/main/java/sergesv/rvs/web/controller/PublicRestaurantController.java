@@ -37,7 +37,7 @@ public class PublicRestaurantController {
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
-        Pageable pageable = getPageable(page, size, propertyResolver);
+        Pageable pageable = getPageable(page, size, propertyResolver.getRestaurantPageSize());
 
         switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
             case MENU:
@@ -74,7 +74,8 @@ public class PublicRestaurantController {
             @RequestParam(required = false) Boolean rating,
             @RequestParam(required = false) Boolean menu,
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateStart,
+            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE)
+                    LocalDate ratingDateStart,
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateEnd,
             @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate) {
         switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
@@ -107,9 +108,14 @@ public class PublicRestaurantController {
 
     @GetMapping("/{restaurantId}/menu")
     public List<MenuEntryTo> getMenu(@PathVariable long restaurantId,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate) {
+                                     @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE)
+                                             LocalDate menuDate,
+                                     @RequestParam(required = false) Integer page,
+                                     @RequestParam(required = false) Integer size) {
+        Pageable pageable = getPageable(page, size, propertyResolver.getMenuEntryPageSize());
+
         return menuEntryService.getAllByRestaurant(restaurantId,
-                Optional.ofNullable(menuDate).orElse(getCurrentDate()));
+                Optional.ofNullable(menuDate).orElse(getCurrentDate()), pageable);
     }
 
     @GetMapping("/{restaurantId}/menu/{id}")

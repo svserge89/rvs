@@ -2,7 +2,6 @@ package sergesv.rvs.util.web;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import sergesv.rvs.RvsPropertyResolver;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -66,8 +65,7 @@ public final class ControllerUtil {
         return resolveParams(null, dateStart, dateEnd);
     }
 
-    public static Pageable getPageable(Integer page, Integer size,
-                                       RvsPropertyResolver propertyResolver) {
+    public static Pageable getPageable(Integer page, Integer size, int defaultPageSize) {
         var pageOptional = Optional.ofNullable(page);
         var sizeOptional = Optional.ofNullable(size);
 
@@ -75,10 +73,10 @@ public final class ControllerUtil {
             return Pageable.unpaged();
         }
 
-        int pageSize = sizeOptional.orElse(propertyResolver.getRestaurantPageSize());
+        int pageSize = sizeOptional.orElse(defaultPageSize);
 
         return PageRequest.of(pageOptional.orElse(0),
-                pageSize > 0 ? pageSize : propertyResolver.getRestaurantPageSize());
+                pageSize > 0 ? pageSize : defaultPageSize);
     }
 
     private ControllerUtil() {

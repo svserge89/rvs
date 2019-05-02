@@ -1,6 +1,7 @@
 package sergesv.rvs.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sergesv.rvs.model.MenuEntry;
@@ -25,8 +26,9 @@ public class MenuEntryService {
     private final MenuEntryRepository menuEntryRepository;
     private final RestaurantRepository restaurantRepository;
 
-    public List<MenuEntryTo> getAllByRestaurant(long restaurantId, LocalDate date) {
-        return menuEntryRepository.findAllByRestaurantIdAndDate(restaurantId, date).stream()
+    public List<MenuEntryTo> getAllByRestaurant(long restaurantId, LocalDate date,
+                                                Pageable pageable) {
+        return menuEntryRepository.findAllByRestaurantIdAndDate(restaurantId, date, pageable).get()
                 .map(ToUtil::toTo)
                 .collect(Collectors.toList());
     }
