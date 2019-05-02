@@ -10,16 +10,17 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = Restaurant.FIND_ALL_WITH_MENU,
             query = "SELECT DISTINCT restaurant FROM Restaurant restaurant " +
-                    "INNER JOIN FETCH restaurant.menuEntries menuEntry " +
-                    "WHERE menuEntry.date = :menuDate"),
+                    "LEFT JOIN FETCH restaurant.menuEntries menuEntry " +
+                    "WHERE menuEntry.date IS NULL OR menuEntry.date = :menuDate"),
         @NamedQuery(name = Restaurant.FIND_ONE_WITH_MENU,
             query = "SELECT restaurant FROM Restaurant restaurant " +
-                    "INNER JOIN FETCH restaurant.menuEntries menuEntry " +
-                    "WHERE restaurant.id = :id AND menuEntry.date = :menuDate"),
+                    "LEFT JOIN FETCH restaurant.menuEntries menuEntry " +
+                    "WHERE restaurant.id = :id " +
+                        "AND (menuEntry.date IS NULL OR menuEntry.date = :menuDate)"),
         @NamedQuery(name = Restaurant.COUNT_ALL_WITH_MENU,
             query = "SELECT COUNT(DISTINCT restaurant) FROM Restaurant restaurant " +
-                    "INNER JOIN restaurant.menuEntries menuEntry " +
-                    "WHERE menuEntry.date = :menuDate")
+                    "LEFT JOIN restaurant.menuEntries menuEntry " +
+                    "WHERE menuEntry.date IS NULL OR menuEntry.date = :menuDate")
 })
 @Table(name = "restaurant")
 @Getter

@@ -1,5 +1,7 @@
 package sergesv.rvs.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,7 +11,6 @@ import sergesv.rvs.model.RatingPair;
 import sergesv.rvs.model.VoteEntry;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -38,10 +39,13 @@ public interface VoteEntryRepository extends JpaRepository<VoteEntry, Long> {
     @Query(name = VoteEntry.GET_RATING_PAIRS_BY_DATE_BETWEEN)
     Set<RatingPair> getRatingPairsByDateBetween(LocalDate dateStart, LocalDate dateEnd);
 
-    List<VoteEntry> findAllByUserId(Long userId);
+    @Query(name = VoteEntry.FIND_ALL_BY_USER_ID, countName = VoteEntry.COUNT_ALL_BY_USER_ID)
+    Page<VoteEntry> findAllByUserId(Long userId, Pageable pageable);
 
-    List<VoteEntry> findAllByUserIdAndDateBetween(Long userId, LocalDate dateStart,
-                                                  LocalDate dateEnd);
+    @Query(name = VoteEntry.FIND_ALL_BY_USER_ID_AND_DATE_BETWEEN,
+            countName = VoteEntry.COUNT_ALL_BY_USER_ID_AND_DATE_BETWEEN)
+    Page<VoteEntry> findAllByUserIdAndDateBetween(Long userId, LocalDate dateStart,
+                                                  LocalDate dateEnd, Pageable pageable);
 
     Optional<VoteEntry> findByUserIdAndDate(Long userId, LocalDate date);
 

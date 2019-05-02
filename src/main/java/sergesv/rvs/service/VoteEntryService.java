@@ -1,6 +1,7 @@
 package sergesv.rvs.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sergesv.rvs.RvsPropertyResolver;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static sergesv.rvs.util.DateTimeUtil.*;
 import static sergesv.rvs.util.ToUtil.toTo;
@@ -30,18 +32,18 @@ public class VoteEntryService {
 
     private final RvsPropertyResolver propertyResolver;
 
-    public List<VoteEntryTo> getAll(long userId) {
-        return toVoteEntryTos(voteEntryRepository.findAllByUserId(userId));
+    public List<VoteEntryTo> getAll(long userId, Pageable pageable) {
+        return toVoteEntryTos(voteEntryRepository.findAllByUserId(userId, pageable).get());
     }
 
-    public List<VoteEntryTo> getAll(long userId, LocalDate dateStart, LocalDate dateEnd) {
+    public List<VoteEntryTo> getAll(long userId, LocalDate dateStart, LocalDate dateEnd,
+                                    Pageable pageable) {
         return toVoteEntryTos(voteEntryRepository.findAllByUserIdAndDateBetween(userId, dateStart,
-                dateEnd));
+                dateEnd, pageable).get());
     }
 
     @Transactional
     public VoteEntryTo create(long userId, long restaurantId) {
-        System.out.println(propertyResolver.getMaxVoteTime());
         LocalDate currentDate = getCurrentDate();
         LocalTime currentTime = getCurrentTime();
 
@@ -71,8 +73,8 @@ public class VoteEntryService {
                 getCurrentDate());
     }
 
-    private static List<VoteEntryTo> toVoteEntryTos(List<VoteEntry> voteEntries) {
-        return voteEntries.stream()
+    private static List<VoteEntryTo> toVoteEntryTos(Stream<VoteEntry> voteEntryStream) {
+        return voteEntryStream
                 .map(ToUtil::toTo)
                 .collect(Collectors.toList());
     }

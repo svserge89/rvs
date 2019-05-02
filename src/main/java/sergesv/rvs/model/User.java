@@ -10,6 +10,8 @@ import java.util.Set;
 import static sergesv.rvs.util.ValidationUtil.CHECK_EMAIL_REGEXP;
 
 @Entity
+@NamedEntityGraphs(@NamedEntityGraph(name = User.GRAPH_WITH_ROLES,
+        attributeNodes = @NamedAttributeNode("roles")))
 @Table(name = "user")
 @Getter
 @Setter
@@ -18,6 +20,8 @@ import static sergesv.rvs.util.ValidationUtil.CHECK_EMAIL_REGEXP;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements EntityWithId {
+    public static final String GRAPH_WITH_ROLES = "User.graphWithRoles";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -46,6 +50,6 @@ public class User implements EntityWithId {
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     private Set<Role> roles;
 }

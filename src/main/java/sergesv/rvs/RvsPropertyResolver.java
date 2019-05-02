@@ -17,6 +17,7 @@ public class RvsPropertyResolver {
     private static final int DEFAULT_RESTAURANT_PAGE_SIZE = 10;
     private static final int DEFAULT_MENU_ENTRY_PAGE_SIZE = 10;
     private static final int DEFAULT_USER_PAGE_SIZE = 10;
+    private static final int DEFAULT_VOTE_ENTRY_PAGE_SIZE = 10;
     private static final LocalTime DEFAULT_MAX_VOTE_TIME = LocalTime.of(11, 0);
 
     @DateTimeFormat(iso = ISO.TIME)
@@ -27,6 +28,8 @@ public class RvsPropertyResolver {
     private int menuEntryPageSize;
 
     private int userPageSize;
+
+    private int voteEntryPageSize;
 
     public LocalTime getMaxVoteTime() {
         return Optional.ofNullable(maxVoteTime).orElse(DEFAULT_MAX_VOTE_TIME);
@@ -42,5 +45,9 @@ public class RvsPropertyResolver {
 
     public int getUserPageSize() {
         return userPageSize == 0 ? DEFAULT_USER_PAGE_SIZE : userPageSize;
+    }
+
+    public int getVoteEntryPageSize() {
+        return voteEntryPageSize == 0 ? DEFAULT_VOTE_ENTRY_PAGE_SIZE : voteEntryPageSize;
     }
 }
