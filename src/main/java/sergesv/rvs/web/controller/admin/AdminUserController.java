@@ -1,13 +1,16 @@
 package sergesv.rvs.web.controller.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import sergesv.rvs.RvsPropertyResolver;
 import sergesv.rvs.service.UserService;
 import sergesv.rvs.web.to.UserTo;
 
 import java.util.List;
 
+import static sergesv.rvs.util.web.ControllerUtil.getPageable;
 import static sergesv.rvs.util.web.SecurityUtil.getAuthUserId;
 
 @RestController
@@ -15,10 +18,14 @@ import static sergesv.rvs.util.web.SecurityUtil.getAuthUserId;
 @RequiredArgsConstructor
 public class AdminUserController {
     private final UserService userService;
+    private final RvsPropertyResolver propertyResolver;
 
     @GetMapping
-    public List<UserTo> getAll() {
-        return userService.getAll();
+    public List<UserTo> getAll(@RequestParam(required = false) Integer page,
+                               @RequestParam(required = false) Integer size) {
+        Pageable pageable = getPageable(page, size, propertyResolver.getUserPageSize());
+
+        return userService.getAll(pageable);
     }
 
     @GetMapping("/{id}")

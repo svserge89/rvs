@@ -1,6 +1,7 @@
 package sergesv.rvs.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +26,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public List<UserTo> getAll() {
-        return userRepository.findAll().stream()
+    public List<UserTo> getAll(Pageable pageable) {
+        return userRepository.findAll(pageable).get()
                 .map(ToUtil::toTo)
                 .collect(Collectors.toList());
     }
