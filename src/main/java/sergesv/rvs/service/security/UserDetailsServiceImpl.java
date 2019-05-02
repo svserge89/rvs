@@ -21,7 +21,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println(username);
         User user = userService.findByUserName(username)
                         .orElseThrow(() -> new UsernameNotFoundException(username));
         Set<GrantedAuthority> roles = user.getRoles().stream()

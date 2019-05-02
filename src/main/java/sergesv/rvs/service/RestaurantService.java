@@ -1,6 +1,7 @@
 package sergesv.rvs.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,14 +9,13 @@ import sergesv.rvs.model.Restaurant;
 import sergesv.rvs.model.RatingPair;
 import sergesv.rvs.repository.RestaurantRepository;
 import sergesv.rvs.repository.VoteEntryRepository;
+import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.RestaurantTo;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static sergesv.rvs.util.ToUtil.toModel;
 import static sergesv.rvs.util.ToUtil.toTo;
@@ -30,46 +30,46 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final VoteEntryRepository voteEntryRepository;
 
-    public List<RestaurantTo> getAll(Pageable pageable) {
-        return toRestaurantTos(restaurantRepository.findAll(pageable).get(),
-                false);
+    public PageTo<RestaurantTo> getAll(Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAll(pageable), false);
     }
 
-    public List<RestaurantTo> getAllWithRating(Pageable pageable) {
-        return toRestaurantTos(restaurantRepository.findAll(pageable).get(),
+    public PageTo<RestaurantTo> getAllWithRating(Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAll(pageable),
                 voteEntryRepository.getRatingPairs(), false);
     }
 
-    public List<RestaurantTo> getAllWithRating(LocalDate date, Pageable pageable) {
-        return toRestaurantTos(restaurantRepository.findAll(pageable).get(),
+    public PageTo<RestaurantTo> getAllWithRating(LocalDate date, Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAll(pageable),
                 voteEntryRepository.getRatingPairsByDate(date), false);
     }
 
-    public List<RestaurantTo> getAllWithRating(LocalDate dateStart, LocalDate dateEnd,
+    public PageTo<RestaurantTo> getAllWithRating(LocalDate dateStart, LocalDate dateEnd,
                                                Pageable pageable) {
-        return toRestaurantTos(restaurantRepository.findAll(pageable).get(),
-                voteEntryRepository.getRatingPairsByDateBetween(dateStart, dateEnd), false);
+        return toRestaurantTos(restaurantRepository.findAll(pageable),
+                voteEntryRepository.getRatingPairsByDateBetween(dateStart, dateEnd),
+                false);
     }
 
-    public List<RestaurantTo> getAllWithMenu(LocalDate menuDate, Pageable pageable) {
-        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate, pageable).get(),
+    public PageTo<RestaurantTo> getAllWithMenu(LocalDate menuDate, Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate, pageable),
                 true);
     }
 
-    public List<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, Pageable pageable) {
-        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate, pageable).get(),
+    public PageTo<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate, pageable),
                 voteEntryRepository.getRatingPairs(), true);
     }
 
-    public List<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, LocalDate ratingDate,
+    public PageTo<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, LocalDate ratingDate,
                                                       Pageable pageable) {
-        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate, pageable).get(),
+        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate, pageable),
                 voteEntryRepository.getRatingPairsByDate(ratingDate), true);
     }
 
-    public List<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, LocalDate ratingDateStart,
+    public PageTo<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, LocalDate ratingDateStart,
                                                       LocalDate ratingDateEnd, Pageable pageable) {
-        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate, pageable).get(),
+        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate, pageable),
                 voteEntryRepository.getRatingPairsByDateBetween(ratingDateStart, ratingDateEnd),
                 true);
     }
@@ -171,22 +171,24 @@ public class RestaurantService {
         restaurantRepository.deleteAll();
     }
 
-    private static List<RestaurantTo> toRestaurantTos(Stream<Restaurant> restaurantStream,
-                                                      Set<RatingPair> ratingPairs,
-                                                      boolean withMenu) {
-        var ratingMap = ratingPairs.stream()
-                .collect(Collectors.toMap(RatingPair::getRestaurant, RatingPair::getRating));
+    private static PageTo<RestaurantTo> toRestaurantTos(Page<Restaurant> restaurantPage,
+                                                        Set<RatingPair> ratingPairs,
+                                                        boolean withMenu) {
+        return toTo(restaurantPage, page -> {
+            var ratingMap = ratingPairs.stream()
+                    .collect(Collectors.toMap(RatingPair::getRestaurant, RatingPair::getRating));
 
-        return restaurantStream
-                .map(restaurant -> toTo(restaurant, withMenu,
-                        ratingMap.getOrDefault(restaurant, DEFAULT_RATING)))
-                .collect(Collectors.toList());
+            return page.get()
+                    .map(restaurant -> toTo(restaurant, withMenu,
+                            ratingMap.getOrDefault(restaurant, DEFAULT_RATING)))
+                    .collect(Collectors.toList());
+        });
     }
 
-    private static List<RestaurantTo> toRestaurantTos(Stream<Restaurant> restaurantStream,
-                                                      boolean withMenu) {
-        return restaurantStream
+    private static PageTo<RestaurantTo> toRestaurantTos(Page<Restaurant> restaurantPage,
+                                                        boolean withMenu) {
+        return toTo(restaurantPage, page -> page.get()
                 .map(restaurant -> toTo(restaurant, withMenu))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 }

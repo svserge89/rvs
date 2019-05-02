@@ -9,9 +9,9 @@ import sergesv.rvs.repository.MenuEntryRepository;
 import sergesv.rvs.repository.RestaurantRepository;
 import sergesv.rvs.util.ToUtil;
 import sergesv.rvs.web.to.MenuEntryTo;
+import sergesv.rvs.web.to.PageTo;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,11 +26,12 @@ public class MenuEntryService {
     private final MenuEntryRepository menuEntryRepository;
     private final RestaurantRepository restaurantRepository;
 
-    public List<MenuEntryTo> getAllByRestaurant(long restaurantId, LocalDate date,
-                                                Pageable pageable) {
-        return menuEntryRepository.findAllByRestaurantIdAndDate(restaurantId, date, pageable).get()
-                .map(ToUtil::toTo)
-                .collect(Collectors.toList());
+    public PageTo<MenuEntryTo> getAllByRestaurant(long restaurantId, LocalDate date,
+                                                  Pageable pageable) {
+        return toTo(menuEntryRepository.findAllByRestaurantIdAndDate(restaurantId, date, pageable),
+                page -> page.get()
+                        .map(ToUtil::toTo)
+                        .collect(Collectors.toList()));
     }
 
     public MenuEntryTo getOneByRestaurant(long id, long restaurantId) {

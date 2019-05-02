@@ -7,10 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sergesv.rvs.RvsPropertyResolver;
 import sergesv.rvs.service.VoteEntryService;
+import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.VoteEntryTo;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.format.annotation.DateTimeFormat.*;
@@ -29,11 +29,12 @@ public class UserVoteController {
     private final RvsPropertyResolver propertyResolver;
 
     @GetMapping("/votes")
-    public List<VoteEntryTo> getAll(
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate dateStart,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size) {
+    public PageTo<VoteEntryTo> getAll(@RequestParam(required = false)
+                                      @DateTimeFormat(iso = ISO.DATE) LocalDate dateStart,
+                                      @RequestParam(required = false)
+                                      @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd,
+                                      @RequestParam(required = false) Integer page,
+                                      @RequestParam(required = false) Integer size) {
         Pageable pageable = getPageable(page, size, propertyResolver.getVoteEntryPageSize());
 
         if (resolveParams(dateStart, dateEnd) == BETWEEN_DATES) {

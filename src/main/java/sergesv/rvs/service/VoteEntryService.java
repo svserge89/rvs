@@ -1,6 +1,7 @@
 package sergesv.rvs.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,13 +11,12 @@ import sergesv.rvs.repository.RestaurantRepository;
 import sergesv.rvs.repository.UserRepository;
 import sergesv.rvs.repository.VoteEntryRepository;
 import sergesv.rvs.util.ToUtil;
+import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.VoteEntryTo;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static sergesv.rvs.util.DateTimeUtil.*;
 import static sergesv.rvs.util.ToUtil.toTo;
@@ -32,14 +32,14 @@ public class VoteEntryService {
 
     private final RvsPropertyResolver propertyResolver;
 
-    public List<VoteEntryTo> getAll(long userId, Pageable pageable) {
-        return toVoteEntryTos(voteEntryRepository.findAllByUserId(userId, pageable).get());
+    public PageTo<VoteEntryTo> getAll(long userId, Pageable pageable) {
+        return toVoteEntryTos(voteEntryRepository.findAllByUserId(userId, pageable));
     }
 
-    public List<VoteEntryTo> getAll(long userId, LocalDate dateStart, LocalDate dateEnd,
+    public PageTo<VoteEntryTo> getAll(long userId, LocalDate dateStart, LocalDate dateEnd,
                                     Pageable pageable) {
         return toVoteEntryTos(voteEntryRepository.findAllByUserIdAndDateBetween(userId, dateStart,
-                dateEnd, pageable).get());
+                dateEnd, pageable));
     }
 
     @Transactional
@@ -73,9 +73,9 @@ public class VoteEntryService {
                 getCurrentDate());
     }
 
-    private static List<VoteEntryTo> toVoteEntryTos(Stream<VoteEntry> voteEntryStream) {
-        return voteEntryStream
+    private static PageTo<VoteEntryTo> toVoteEntryTos(Page<VoteEntry> voteEntryPage) {
+        return toTo(voteEntryPage, page -> page.get()
                 .map(ToUtil::toTo)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 }

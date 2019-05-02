@@ -9,9 +9,9 @@ import sergesv.rvs.model.User;
 import sergesv.rvs.model.security.Role;
 import sergesv.rvs.repository.UserRepository;
 import sergesv.rvs.util.ToUtil;
+import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.UserTo;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,10 +26,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public List<UserTo> getAll(Pageable pageable) {
-        return userRepository.findAll(pageable).get()
+    public PageTo<UserTo> getAll(Pageable pageable) {
+        return toTo(userRepository.findAll(pageable), page -> page.get()
                 .map(ToUtil::toTo)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     public UserTo getOne(long id) {

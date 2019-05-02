@@ -8,10 +8,10 @@ import sergesv.rvs.RvsPropertyResolver;
 import sergesv.rvs.service.MenuEntryService;
 import sergesv.rvs.service.RestaurantService;
 import sergesv.rvs.web.to.MenuEntryTo;
+import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.RestaurantTo;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.format.annotation.DateTimeFormat.*;
@@ -28,15 +28,18 @@ public class PublicRestaurantController {
     private final RvsPropertyResolver propertyResolver;
 
     @GetMapping
-    public List<RestaurantTo> getAll(
-            @RequestParam(required = false) Boolean rating,
-            @RequestParam(required = false) Boolean menu,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateStart,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateEnd,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate,
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size) {
+    public PageTo<RestaurantTo> getAll(@RequestParam(required = false) Boolean rating,
+                                       @RequestParam(required = false) Boolean menu,
+                                       @RequestParam(required = false)
+                                       @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDate,
+                                       @RequestParam(required = false)
+                                       @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateStart,
+                                       @RequestParam(required = false)
+                                       @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateEnd,
+                                       @RequestParam(required = false)
+                                       @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate,
+                                       @RequestParam(required = false) Integer page,
+                                       @RequestParam(required = false) Integer size) {
         Pageable pageable = getPageable(page, size, propertyResolver.getRestaurantPageSize());
 
         switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
@@ -69,15 +72,17 @@ public class PublicRestaurantController {
     }
 
     @GetMapping("/{id}")
-    public RestaurantTo getOne(
-            @PathVariable long id,
-            @RequestParam(required = false) Boolean rating,
-            @RequestParam(required = false) Boolean menu,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE)
-                    LocalDate ratingDateStart,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateEnd,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate) {
+    public RestaurantTo getOne(@PathVariable long id,
+                               @RequestParam(required = false) Boolean rating,
+                               @RequestParam(required = false) Boolean menu,
+                               @RequestParam(required = false)
+                               @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDate,
+                               @RequestParam(required = false)
+                               @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateStart,
+                               @RequestParam(required = false)
+                               @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateEnd,
+                               @RequestParam(required = false)
+                               @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate) {
         switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
             case MENU:
                 return restaurantService.getOneWithMenu(id,
@@ -107,11 +112,11 @@ public class PublicRestaurantController {
     }
 
     @GetMapping("/{restaurantId}/menu")
-    public List<MenuEntryTo> getMenu(@PathVariable long restaurantId,
-                                     @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE)
-                                             LocalDate menuDate,
-                                     @RequestParam(required = false) Integer page,
-                                     @RequestParam(required = false) Integer size) {
+    public PageTo<MenuEntryTo> getMenu(@PathVariable long restaurantId,
+                                       @RequestParam(required = false)
+                                       @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate,
+                                       @RequestParam(required = false) Integer page,
+                                       @RequestParam(required = false) Integer size) {
         Pageable pageable = getPageable(page, size, propertyResolver.getMenuEntryPageSize());
 
         return menuEntryService.getAllByRestaurant(restaurantId,
@@ -125,9 +130,12 @@ public class PublicRestaurantController {
 
     @GetMapping("/{restaurantId}/rating")
     public Long getRating(@PathVariable long restaurantId,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate date,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate dateStart,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd) {
+                          @RequestParam(required = false)
+                          @DateTimeFormat(iso = ISO.DATE) LocalDate date,
+                          @RequestParam(required = false)
+                          @DateTimeFormat(iso = ISO.DATE) LocalDate dateStart,
+                          @RequestParam(required = false)
+                          @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd) {
         switch (resolveParams(date, dateStart, dateEnd)) {
             case BY_DATE:
                 return restaurantService.getRating(restaurantId, date);

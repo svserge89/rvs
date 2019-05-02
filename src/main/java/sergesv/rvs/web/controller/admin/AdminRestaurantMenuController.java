@@ -43,11 +43,13 @@ public class AdminRestaurantMenuController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAll(
-            @PathVariable long restaurantId,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate date,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate dateStart,
-            @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd) {
+    public void deleteAll(@PathVariable long restaurantId,
+                          @RequestParam(required = false)
+                          @DateTimeFormat(iso = ISO.DATE) LocalDate date,
+                          @RequestParam(required = false)
+                          @DateTimeFormat(iso = ISO.DATE) LocalDate dateStart,
+                          @RequestParam(required = false)
+                          @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd) {
         if (resolveParams(date, dateStart, dateEnd) == BETWEEN_DATES) {
             menuEntryService.deleteAllByRestaurant(restaurantId,
                     Optional.ofNullable(dateStart).orElse(MIN_DATE),
