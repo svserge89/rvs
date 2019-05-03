@@ -38,8 +38,11 @@ public class UserVoteController {
                                       @RequestParam(required = false) Integer page,
                                       @RequestParam(required = false) Integer size,
                                       @RequestParam(required = false) String sort) {
+        var sortOptional = Optional.ofNullable(sort);
         Pageable pageable = getPageable(page, size,
-                getSort(sort, DATE, TIME, DESC).orElse(Sort.by(DATE, TIME).descending()),
+                getSort(sortOptional.orElse(propertyResolver.getSortVoteEntry()),
+                        DATE, TIME, RESTAURANT_NAME, DESC)
+                        .orElse(Sort.by(DATE, TIME).descending()),
                 propertyResolver.getVoteEntryPageSize());
 
         if (resolveParams(dateStart, dateEnd) == BETWEEN_DATES) {

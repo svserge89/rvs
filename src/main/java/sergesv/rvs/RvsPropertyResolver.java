@@ -1,5 +1,6 @@
 package sergesv.rvs;
 
+import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -30,6 +31,21 @@ public class RvsPropertyResolver {
     private int userPageSize;
 
     private int voteEntryPageSize;
+
+    @Getter
+    private String sortRestaurant;
+
+    @Getter
+    private String sortRestaurantWithMenu;
+
+    @Getter
+    private String sortMenuEntry;
+
+    @Getter
+    private String sortUser;
+
+    @Getter
+    private String sortVoteEntry;
 
     public LocalTime getMaxVoteTime() {
         return Optional.ofNullable(maxVoteTime).orElse(DEFAULT_MAX_VOTE_TIME);

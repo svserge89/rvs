@@ -10,6 +10,8 @@ import sergesv.rvs.service.UserService;
 import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.UserTo;
 
+import java.util.Optional;
+
 import static sergesv.rvs.util.SortUtil.*;
 import static sergesv.rvs.util.web.ControllerUtil.getPageable;
 import static sergesv.rvs.util.web.SecurityUtil.getAuthUserId;
@@ -25,8 +27,10 @@ public class AdminUserController {
     public PageTo<UserTo> getAll(@RequestParam(required = false) Integer page,
                                  @RequestParam(required = false) Integer size,
                                  @RequestParam(required = false) String sort) {
+        var sortOptional = Optional.ofNullable(sort);
         Pageable pageable = getPageable(page, size,
-                getSort(sort, NICKNAME, EMAIL, FIRST_NAME, LAST_NAME, DESC)
+                getSort(sortOptional.orElse(propertyResolver.getSortUser()),
+                        ID, NICKNAME, EMAIL, FIRST_NAME, LAST_NAME, DESC)
                         .orElse(Sort.by(NICKNAME)), propertyResolver.getUserPageSize());
 
         return userService.getAll(pageable);

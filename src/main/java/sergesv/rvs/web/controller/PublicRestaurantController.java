@@ -30,8 +30,8 @@ public class PublicRestaurantController {
     private final RvsPropertyResolver propertyResolver;
 
     @GetMapping
-    public PageTo<RestaurantTo> getAll(@RequestParam(required = false) Boolean rating,
-                                       @RequestParam(required = false) Boolean menu,
+    public PageTo<RestaurantTo> getAll(@RequestParam(required = false) boolean rating,
+                                       @RequestParam(required = false) boolean menu,
                                        @RequestParam(required = false)
                                        @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDate,
                                        @RequestParam(required = false)
@@ -43,8 +43,17 @@ public class PublicRestaurantController {
                                        @RequestParam(required = false) Integer page,
                                        @RequestParam(required = false) Integer size,
                                        @RequestParam(required = false) String sort) {
-        Pageable pageable = getPageable(page, size, getSort(sort, NAME, DESC).orElse(Sort.by(NAME)),
-                propertyResolver.getRestaurantPageSize());
+        var sortOptional = Optional.ofNullable(sort);
+        Pageable pageable = menu ?
+                getPageable(page, size,
+                        getSort(sortOptional.orElse(propertyResolver.getSortRestaurantWithMenu()),
+                                NAME, MENU_ENTRY_NAME, MENU_ENTRY_PRICE, MENU_ENTRY_DATE, DESC)
+                                .orElse(Sort.by(NAME)),
+                        propertyResolver.getRestaurantPageSize()) :
+                getPageable(page, size,
+                        getSort(sortOptional.orElse(propertyResolver.getSortRestaurant()),
+                                NAME, DESC).orElse(Sort.by(NAME, MENU_ENTRY_NAME)),
+                        propertyResolver.getRestaurantPageSize());
 
         switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
             case MENU:
@@ -77,8 +86,8 @@ public class PublicRestaurantController {
 
     @GetMapping("/{id}")
     public RestaurantTo getOne(@PathVariable long id,
-                               @RequestParam(required = false) Boolean rating,
-                               @RequestParam(required = false) Boolean menu,
+                               @RequestParam(required = false) boolean rating,
+                               @RequestParam(required = false) boolean menu,
                                @RequestParam(required = false)
                                @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDate,
                                @RequestParam(required = false)
@@ -122,8 +131,10 @@ public class PublicRestaurantController {
                                        @RequestParam(required = false) Integer page,
                                        @RequestParam(required = false) Integer size,
                                        @RequestParam(required = false) String sort) {
+        var sortOptional = Optional.ofNullable(sort);
         Pageable pageable = getPageable(page, size,
-                getSort(sort, NAME, PRICE, DATE, DESC).orElse(Sort.by(NAME)),
+                getSort(sortOptional.orElse(propertyResolver.getSortMenuEntry()),
+                        NAME, PRICE, DATE, DESC).orElse(Sort.by(NAME)),
                 propertyResolver.getMenuEntryPageSize());
 
         return menuEntryService.getAllByRestaurant(restaurantId,

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public final class SortUtil {
+    public static final String ID = "id";
     public static final String NAME = "name";
     public static final String PRICE = "price";
     public static final String DATE = "date";
@@ -14,6 +15,10 @@ public final class SortUtil {
     public static final String EMAIL = "email";
     public static final String FIRST_NAME = "firstName";
     public static final String LAST_NAME = "lastName";
+    public static final String MENU_ENTRY_NAME = "menuEntry.name";
+    public static final String MENU_ENTRY_PRICE = "menuEntry.price";
+    public static final String MENU_ENTRY_DATE = "menuEntry.date";
+    public static final String RESTAURANT_NAME = "restaurant.name";
     public static final String DESC = "desc";
 
     private static final String SPLIT_REGEX = ",";

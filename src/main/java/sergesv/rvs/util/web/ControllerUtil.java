@@ -21,14 +21,11 @@ public final class ControllerUtil {
         MENU_AND_RATING_BETWEEN_DATES
     }
 
-    public static ParamsCondition resolveParams(Boolean rating, Boolean menu, LocalDate ratingDate,
+    public static ParamsCondition resolveParams(boolean rating, boolean menu, LocalDate ratingDate,
                                           LocalDate ratingDateStart, LocalDate ratingDateEnd) {
-        boolean ratingOption = Optional.ofNullable(rating).orElse(false);
-        boolean menuOption = Optional.ofNullable(menu).orElse(false);
-
-        if (!ratingOption && !menuOption) {
+        if (!rating && !menu) {
             return ParamsCondition.DEFAULT;
-        } else if (!menuOption) {
+        } else if (!menu) {
             switch (resolveParams(ratingDate, ratingDateStart, ratingDateEnd)) {
                 case BY_DATE:
                     return ParamsCondition.RATING_BY_DATE;
@@ -37,7 +34,7 @@ public final class ControllerUtil {
                 default:
                     return ParamsCondition.RATING;
             }
-        } else if (!ratingOption) {
+        } else if (!rating) {
             return ParamsCondition.MENU;
         } else {
             switch (resolveParams(ratingDate, ratingDateStart, ratingDateEnd)) {
