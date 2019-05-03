@@ -52,26 +52,29 @@ public class RestaurantService {
     }
 
     public PageTo<RestaurantTo> getAllWithMenu(LocalDate menuDate, Pageable pageable) {
-        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate, pageable),
-                true);
+        return toRestaurantTos(restaurantRepository.findAllByMenuEntryDateOrMenuEntryDateIsNull(
+                menuDate, pageable), true);
     }
 
     public PageTo<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, Pageable pageable) {
-        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate, pageable),
-                voteEntryRepository.getRatingPairs(), true);
+        return toRestaurantTos(restaurantRepository.findAllByMenuEntryDateOrMenuEntryDateIsNull(
+                menuDate, pageable), voteEntryRepository.getRatingPairs(), true);
     }
 
     public PageTo<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, LocalDate ratingDate,
                                                       Pageable pageable) {
-        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate, pageable),
-                voteEntryRepository.getRatingPairsByDate(ratingDate), true);
+        return toRestaurantTos(restaurantRepository.findAllByMenuEntryDateOrMenuEntryDateIsNull(
+                menuDate, pageable), voteEntryRepository.getRatingPairsByDate(ratingDate),
+                true);
     }
 
-    public PageTo<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, LocalDate ratingDateStart,
-                                                      LocalDate ratingDateEnd, Pageable pageable) {
-        return toRestaurantTos(restaurantRepository.findAllWithMenu(menuDate, pageable),
-                voteEntryRepository.getRatingPairsByDateBetween(ratingDateStart, ratingDateEnd),
-                true);
+    public PageTo<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate,
+                                                        LocalDate ratingDateStart,
+                                                        LocalDate ratingDateEnd,
+                                                        Pageable pageable) {
+        return toRestaurantTos(restaurantRepository.findAllByMenuEntryDateOrMenuEntryDateIsNull(
+                menuDate, pageable), voteEntryRepository.getRatingPairsByDateBetween(
+                        ratingDateStart, ratingDateEnd), true);
     }
 
     public RestaurantTo getOne(long id) {
@@ -98,25 +101,26 @@ public class RestaurantService {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
-        return toTo(restaurant, false, voteEntryRepository.countByRestaurantAndDateBetween(
-                restaurant, startDate, endDate));
+        return toTo(restaurant, false,
+                voteEntryRepository.countByRestaurantAndDateBetween(restaurant, startDate,
+                        endDate));
     }
 
     public RestaurantTo getOneWithMenu(long id, LocalDate menuDate) {
-        return toTo(restaurantRepository.findByIdWithMenu(id, menuDate)
+        return toTo(restaurantRepository.findByIdAndMenuEntryDateOrMenuEntryDateIsNull(id, menuDate)
                 .orElseThrow(entityNotFoundSupplier(Restaurant.class, id)), true);
     }
 
     public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate) {
-        Restaurant restaurant = restaurantRepository.findByIdWithMenu(id, menuDate)
-                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
+        Restaurant restaurant = restaurantRepository.findByIdAndMenuEntryDateOrMenuEntryDateIsNull(
+                id, menuDate).orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, true, voteEntryRepository.countByRestaurant(restaurant));
     }
 
     public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate, LocalDate ratingDate) {
-        Restaurant restaurant = restaurantRepository.findByIdWithMenu(id, menuDate)
-                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
+        Restaurant restaurant = restaurantRepository.findByIdAndMenuEntryDateOrMenuEntryDateIsNull(
+                id, menuDate).orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, true,
                 voteEntryRepository.countByRestaurantAndDateEquals(restaurant, ratingDate));
@@ -125,8 +129,8 @@ public class RestaurantService {
     public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate,
                                                 LocalDate ratingDateStart,
                                                 LocalDate ratingDateEnd) {
-        Restaurant restaurant = restaurantRepository.findByIdWithMenu(id, menuDate)
-                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
+        Restaurant restaurant = restaurantRepository.findByIdAndMenuEntryDateOrMenuEntryDateIsNull(
+                id, menuDate).orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, true, voteEntryRepository.countByRestaurantAndDateBetween(
                 restaurant, ratingDateStart, ratingDateEnd));

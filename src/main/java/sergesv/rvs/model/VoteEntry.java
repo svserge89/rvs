@@ -8,45 +8,27 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
+@NamedEntityGraph(name = VoteEntry.GRAPH_WITH_RESTAURANT,
+        attributeNodes = @NamedAttributeNode("restaurant"))
 @NamedQueries({
-        @NamedQuery(name = VoteEntry.FIND_ALL_BY_USER_ID,
-            query = "SELECT voteEntry FROM VoteEntry voteEntry " +
-                    "INNER JOIN FETCH voteEntry.restaurant restaurant " +
-                    "WHERE voteEntry.user.id = :userId"),
-        @NamedQuery(name = VoteEntry.FIND_ALL_BY_USER_ID_AND_DATE_BETWEEN,
-            query = "SELECT voteEntry FROM VoteEntry voteEntry " +
-                    "INNER JOIN FETCH voteEntry.restaurant restaurant " +
-                    "WHERE voteEntry.user.id = :userId " +
-                        "AND voteEntry.date BETWEEN :dateStart AND :dateEnd"),
-        @NamedQuery(name = VoteEntry.COUNT_ALL_BY_USER_ID,
-            query = "SELECT COUNT (voteEntry) FROM VoteEntry voteEntry " +
-                    "WHERE voteEntry.user.id = :userId"),
-        @NamedQuery(name = VoteEntry.COUNT_ALL_BY_USER_ID_AND_DATE_BETWEEN,
-            query = "SELECT COUNT (voteEntry) FROM VoteEntry voteEntry " +
-                    "WHERE voteEntry.user.id = :userId " +
-                        "AND voteEntry.date BETWEEN :dateStart AND :dateEnd"),
-        @NamedQuery(name = VoteEntry.GET_RATING_PAIRS,
+        @NamedQuery(name = VoteEntry.QUERY_GET_RATING_PAIR,
             query = "SELECT new sergesv.rvs.model.RatingPair(voteEntry.restaurant, " +
                                                             "COUNT (voteEntry))" +
-                    "FROM VoteEntry voteEntry " +
-                    "GROUP BY voteEntry.restaurant"),
-        @NamedQuery(name = VoteEntry.GET_RATING_PAIRS_BY_DATE,
+                    "FROM VoteEntry voteEntry GROUP BY voteEntry.restaurant"),
+        @NamedQuery(name = VoteEntry.QUERY_GET_RATING_PAIR_BY_DATE,
             query = "SELECT new sergesv.rvs.model.RatingPair(voteEntry.restaurant, " +
                                                             "COUNT (voteEntry))" +
-                    "FROM VoteEntry voteEntry " +
-                    "WHERE voteEntry.date = :date " +
+                    "FROM VoteEntry voteEntry WHERE voteEntry.date = :date " +
                     "GROUP BY voteEntry.restaurant"),
-        @NamedQuery(name = VoteEntry.GET_RATING_PAIRS_BY_DATE_BETWEEN,
+        @NamedQuery(name = VoteEntry.QUERY_GET_RATING_PAIR_BY_DATE_BETWEEN,
             query = "SELECT new sergesv.rvs.model.RatingPair(voteEntry.restaurant, " +
                                                             "COUNT (voteEntry))" +
                     "FROM VoteEntry voteEntry " +
                     "WHERE voteEntry.date BETWEEN :dateStart AND :dateEnd " +
                     "GROUP BY voteEntry.restaurant"),
-        @NamedQuery(name = VoteEntry.DELETE_BY_USER_ID_AND_RESTAURANT_ID_AND_DATE,
-            query = "DELETE FROM VoteEntry voteEntry " +
-                    "WHERE voteEntry.user.id = :userId " +
-                        "AND voteEntry.restaurant.id = :restaurantId " +
-                        "AND voteEntry.date = :date")
+        @NamedQuery(name = VoteEntry.QUERY_DELETE_BY_USER_ID_AND_RESTAURANT_ID_AND_DATE,
+            query = "DELETE FROM VoteEntry voteEntry WHERE voteEntry.user.id = :userId " +
+                        "AND voteEntry.restaurant.id = :restaurantId AND voteEntry.date = :date")
 })
 @Table(name = "vote_entry")
 @Getter
@@ -56,18 +38,13 @@ import java.time.LocalTime;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class VoteEntry implements EntityWithId {
-    public static final String FIND_ALL_BY_USER_ID = "VoteEntry.findAllByUserId";
-    public static final String FIND_ALL_BY_USER_ID_AND_DATE_BETWEEN =
-            "VoteEntry.findAllByUserIdAndDateBetween";
-    public static final String GET_RATING_PAIRS = "VoteEntry.getRatingPairs";
-    public static final String GET_RATING_PAIRS_BY_DATE = "VoteEntry.getRatingPairsByDate";
-    public static final String GET_RATING_PAIRS_BY_DATE_BETWEEN =
-            "VoteEntry.getRatingPairsByDateBetween";
-    public static final String DELETE_BY_USER_ID_AND_RESTAURANT_ID_AND_DATE =
-            "VoteEntry.deleteByUserIdAndRestaurantIdAndDate";
-    public static final String COUNT_ALL_BY_USER_ID = "VoteEntry.countAllByUserId";
-    public static final String COUNT_ALL_BY_USER_ID_AND_DATE_BETWEEN =
-            "VoteEntry.countAllByUserIdAndDateBetween";
+    public static final String GRAPH_WITH_RESTAURANT = "VoteEntry_graphWithRestaurant";
+    public static final String QUERY_GET_RATING_PAIR = "VoteEntry_getRatingPair";
+    public static final String QUERY_GET_RATING_PAIR_BY_DATE = "VoteEntry_getRatingPairByDate";
+    public static final String QUERY_GET_RATING_PAIR_BY_DATE_BETWEEN =
+            "VoteEntry_gatRatingPairByDateBetween";
+    public static final String QUERY_DELETE_BY_USER_ID_AND_RESTAURANT_ID_AND_DATE =
+            "VoteEntry_deleteByUserIdAndRestaurantIdAndDate";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

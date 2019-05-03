@@ -2,6 +2,7 @@ package sergesv.rvs.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -30,26 +31,25 @@ public interface VoteEntryRepository extends JpaRepository<VoteEntry, Long> {
     long countByRestaurantIdAndDateBetween(Long restaurantId, LocalDate dateStart,
                                            LocalDate dateEnd);
 
-    @Query(name = VoteEntry.GET_RATING_PAIRS)
+    @Query(name = VoteEntry.QUERY_GET_RATING_PAIR)
     Set<RatingPair> getRatingPairs();
 
-    @Query(name = VoteEntry.GET_RATING_PAIRS_BY_DATE)
+    @Query(name = VoteEntry.QUERY_GET_RATING_PAIR_BY_DATE)
     Set<RatingPair> getRatingPairsByDate(LocalDate date);
 
-    @Query(name = VoteEntry.GET_RATING_PAIRS_BY_DATE_BETWEEN)
+    @Query(name = VoteEntry.QUERY_GET_RATING_PAIR_BY_DATE_BETWEEN)
     Set<RatingPair> getRatingPairsByDateBetween(LocalDate dateStart, LocalDate dateEnd);
 
-    @Query(name = VoteEntry.FIND_ALL_BY_USER_ID, countName = VoteEntry.COUNT_ALL_BY_USER_ID)
+    @EntityGraph(VoteEntry.GRAPH_WITH_RESTAURANT)
     Page<VoteEntry> findAllByUserId(Long userId, Pageable pageable);
 
-    @Query(name = VoteEntry.FIND_ALL_BY_USER_ID_AND_DATE_BETWEEN,
-            countName = VoteEntry.COUNT_ALL_BY_USER_ID_AND_DATE_BETWEEN)
+    @EntityGraph(VoteEntry.GRAPH_WITH_RESTAURANT)
     Page<VoteEntry> findAllByUserIdAndDateBetween(Long userId, LocalDate dateStart,
                                                   LocalDate dateEnd, Pageable pageable);
 
     Optional<VoteEntry> findByUserIdAndDate(Long userId, LocalDate date);
 
     @Modifying
-    @Query(name = VoteEntry.DELETE_BY_USER_ID_AND_RESTAURANT_ID_AND_DATE)
+    @Query(name = VoteEntry.QUERY_DELETE_BY_USER_ID_AND_RESTAURANT_ID_AND_DATE)
     void deleteByUserIdAndRestaurantIdAndDate(Long userId, Long restaurantId, LocalDate date);
 }

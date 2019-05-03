@@ -60,7 +60,7 @@ public final class ToUtil {
         List<MenuEntryTo> menuEntryTos = null;
 
         if (withMenu) {
-            menuEntryTos = restaurant.getMenuEntries().stream()
+            menuEntryTos = restaurant.getMenuEntry().stream()
                     .map(ToUtil::toTo)
                     .collect(Collectors.toList());
         }

@@ -28,9 +28,23 @@ INSERT INTO menu_entry (id, name, price, restaurant_id) VALUES
     (7, 'menu_entry_1', 1.50, 3),
     (8, 'menu_entry_2', 30.00, 3),
     (9, 'menu_entry_3', 90.50, 3);
+INSERT INTO menu_entry (id, name, price, date, restaurant_id) VALUES
+    (10, 'menu_entry_1', 50.0, '2019-05-01', 1),
+    (11, 'menu_entry_2', 10.50, '2019-05-01', 1),
+    (12, 'menu_entry_3', 25.20, '2019-05-01', 1),
+    (13, 'menu_entry_1', 20.20, '2019-05-01', 2),
+    (14, 'menu_entry_2', 10.00, '2019-05-01', 2),
+    (15, 'menu_entry_3', 40.00, '2019-05-01', 2),
+    (16, 'menu_entry_1', 1.50, '2019-05-01', 3),
+    (17, 'menu_entry_2', 30.00, '2019-05-01', 3),
+    (18, 'menu_entry_3', 90.50, '2019-05-01', 3);
 
 DELETE FROM vote_entry;
 INSERT INTO vote_entry (user_id, restaurant_id) VALUES
     (1, 1),
     (2, 1),
     (3, 2);
+INSERT INTO vote_entry (user_id, restaurant_id, date) VALUES
+    (1, 1, '2019-05-01'),
+    (2, 1, '2019-05-01'),
+    (3, 2, '2019-05-01');

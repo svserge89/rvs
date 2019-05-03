@@ -2,6 +2,7 @@ package sergesv.rvs.util.web;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -65,9 +66,9 @@ public final class ControllerUtil {
         return resolveParams(null, dateStart, dateEnd);
     }
 
-    public static Pageable getPageable(Integer page, Integer size, int defaultPageSize) {
+    public static Pageable getPageable(Integer page, Integer size, Sort sort, int defaultPageSize) {
         return PageRequest.of(Optional.ofNullable(page).orElse(0),
-                Optional.ofNullable(size).orElse(defaultPageSize));
+                Optional.ofNullable(size).orElse(defaultPageSize), sort);
     }
 
     private ControllerUtil() {

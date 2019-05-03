@@ -7,21 +7,8 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Entity
-@NamedQueries({
-        @NamedQuery(name = Restaurant.FIND_ALL_WITH_MENU,
-            query = "SELECT DISTINCT restaurant FROM Restaurant restaurant " +
-                    "LEFT JOIN FETCH restaurant.menuEntries menuEntry " +
-                    "WHERE menuEntry.date IS NULL OR menuEntry.date = :menuDate"),
-        @NamedQuery(name = Restaurant.FIND_ONE_WITH_MENU,
-            query = "SELECT restaurant FROM Restaurant restaurant " +
-                    "LEFT JOIN FETCH restaurant.menuEntries menuEntry " +
-                    "WHERE restaurant.id = :id " +
-                        "AND (menuEntry.date IS NULL OR menuEntry.date = :menuDate)"),
-        @NamedQuery(name = Restaurant.COUNT_ALL_WITH_MENU,
-            query = "SELECT COUNT(DISTINCT restaurant) FROM Restaurant restaurant " +
-                    "LEFT JOIN restaurant.menuEntries menuEntry " +
-                    "WHERE menuEntry.date IS NULL OR menuEntry.date = :menuDate")
-})
+@NamedEntityGraph(name = Restaurant.GRAPH_WITH_MENU_ENTRIES,
+        attributeNodes = @NamedAttributeNode("menuEntry"))
 @Table(name = "restaurant")
 @Getter
 @Setter
@@ -30,9 +17,7 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Restaurant implements EntityWithId {
-    public static final String FIND_ALL_WITH_MENU = "Restaurant.findAllWithMenu";
-    public static final String FIND_ONE_WITH_MENU = "Restaurant.findByIdWithMenu";
-    public static final String COUNT_ALL_WITH_MENU = "Restaurant.countAllWithMenu";
+    public static final String GRAPH_WITH_MENU_ENTRIES = "Restaurant_graphWithMenuEntry";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,5 +30,5 @@ public class Restaurant implements EntityWithId {
     private String name;
 
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
-    private List<MenuEntry> menuEntries;
+    private List<MenuEntry> menuEntry;
 }

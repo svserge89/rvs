@@ -2,6 +2,7 @@ package sergesv.rvs.web.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sergesv.rvs.RvsPropertyResolver;
@@ -9,6 +10,7 @@ import sergesv.rvs.service.UserService;
 import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.UserTo;
 
+import static sergesv.rvs.util.SortUtil.*;
 import static sergesv.rvs.util.web.ControllerUtil.getPageable;
 import static sergesv.rvs.util.web.SecurityUtil.getAuthUserId;
 
@@ -21,8 +23,11 @@ public class AdminUserController {
 
     @GetMapping
     public PageTo<UserTo> getAll(@RequestParam(required = false) Integer page,
-                                 @RequestParam(required = false) Integer size) {
-        Pageable pageable = getPageable(page, size, propertyResolver.getUserPageSize());
+                                 @RequestParam(required = false) Integer size,
+                                 @RequestParam(required = false) String sort) {
+        Pageable pageable = getPageable(page, size,
+                getSort(sort, NICKNAME, EMAIL, FIRST_NAME, LAST_NAME, DESC)
+                        .orElse(Sort.by(NICKNAME)), propertyResolver.getUserPageSize());
 
         return userService.getAll(pageable);
     }

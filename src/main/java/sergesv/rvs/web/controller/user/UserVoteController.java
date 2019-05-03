@@ -2,6 +2,7 @@ package sergesv.rvs.web.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static org.springframework.format.annotation.DateTimeFormat.*;
 import static sergesv.rvs.util.DateTimeUtil.MAX_DATE;
 import static sergesv.rvs.util.DateTimeUtil.MIN_DATE;
+import static sergesv.rvs.util.SortUtil.*;
 import static sergesv.rvs.util.web.ControllerUtil.ParamsCondition.BETWEEN_DATES;
 import static sergesv.rvs.util.web.ControllerUtil.getPageable;
 import static sergesv.rvs.util.web.ControllerUtil.resolveParams;
@@ -34,8 +36,11 @@ public class UserVoteController {
                                       @RequestParam(required = false)
                                       @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd,
                                       @RequestParam(required = false) Integer page,
-                                      @RequestParam(required = false) Integer size) {
-        Pageable pageable = getPageable(page, size, propertyResolver.getVoteEntryPageSize());
+                                      @RequestParam(required = false) Integer size,
+                                      @RequestParam(required = false) String sort) {
+        Pageable pageable = getPageable(page, size,
+                getSort(sort, DATE, TIME, DESC).orElse(Sort.by(DATE, TIME).descending()),
+                propertyResolver.getVoteEntryPageSize());
 
         if (resolveParams(dateStart, dateEnd) == BETWEEN_DATES) {
             return voteEntryService.getAll(getAuthUserId(),
