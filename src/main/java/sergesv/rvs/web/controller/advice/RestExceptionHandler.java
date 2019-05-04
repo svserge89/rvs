@@ -53,6 +53,6 @@ public class RestExceptionHandler {
     public void handleIllegalArgumentException(HttpServletResponse response,
                                                IllegalArgumentException exception)
             throws IOException{
-       response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+        response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
     }
 }
