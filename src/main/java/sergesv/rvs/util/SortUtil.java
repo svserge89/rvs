@@ -2,26 +2,36 @@ package sergesv.rvs.util;
 
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public final class SortUtil {
-    public static final String ID = "id";
-    public static final String NAME = "name";
-    public static final String PRICE = "price";
-    public static final String DATE = "date";
-    public static final String TIME = "time";
-    public static final String NICKNAME = "nickName";
-    public static final String EMAIL = "email";
-    public static final String FIRST_NAME = "firstName";
-    public static final String LAST_NAME = "lastName";
-    public static final String MENU_ENTRY_NAME = "menuEntry.name";
-    public static final String MENU_ENTRY_PRICE = "menuEntry.price";
-    public static final String MENU_ENTRY_DATE = "menuEntry.date";
-    public static final String RESTAURANT_NAME = "restaurant.name";
-    public static final String DESC = "desc";
-
+    private static final String ID = "id";
+    private static final String NAME = "name";
+    private static final String PRICE = "price";
+    private static final String DATE = "date";
+    private static final String TIME = "time";
+    private static final String NICKNAME = "nickName";
+    private static final String EMAIL = "email";
+    private static final String FIRST_NAME = "firstName";
+    private static final String LAST_NAME = "lastName";
+    private static final String MENU_ENTRY_NAME = "menuEntry.name";
+    private static final String MENU_ENTRY_PRICE = "menuEntry.price";
+    private static final String MENU_ENTRY_DATE = "menuEntry.date";
+    private static final String RESTAURANT_NAME = "restaurant.name";
+    private static final String DESC = "desc";
+    private static final String ASC = "asc";
     private static final String SPLIT_REGEX = ",";
+
+    public static final String[] RESTAURANT_PARAMS = {NAME, ASC, DESC};
+    public static final String[] RESTAURANT_WITH_MENU_PARAMS =
+            {NAME, MENU_ENTRY_NAME, MENU_ENTRY_PRICE, MENU_ENTRY_DATE, ASC, DESC};
+    public static final String[] MENU_ENTRY_PARAMS = {NAME, PRICE, DATE, ASC, DESC};
+    public static final String[] USER_PARAMS =
+            {ID, NICKNAME, EMAIL, FIRST_NAME, LAST_NAME, ASC, DESC};
+    public static final String[] VOTE_ENTRY_PARAMS = {DATE, TIME, RESTAURANT_NAME, ASC, DESC};
 
     public static Optional<Sort> getSort(String sortParam, String... allowSortParams) {
         if (sortParam == null || sortParam.isEmpty()) {
@@ -32,32 +42,44 @@ public final class SortUtil {
         var allowParamsList = Arrays.asList(allowSortParams);
         Sort sort = null;
 
-        for (var param : params) {
+        List<String> usedParams = new ArrayList<>(params.length);
+        for (int i = 0; i < params.length; ++i) {
+            var param = params[i];
+            var nextParam = i == params.length - 1 ? "" : params[i + 1];
+
+            if (usedParams.contains(param)) {
+                throw new IllegalArgumentException(
+                        String.format("Sort parameter %s is already used", param));
+            }
+
             if (!allowParamsList.contains(param)) {
                 throw new IllegalArgumentException(
                         String.format("%s is not correct sort parameter", param));
             }
 
-            if (param.equals(DESC)) {
-                sort = computeDesc(sort);
-            } else {
-                sort = compute(sort, param);
+            if (param.equals(ASC) || param.equals(DESC)) {
+                throw new IllegalArgumentException(
+                        String.format("%s must be placed after the sort parameter", param));
             }
+
+            if (nextParam.equals(ASC)) {
+                sort = compute(sort, Sort.by(Sort.Direction.ASC, param));
+                ++i;
+            } else if (nextParam.equals(DESC)) {
+                sort = compute(sort, Sort.by(Sort.Direction.DESC, param));
+                ++i;
+            } else {
+                sort = compute(sort, Sort.by(param));
+            }
+
+            usedParams.add(param);
         }
 
         return Optional.ofNullable(sort);
     }
 
-    private static Sort compute(Sort sort, String param) {
-        return sort == null ? Sort.by(param) : sort.and(Sort.by(param));
-    }
-
-    private static Sort computeDesc(Sort sort) {
-        if (sort == null) {
-            throw new IllegalArgumentException("desc can not be first sort parameter");
-        }
-
-        return sort.descending();
+    private static Sort compute(Sort sort, Sort nextSort) {
+        return sort == null ? nextSort : sort.and(nextSort);
     }
 
     private SortUtil() {

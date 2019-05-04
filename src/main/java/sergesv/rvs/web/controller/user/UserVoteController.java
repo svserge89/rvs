@@ -2,7 +2,6 @@ package sergesv.rvs.web.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -38,11 +37,8 @@ public class UserVoteController {
                                       @RequestParam(required = false) Integer page,
                                       @RequestParam(required = false) Integer size,
                                       @RequestParam(required = false) String sort) {
-        var sortOptional = Optional.ofNullable(sort);
         Pageable pageable = getPageable(page, size,
-                getSort(sortOptional.orElse(propertyResolver.getSortVoteEntry()),
-                        DATE, TIME, RESTAURANT_NAME, DESC)
-                        .orElse(Sort.by(DATE, TIME).descending()),
+                getSort(sort, VOTE_ENTRY_PARAMS).orElse(propertyResolver.getSortVoteEntry()),
                 propertyResolver.getVoteEntryPageSize());
 
         if (resolveParams(dateStart, dateEnd) == BETWEEN_DATES) {

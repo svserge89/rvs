@@ -2,7 +2,6 @@ package sergesv.rvs.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import sergesv.rvs.RvsPropertyResolver;
@@ -43,17 +42,11 @@ public class PublicRestaurantController {
                                        @RequestParam(required = false) Integer page,
                                        @RequestParam(required = false) Integer size,
                                        @RequestParam(required = false) String sort) {
-        var sortOptional = Optional.ofNullable(sort);
-        Pageable pageable = menu ?
-                getPageable(page, size,
-                        getSort(sortOptional.orElse(propertyResolver.getSortRestaurantWithMenu()),
-                                NAME, MENU_ENTRY_NAME, MENU_ENTRY_PRICE, MENU_ENTRY_DATE, DESC)
-                                .orElse(Sort.by(NAME)),
-                        propertyResolver.getRestaurantPageSize()) :
-                getPageable(page, size,
-                        getSort(sortOptional.orElse(propertyResolver.getSortRestaurant()),
-                                NAME, DESC).orElse(Sort.by(NAME, MENU_ENTRY_NAME)),
-                        propertyResolver.getRestaurantPageSize());
+        Pageable pageable = getPageable(page, size, menu ?
+                getSort(sort, RESTAURANT_WITH_MENU_PARAMS)
+                        .orElse(propertyResolver.getSortRestaurantWithMenu()) :
+                getSort(sort, RESTAURANT_PARAMS).orElse(propertyResolver.getSortRestaurant()),
+                propertyResolver.getRestaurantPageSize());
 
         switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
             case MENU:
@@ -131,10 +124,8 @@ public class PublicRestaurantController {
                                        @RequestParam(required = false) Integer page,
                                        @RequestParam(required = false) Integer size,
                                        @RequestParam(required = false) String sort) {
-        var sortOptional = Optional.ofNullable(sort);
         Pageable pageable = getPageable(page, size,
-                getSort(sortOptional.orElse(propertyResolver.getSortMenuEntry()),
-                        NAME, PRICE, DATE, DESC).orElse(Sort.by(NAME)),
+                getSort(sort, MENU_ENTRY_PARAMS).orElse(propertyResolver.getSortMenuEntry()),
                 propertyResolver.getMenuEntryPageSize());
 
         return menuEntryService.getAllByRestaurant(restaurantId,
