@@ -1,6 +1,8 @@
 package sergesv.rvs.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,18 +28,26 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private Logger log = LoggerFactory.getLogger(getClass());
+
     public PageTo<UserTo> getAll(Pageable pageable) {
+        log.debug("getAll params: pageable=\"{}\"", pageable);
+
         return toTo(userRepository.findAll(pageable), page -> page.get()
                 .map(ToUtil::toTo)
                 .collect(Collectors.toList()));
     }
 
     public UserTo getOne(long id) {
+        log.debug("getOne params: id={}", id);
+
         return toTo(userRepository.findById(id)
                 .orElseThrow(entityNotFoundSupplier(User.class, id)));
     }
 
     public Optional<User> findByUserName(String userName) {
+        log.debug("findByUserName params: userName={}", userName);
+
         var user = userRepository.findByNickName(userName);
 
         return user.isPresent() ? user : userRepository.findByEmail(userName);
@@ -45,6 +55,8 @@ public class UserService {
 
     @Transactional
     public UserTo create(UserTo userTo) {
+        log.debug("create params: userTo={}", userTo);
+
         checkPassword(userTo);
 
         return toTo(checkExistsException(
@@ -53,6 +65,8 @@ public class UserService {
 
     @Transactional
     public void update(long id, UserTo userTo) {
+        log.debug("update params: id={}, userTo={}", id, userTo);
+
         User user = userRepository.findById(id)
                 .orElseThrow(entityNotFoundSupplier(User.class, id));
 
@@ -73,6 +87,8 @@ public class UserService {
 
     @Transactional
     public void delete(long id, long authUserId) {
+        log.debug("delete params: id={}, authUserId={}", id, authUserId);
+
         if (id != authUserId) {
             userRepository.deleteById(id);
         }
@@ -80,6 +96,8 @@ public class UserService {
 
     @Transactional
     public void deleteAll(long authUserId) {
+        log.debug("deleteAll params: authUserId={}", authUserId);
+
         userRepository.deleteAllByIdNot(authUserId);
     }
 
