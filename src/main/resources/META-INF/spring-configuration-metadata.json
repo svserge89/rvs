@@ -1,0 +1,44 @@
+{
+  "properties": [
+    {
+      "name": "rvs.max-vote-time",
+      "type": "java.time.LocalTime"
+    },
+    {
+      "name": "rvs.restaurant-page-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "name": "rvs.menu-entry-page-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "name": "rvs.user-page-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "name": "rvs.vote-entry-page-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "name": "rvs.sort-restaurant",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "rvs.sort-restaurant-with-menu",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "rvs.sort-menu-entry",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "rvs.sort-user",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "rvs.sort-vote-entry",
+      "type": "java.lang.String"
+    }
+  ]
+}
