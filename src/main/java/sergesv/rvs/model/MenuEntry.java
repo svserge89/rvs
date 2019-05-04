@@ -1,11 +1,13 @@
 package sergesv.rvs.model;
 
 import lombok.*;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
+
+import static sergesv.rvs.util.ValidationUtil.MENU_ENTRY_NAME_SIZE;
 
 @Entity
 @Table(name = "menu_entry")
@@ -23,6 +25,8 @@ public class MenuEntry implements EntityWithId {
     private long id;
 
     @NotEmpty
+    @SafeHtml
+    @Size(max = MENU_ENTRY_NAME_SIZE)
     @Column(name = "name")
     private String name;
 

@@ -1,10 +1,14 @@
 package sergesv.rvs.model;
 
 import lombok.*;
+import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.List;
+
+import static sergesv.rvs.util.ValidationUtil.RESTAURANT_NAME_SIZE;
 
 @Entity
 @NamedEntityGraph(name = Restaurant.GRAPH_WITH_MENU_ENTRIES,
@@ -26,6 +30,8 @@ public class Restaurant implements EntityWithId {
     private long id;
 
     @NotEmpty
+    @SafeHtml
+    @Size(max = RESTAURANT_NAME_SIZE)
     @Column(name = "name")
     private String name;
 

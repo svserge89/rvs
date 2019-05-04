@@ -19,6 +19,13 @@ import java.util.stream.Collectors;
 public final class ValidationUtil {
     public static final String CHECK_EMAIL_REGEXP =
             "^[A-Za-z0-9._%\\-+!#$&/=?^|~]+@[A-Za-z0-9.-]+[.][A-Za-z]+$";
+    public static final int EMAIL_SIZE = 100;
+    public static final int NICK_NAME_SIZE = 100;
+    public static final int FIRST_NAME_SIZE = 100;
+    public static final int LAST_NAME_SIZE = 100;
+    public static final int RESTAURANT_NAME_SIZE = 100;
+    public static final int MENU_ENTRY_NAME_SIZE = 100;
+    public static final int ENCRYPTED_PASSWORD_SIZE = 60;
 
     public static <T extends EntityWithId> Supplier<EntityNotFoundException>
     entityNotFoundSupplier(Class<T> entityClass, long id) {

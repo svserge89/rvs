@@ -6,10 +6,10 @@ DROP TABLE IF EXISTS user;
 
 CREATE TABLE user (
     id LONG PRIMARY KEY AUTO_INCREMENT,
-    nick_name VARCHAR(60) UNIQUE NOT NULL,
-    first_name VARCHAR(30),
-    last_name VARCHAR(30),
-    email VARCHAR(60) UNIQUE NOT NULL,
+    nick_name VARCHAR(100) UNIQUE NOT NULL,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR_IGNORECASE(100) UNIQUE NOT NULL,
     encrypted_password VARCHAR(60) NOT NULL,
     CHECK (TRIM(nick_name) <> ''),
     CHECK (email REGEXP '^[A-Za-z0-9._%\-+!#$&/=?^|~]+@[A-Za-z0-9.-]+[.][A-Za-z]+$')
@@ -24,13 +24,13 @@ CREATE TABLE user_role (
 
 CREATE TABLE restaurant (
     id LONG PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(60) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL UNIQUE,
     CHECK (TRIM(name) <> '')
 );
 
 CREATE TABLE menu_entry (
     id LONG PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(60) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     price DOUBLE NOT NULL,
     date DATE NOT NULL DEFAULT NOW(),
     restaurant_id LONG REFERENCES restaurant(id) ON DELETE CASCADE,
