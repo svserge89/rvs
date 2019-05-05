@@ -2,6 +2,7 @@ package sergesv.rvs.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -77,13 +78,13 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     @Query("SELECT DISTINCT restaurant FROM Restaurant restaurant " +
                 "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate " +
             "WHERE restaurant.id = :id")
-    Optional<Restaurant> findByIdWithMenu(Long id, LocalDate menuDate);
+    Optional<Restaurant> findByIdWithMenu(Long id, LocalDate menuDate, Sort sort);
 
     @EntityGraph(Restaurant.GRAPH_WITH_MENU_AND_VOTE)
     @Query("SELECT restaurant FROM Restaurant restaurant " +
                 "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate " +
             "WHERE restaurant.id = :id")
-    Optional<Restaurant> findByIdWithMenuAndRating(Long id, LocalDate menuDate);
+    Optional<Restaurant> findByIdWithMenuAndRating(Long id, LocalDate menuDate, Sort sort);
 
     @EntityGraph(Restaurant.GRAPH_WITH_MENU_AND_VOTE)
     @Query("SELECT restaurant FROM Restaurant restaurant " +
@@ -91,7 +92,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
                 "LEFT JOIN restaurant.voteEntry voteEntry ON voteEntry.date = :ratingDate " +
             "WHERE restaurant.id = :id")
     Optional<Restaurant> findByIdWithMenuAndRatingBy(Long id, LocalDate menuDate,
-                                                     LocalDate ratingDate);
+                                                     LocalDate ratingDate, Sort sort);
 
     @EntityGraph(Restaurant.GRAPH_WITH_MENU_AND_VOTE)
     @Query("SELECT restaurant FROM Restaurant restaurant " +
@@ -100,6 +101,6 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
                     "ON voteEntry.date BETWEEN :ratingDateStart AND :ratingDateEnd " +
             "WHERE restaurant.id = :id")
     Optional<Restaurant> findByIdWithMenuAndRatingBetween(Long id, LocalDate menuDate,
-                                                     LocalDate ratingDateStart,
-                                                     LocalDate ratingDateEnd);
+                                                          LocalDate ratingDateStart,
+                                                          LocalDate ratingDateEnd, Sort sort);
 }

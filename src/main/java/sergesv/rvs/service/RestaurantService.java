@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sergesv.rvs.model.Restaurant;
@@ -132,41 +133,42 @@ public class RestaurantService {
         return toTo(restaurant, false, true);
     }
 
-    public RestaurantTo getOneWithMenu(long id, LocalDate menuDate) {
+    public RestaurantTo getOneWithMenu(long id, LocalDate menuDate, Sort sort) {
         log.debug("getOneWithMenu params: id={}, menuDate={}", id, menuDate);
 
-        return toTo(restaurantRepository.findByIdWithMenu(id, menuDate)
+        return toTo(restaurantRepository.findByIdWithMenu(id, menuDate, sort)
                 .orElseThrow(entityNotFoundSupplier(Restaurant.class, id)),
                 true, false);
     }
 
-    public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate) {
+    public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate, Sort sort) {
         log.debug("getOneWithMenuAndRating params: id={}, menuDate={}", id, menuDate);
 
-        Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRating(id, menuDate)
+        Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRating(id, menuDate, sort)
                 .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, true, true);
     }
 
-    public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate, LocalDate ratingDate) {
+    public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate, LocalDate ratingDate,
+                                                Sort sort) {
         log.debug("getOneWithMenuAndRating params: id={}, menuDate={}, ratingDate={}", id, menuDate,
                 ratingDate);
 
-        Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRatingBy(
-                id, menuDate, ratingDate).orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
+        Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRatingBy(id, menuDate,
+                ratingDate, sort).orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, true, true);
     }
 
     public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate,
                                                 LocalDate ratingDateStart,
-                                                LocalDate ratingDateEnd) {
+                                                LocalDate ratingDateEnd, Sort sort) {
         log.debug("getOneWithMenuAndRating params: id={}, menuDate={}, ratingDateStart={}, " +
                         "ratingDateEnd={}", id, menuDate, ratingDateStart, ratingDateEnd);
 
         Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRatingBetween(
-                id, menuDate, ratingDateStart, ratingDateEnd)
+                id, menuDate, ratingDateStart, ratingDateEnd, sort)
                 .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, true, true);

@@ -30,6 +30,8 @@ public class RvsPropertyResolver {
     private static final String PROPERTY_SORT_RESTAURANT_WITH_MENU_AND_RATING =
             "rvs.sort-restaurant-with-menu-and-rating";
     private static final String PROPERTY_SORT_MENU_ENTRY = "rvs.sort-menu-entry";
+    private static final String PROPERTY_SORT_SINGLE_RESTAURANT_MENU_ENTRY =
+            "rvs.sort-single-restaurant-menu-entry";
     private static final String PROPERTY_SORT_USER = "rvs.sort-user";
     private static final String PROPERTY_SORT_VOTE_ENTRY = "rvs.sort-vote-entry";
 
@@ -39,7 +41,7 @@ public class RvsPropertyResolver {
     private static final int DEFAULT_VOTE_ENTRY_PAGE_SIZE = 10;
     private static final LocalTime DEFAULT_MAX_VOTE_TIME = LocalTime.of(11, 0);
 
-    private static final Logger log = LoggerFactory.getLogger(RvsPropertyResolver.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @DateTimeFormat(iso = ISO.TIME)
     private LocalTime maxVoteTime;
@@ -61,6 +63,8 @@ public class RvsPropertyResolver {
     private String sortRestaurantWithMenuAndRating;
 
     private String sortMenuEntry;
+
+    private String sortSingleRestaurantMenuEntry;
 
     private String sortUser;
 
@@ -120,6 +124,11 @@ public class RvsPropertyResolver {
 
     public Sort getSortMenuEntry() {
         return getDefaultSort(sortMenuEntry, PROPERTY_SORT_MENU_ENTRY, MENU_ENTRY_PARAMS);
+    }
+
+    public Sort getSortSingleRestaurantMenuEntry() {
+        return getDefaultSort(sortSingleRestaurantMenuEntry,
+                PROPERTY_SORT_SINGLE_RESTAURANT_MENU_ENTRY, SINGLE_RESTAURANT_MENU_ENTRY_PARAMS);
     }
 
     public Sort getSortUser() {

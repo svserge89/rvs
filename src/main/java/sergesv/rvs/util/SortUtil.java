@@ -20,7 +20,6 @@ public final class SortUtil {
     private static final String LAST_NAME = "lastName";
     private static final String MENU_ENTRY_NAME = "menuEntry.name";
     private static final String MENU_ENTRY_PRICE = "menuEntry.price";
-    private static final String MENU_ENTRY_DATE = "menuEntry.date";
     private static final String RESTAURANT_NAME = "restaurant.name";
     private static final String DESC = "desc";
     private static final String ASC = "asc";
@@ -30,10 +29,12 @@ public final class SortUtil {
     public static final String[] RESTAURANT_PARAMS = {NAME, ASC, DESC};
     public static final String[] RESTAURANT_WITH_RATING_PARAMS = {NAME, RATING, ASC, DESC};
     public static final String[] RESTAURANT_WITH_MENU_PARAMS =
-            {NAME, MENU_ENTRY_NAME, MENU_ENTRY_PRICE, MENU_ENTRY_DATE, ASC, DESC};
+            {NAME, MENU_ENTRY_NAME, MENU_ENTRY_PRICE, ASC, DESC};
     public static final String[] RESTAURANT_WITH_MENU_AND_RATING_PARAMS =
-            {NAME, RATING, MENU_ENTRY_NAME, MENU_ENTRY_PRICE, MENU_ENTRY_DATE, ASC, DESC};
+            {NAME, RATING, MENU_ENTRY_NAME, MENU_ENTRY_PRICE, ASC, DESC};
     public static final String[] MENU_ENTRY_PARAMS = {NAME, PRICE, DATE, ASC, DESC};
+    public static final String[] SINGLE_RESTAURANT_MENU_ENTRY_PARAMS =
+            {MENU_ENTRY_NAME, MENU_ENTRY_PRICE, ASC, DESC};
     public static final String[] USER_PARAMS =
             {ID, NICKNAME, EMAIL, FIRST_NAME, LAST_NAME, ASC, DESC};
     public static final String[] VOTE_ENTRY_PARAMS = {DATE, TIME, RESTAURANT_NAME, ASC, DESC};
@@ -48,6 +49,7 @@ public final class SortUtil {
         Sort sort = null;
 
         List<String> usedParams = new ArrayList<>(params.length);
+
         for (int i = 0; i < params.length; ++i) {
             var param = params[i];
             var nextParam = i == params.length - 1 ? "" : params[i + 1];
@@ -87,6 +89,7 @@ public final class SortUtil {
         Sort resultSort = param.equals(RATING) ?
                 JpaSort.unsafe(direction, "size(voteEntry)") :
                 Sort.by(direction, param);
+
         return sort == null ? resultSort : sort.and(resultSort);
     }
 

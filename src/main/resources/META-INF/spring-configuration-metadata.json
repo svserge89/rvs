@@ -41,6 +41,10 @@
       "type": "java.lang.String"
     },
     {
+      "name": "rvs.sort-single-restaurant-menu-entry",
+      "type": "java.lang.String"
+    },
+    {
       "name": "rvs.sort-user",
       "type": "java.lang.String"
     },

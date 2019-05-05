@@ -2,6 +2,7 @@ package sergesv.rvs.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import sergesv.rvs.RvsPropertyResolver;
@@ -84,11 +85,15 @@ public class PublicRestaurantController {
                                @RequestParam(required = false)
                                @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateEnd,
                                @RequestParam(required = false)
-                               @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate) {
+                               @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate,
+                               @RequestParam(required = false) String sort) {
+        Sort sorter = menu ? getSort(sort, SINGLE_RESTAURANT_MENU_ENTRY_PARAMS)
+                .orElse(propertyResolver.getSortSingleRestaurantMenuEntry()) : Sort.unsorted();
+
         switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
             case MENU:
                 return restaurantService.getOneWithMenu(id,
-                        Optional.ofNullable(menuDate).orElse(getCurrentDate()));
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), sorter);
             case RATING:
                 return restaurantService.getOneWithRating(id);
             case RATING_BY_DATE:
@@ -99,15 +104,15 @@ public class PublicRestaurantController {
                         Optional.ofNullable(ratingDateEnd).orElse(MAX_DATE));
             case MENU_AND_RATING:
                 return restaurantService.getOneWithMenuAndRating(id,
-                        Optional.ofNullable(menuDate).orElse(getCurrentDate()));
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), sorter);
             case MENU_AND_RATING_BY_DATE:
                 return restaurantService.getOneWithMenuAndRating(id,
-                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), ratingDate);
+                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), ratingDate, sorter);
             case MENU_AND_RATING_BETWEEN_DATES:
                 return restaurantService.getOneWithMenuAndRating(id,
                         Optional.ofNullable(menuDate).orElse(getCurrentDate()),
                         Optional.ofNullable(ratingDateStart).orElse(MIN_DATE),
-                        Optional.ofNullable(ratingDateEnd).orElse(MAX_DATE));
+                        Optional.ofNullable(ratingDateEnd).orElse(MAX_DATE), sorter);
             default:
                 return restaurantService.getOne(id);
         }
