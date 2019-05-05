@@ -140,12 +140,12 @@ public class PublicRestaurantController {
 
     @GetMapping("/{restaurantId}/rating")
     public int getRating(@PathVariable long restaurantId,
-                          @RequestParam(required = false)
-                          @DateTimeFormat(iso = ISO.DATE) LocalDate date,
-                          @RequestParam(required = false)
-                          @DateTimeFormat(iso = ISO.DATE) LocalDate dateStart,
-                          @RequestParam(required = false)
-                          @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd) {
+                         @RequestParam(required = false)
+                         @DateTimeFormat(iso = ISO.DATE) LocalDate date,
+                         @RequestParam(required = false)
+                         @DateTimeFormat(iso = ISO.DATE) LocalDate dateStart,
+                         @RequestParam(required = false)
+                         @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd) {
         switch (resolveParams(date, dateStart, dateEnd)) {
             case BY_DATE:
                 return restaurantService.getRating(restaurantId, date);

@@ -53,7 +53,7 @@ public class RestaurantService {
     }
 
     public PageTo<RestaurantTo> getAllWithRating(LocalDate dateStart, LocalDate dateEnd,
-                                               Pageable pageable) {
+                                                 Pageable pageable) {
         log.debug("getAllWithRating params: pageable=\"{}\", dateStart={}, dateEnd={}", pageable,
                 dateStart, dateEnd);
 
@@ -77,7 +77,7 @@ public class RestaurantService {
     }
 
     public PageTo<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, LocalDate ratingDate,
-                                                      Pageable pageable) {
+                                                        Pageable pageable) {
         log.debug("getAllWithMenuAndRating params: pageable=\"{}\", menuDate={}, " +
                         "ratingDate={}", pageable, menuDate, ratingDate);
 
@@ -134,7 +134,7 @@ public class RestaurantService {
     }
 
     public RestaurantTo getOneWithMenu(long id, LocalDate menuDate, Sort sort) {
-        log.debug("getOneWithMenu params: id={}, menuDate={}", id, menuDate);
+        log.debug("getOneWithMenu params: id={}, menuDate={}, sort=\"{}\"", id, menuDate, sort);
 
         return toTo(restaurantRepository.findByIdWithMenu(id, menuDate, sort)
                 .orElseThrow(entityNotFoundSupplier(Restaurant.class, id)),
@@ -142,7 +142,8 @@ public class RestaurantService {
     }
 
     public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate, Sort sort) {
-        log.debug("getOneWithMenuAndRating params: id={}, menuDate={}", id, menuDate);
+        log.debug("getOneWithMenuAndRating params: id={}, menuDate={}, sort=\"{}\"", id, menuDate,
+                sort);
 
         Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRating(id, menuDate, sort)
                 .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
@@ -152,8 +153,8 @@ public class RestaurantService {
 
     public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate, LocalDate ratingDate,
                                                 Sort sort) {
-        log.debug("getOneWithMenuAndRating params: id={}, menuDate={}, ratingDate={}", id, menuDate,
-                ratingDate);
+        log.debug("getOneWithMenuAndRating params: id={}, menuDate={}, ratingDate={}, sort=\"{}\"",
+                id, menuDate, ratingDate, sort);
 
         Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRatingBy(id, menuDate,
                 ratingDate, sort).orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
@@ -165,7 +166,8 @@ public class RestaurantService {
                                                 LocalDate ratingDateStart,
                                                 LocalDate ratingDateEnd, Sort sort) {
         log.debug("getOneWithMenuAndRating params: id={}, menuDate={}, ratingDateStart={}, " +
-                        "ratingDateEnd={}", id, menuDate, ratingDateStart, ratingDateEnd);
+                        "ratingDateEnd={}, sort=\"{}\"", id, menuDate, ratingDateStart,
+                ratingDateEnd, sort);
 
         Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRatingBetween(
                 id, menuDate, ratingDateStart, ratingDateEnd, sort)
