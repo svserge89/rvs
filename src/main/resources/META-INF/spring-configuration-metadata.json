@@ -25,7 +25,15 @@
       "type": "java.lang.String"
     },
     {
+      "name": "rvs.sort-restaurant-with-rating",
+      "type": "java.lang.String"
+    },
+    {
       "name": "rvs.sort-restaurant-with-menu",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "rvs.sort-restaurant-with-menu-and-rating",
       "type": "java.lang.String"
     },
     {

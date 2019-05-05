@@ -7,12 +7,20 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Set;
 
 import static sergesv.rvs.util.ValidationUtil.RESTAURANT_NAME_SIZE;
 
 @Entity
-@NamedEntityGraph(name = Restaurant.GRAPH_WITH_MENU_ENTRIES,
-        attributeNodes = @NamedAttributeNode("menuEntry"))
+@NamedEntityGraphs({
+        @NamedEntityGraph(name = Restaurant.GRAPH_WITH_MENU,
+                attributeNodes = @NamedAttributeNode("menuEntry")),
+        @NamedEntityGraph(name = Restaurant.GRAPH_WITH_VOTE,
+                attributeNodes = @NamedAttributeNode("voteEntry")),
+        @NamedEntityGraph(name = Restaurant.GRAPH_WITH_MENU_AND_VOTE,
+                attributeNodes = {@NamedAttributeNode("menuEntry"),
+                                  @NamedAttributeNode("voteEntry")})
+})
 @Table(name = "restaurant")
 @Getter
 @Setter
@@ -21,7 +29,10 @@ import static sergesv.rvs.util.ValidationUtil.RESTAURANT_NAME_SIZE;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Restaurant implements EntityWithId {
-    public static final String GRAPH_WITH_MENU_ENTRIES = "Restaurant_graphWithMenuEntry";
+    public static final String GRAPH_WITH_MENU = "Restaurant_graphWithMenuEntry";
+    public static final String GRAPH_WITH_VOTE = "Restaurant_graphWithVoteEntry";
+    public static final String GRAPH_WITH_MENU_AND_VOTE =
+            "Restaurant_graphWithMenuEntryAndVoteEntry";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,4 +48,7 @@ public class Restaurant implements EntityWithId {
 
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     private List<MenuEntry> menuEntry;
+
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
+    private Set<VoteEntry> voteEntry;
 }

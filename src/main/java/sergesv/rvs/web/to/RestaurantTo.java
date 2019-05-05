@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @RequiredArgsConstructor
@@ -18,7 +18,7 @@ public class RestaurantTo {
     private final String name;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final List<MenuEntryTo> menu;
+    private final Set<MenuEntryTo> menu;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final Long rating;

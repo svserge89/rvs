@@ -17,8 +17,7 @@ import java.util.Optional;
 import static org.springframework.format.annotation.DateTimeFormat.*;
 import static sergesv.rvs.util.DateTimeUtil.*;
 import static sergesv.rvs.util.SortUtil.*;
-import static sergesv.rvs.util.web.ControllerUtil.getPageable;
-import static sergesv.rvs.util.web.ControllerUtil.resolveParams;
+import static sergesv.rvs.util.web.ControllerUtil.*;
 
 @RestController
 @RequestMapping("/api/public/restaurants")
@@ -42,11 +41,8 @@ public class PublicRestaurantController {
                                        @RequestParam(required = false) Integer page,
                                        @RequestParam(required = false) Integer size,
                                        @RequestParam(required = false) String sort) {
-        Pageable pageable = getPageable(page, size, menu ?
-                getSort(sort, RESTAURANT_WITH_MENU_PARAMS)
-                        .orElse(propertyResolver.getSortRestaurantWithMenu()) :
-                getSort(sort, RESTAURANT_PARAMS).orElse(propertyResolver.getSortRestaurant()),
-                propertyResolver.getRestaurantPageSize());
+        Pageable pageable = resolvePageable(page, size, resolveSort(sort, menu, rating,
+                propertyResolver), propertyResolver.getRestaurantPageSize());
 
         switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
             case MENU:
@@ -124,7 +120,7 @@ public class PublicRestaurantController {
                                        @RequestParam(required = false) Integer page,
                                        @RequestParam(required = false) Integer size,
                                        @RequestParam(required = false) String sort) {
-        Pageable pageable = getPageable(page, size,
+        Pageable pageable = resolvePageable(page, size,
                 getSort(sort, MENU_ENTRY_PARAMS).orElse(propertyResolver.getSortMenuEntry()),
                 propertyResolver.getMenuEntryPageSize());
 

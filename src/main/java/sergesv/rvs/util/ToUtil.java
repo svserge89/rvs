@@ -7,10 +7,7 @@ import sergesv.rvs.model.security.Role;
 import sergesv.rvs.web.to.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -19,7 +16,7 @@ import static sergesv.rvs.util.DateTimeUtil.getCurrentDate;
 public final class ToUtil {
     // From RestaurantTo to Restaurant
     public static Restaurant toModel(RestaurantTo restaurantTo) {
-        return new Restaurant(0, restaurantTo.getName(), null);
+        return new Restaurant(0, restaurantTo.getName(), null, null);
     }
 
     // From MenuEntryTo to MenuEntry with restaurant
@@ -50,21 +47,16 @@ public final class ToUtil {
                 voteEntryTo.getDateTime().toLocalDate(), voteEntryTo.getDateTime().toLocalTime());
     }
 
-    // From Restaurant to RestaurantTo without rating
-    public static RestaurantTo toTo(Restaurant restaurant, boolean withMenu) {
-        return toTo(restaurant, withMenu,null);
-    }
-
-    // From Restaurant to RestaurantTo with rating
-    public static RestaurantTo toTo(Restaurant restaurant, boolean withMenu, Long rating) {
-        List<MenuEntryTo> menuEntryTos = null;
-
+    // From Restaurant to RestaurantTo
+    public static RestaurantTo toTo(Restaurant restaurant, boolean withMenu, boolean withRating) {
+        Set<MenuEntryTo> menuEntryTos = null;
         if (withMenu) {
             menuEntryTos = restaurant.getMenuEntry().stream()
                     .map(ToUtil::toTo)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
         }
 
+        Long rating = withRating ? (long) restaurant.getVoteEntry().size() : null;
         return new RestaurantTo(restaurant.getId(), restaurant.getName(), menuEntryTos, rating);
     }
 
@@ -83,7 +75,7 @@ public final class ToUtil {
 
     // From VoteEntry to VoteEntryTo
     public static VoteEntryTo toTo(VoteEntry voteEntry) {
-        return new VoteEntryTo(toTo(voteEntry.getRestaurant(), false),
+        return new VoteEntryTo(toTo(voteEntry.getRestaurant(), false, false),
                 LocalDateTime.of(voteEntry.getDate(), voteEntry.getTime()));
     }
 

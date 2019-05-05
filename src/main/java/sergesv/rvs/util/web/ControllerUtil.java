@@ -3,9 +3,12 @@ package sergesv.rvs.util.web;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import sergesv.rvs.RvsPropertyResolver;
 
 import java.time.LocalDate;
 import java.util.Optional;
+
+import static sergesv.rvs.util.SortUtil.*;
 
 public final class ControllerUtil {
     public enum ParamsCondition {
@@ -63,9 +66,25 @@ public final class ControllerUtil {
         return resolveParams(null, dateStart, dateEnd);
     }
 
-    public static Pageable getPageable(Integer page, Integer size, Sort sort, int defaultPageSize) {
+    public static Pageable resolvePageable(Integer page, Integer size, Sort sort, int defaultPageSize) {
         return PageRequest.of(Optional.ofNullable(page).orElse(0),
                 Optional.ofNullable(size).orElse(defaultPageSize), sort);
+    }
+
+    public static Sort resolveSort(String params, boolean withMenu, boolean withRating,
+                               RvsPropertyResolver propertyResolver) {
+        if (withMenu && withRating) {
+            return getSort(params, RESTAURANT_WITH_MENU_AND_RATING_PARAMS)
+                    .orElse(propertyResolver.getSortRestaurantWithMenuAndRating());
+        } else if (withMenu) {
+            return getSort(params, RESTAURANT_WITH_MENU_PARAMS)
+                    .orElse(propertyResolver.getSortRestaurantWithMenu());
+        } else if (withRating) {
+            return getSort(params, RESTAURANT_WITH_RATING_PARAMS)
+                    .orElse(propertyResolver.getSortRestaurantWithRating());
+        } else {
+            return getSort(params, RESTAURANT_PARAMS).orElse(propertyResolver.getSortRestaurant());
+        }
     }
 
     private ControllerUtil() {

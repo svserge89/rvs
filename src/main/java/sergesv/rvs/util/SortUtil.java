@@ -1,6 +1,7 @@
 package sergesv.rvs.util;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.JpaSort;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,11 +24,15 @@ public final class SortUtil {
     private static final String RESTAURANT_NAME = "restaurant.name";
     private static final String DESC = "desc";
     private static final String ASC = "asc";
+    private static final String RATING = "rating";
     private static final String SPLIT_REGEX = ",";
 
     public static final String[] RESTAURANT_PARAMS = {NAME, ASC, DESC};
+    public static final String[] RESTAURANT_WITH_RATING_PARAMS = {NAME, RATING, ASC, DESC};
     public static final String[] RESTAURANT_WITH_MENU_PARAMS =
             {NAME, MENU_ENTRY_NAME, MENU_ENTRY_PRICE, MENU_ENTRY_DATE, ASC, DESC};
+    public static final String[] RESTAURANT_WITH_MENU_AND_RATING_PARAMS =
+            {NAME, RATING, MENU_ENTRY_NAME, MENU_ENTRY_PRICE, MENU_ENTRY_DATE, ASC, DESC};
     public static final String[] MENU_ENTRY_PARAMS = {NAME, PRICE, DATE, ASC, DESC};
     public static final String[] USER_PARAMS =
             {ID, NICKNAME, EMAIL, FIRST_NAME, LAST_NAME, ASC, DESC};
@@ -63,13 +68,13 @@ public final class SortUtil {
             }
 
             if (nextParam.equals(ASC)) {
-                sort = compute(sort, Sort.by(Sort.Direction.ASC, param));
+                sort = compute(sort, param, Sort.Direction.ASC);
                 ++i;
             } else if (nextParam.equals(DESC)) {
-                sort = compute(sort, Sort.by(Sort.Direction.DESC, param));
+                sort = compute(sort, param, Sort.Direction.DESC);
                 ++i;
             } else {
-                sort = compute(sort, Sort.by(param));
+                sort = compute(sort, param, Sort.Direction.ASC);
             }
 
             usedParams.add(param);
@@ -78,8 +83,11 @@ public final class SortUtil {
         return Optional.ofNullable(sort);
     }
 
-    private static Sort compute(Sort sort, Sort nextSort) {
-        return sort == null ? nextSort : sort.and(nextSort);
+    private static Sort compute(Sort sort, String param, Sort.Direction direction) {
+        Sort resultSort = param.equals(RATING) ?
+                JpaSort.unsafe(direction, "size(voteEntry)") :
+                Sort.by(direction, param);
+        return sort == null ? resultSort : sort.and(resultSort);
     }
 
     private SortUtil() {

@@ -18,7 +18,7 @@ import static sergesv.rvs.util.DateTimeUtil.MAX_DATE;
 import static sergesv.rvs.util.DateTimeUtil.MIN_DATE;
 import static sergesv.rvs.util.SortUtil.*;
 import static sergesv.rvs.util.web.ControllerUtil.ParamsCondition.BETWEEN_DATES;
-import static sergesv.rvs.util.web.ControllerUtil.getPageable;
+import static sergesv.rvs.util.web.ControllerUtil.resolvePageable;
 import static sergesv.rvs.util.web.ControllerUtil.resolveParams;
 import static sergesv.rvs.util.web.SecurityUtil.getAuthUserId;
 
@@ -37,7 +37,7 @@ public class UserVoteController {
                                       @RequestParam(required = false) Integer page,
                                       @RequestParam(required = false) Integer size,
                                       @RequestParam(required = false) String sort) {
-        Pageable pageable = getPageable(page, size,
+        Pageable pageable = resolvePageable(page, size,
                 getSort(sort, VOTE_ENTRY_PARAMS).orElse(propertyResolver.getSortVoteEntry()),
                 propertyResolver.getVoteEntryPageSize());
 
