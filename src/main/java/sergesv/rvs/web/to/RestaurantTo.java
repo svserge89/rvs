@@ -21,5 +21,5 @@ public class RestaurantTo {
     private final Set<MenuEntryTo> menu;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final Long rating;
+    private final Integer rating;
 }

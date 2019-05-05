@@ -50,14 +50,15 @@ public final class ToUtil {
     // From Restaurant to RestaurantTo
     public static RestaurantTo toTo(Restaurant restaurant, boolean withMenu, boolean withRating) {
         Set<MenuEntryTo> menuEntryTos = null;
+
         if (withMenu) {
             menuEntryTos = restaurant.getMenuEntry().stream()
                     .map(ToUtil::toTo)
                     .collect(Collectors.toCollection(LinkedHashSet::new));
         }
 
-        Long rating = withRating ? (long) restaurant.getVoteEntry().size() : null;
-        return new RestaurantTo(restaurant.getId(), restaurant.getName(), menuEntryTos, rating);
+        return new RestaurantTo(restaurant.getId(), restaurant.getName(), menuEntryTos,
+                withRating ? restaurant.getVoteEntry().size() : null);
     }
 
     // From MenuEntry to MenuEntryTo

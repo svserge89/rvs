@@ -134,7 +134,7 @@ public class PublicRestaurantController {
     }
 
     @GetMapping("/{restaurantId}/rating")
-    public Long getRating(@PathVariable long restaurantId,
+    public int getRating(@PathVariable long restaurantId,
                           @RequestParam(required = false)
                           @DateTimeFormat(iso = ISO.DATE) LocalDate date,
                           @RequestParam(required = false)

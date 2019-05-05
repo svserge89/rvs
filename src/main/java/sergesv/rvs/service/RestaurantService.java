@@ -25,8 +25,6 @@ import static sergesv.rvs.util.ValidationUtil.*;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class RestaurantService {
-    private static final long DEFAULT_RATING = 0L;
-
     private final RestaurantRepository restaurantRepository;
     private final VoteEntryRepository voteEntryRepository;
 
@@ -174,19 +172,19 @@ public class RestaurantService {
         return toTo(restaurant, true, true);
     }
 
-    public long getRating(long restaurantId) {
+    public int getRating(long restaurantId) {
         log.debug("getRating params: restaurantId={}", restaurantId);
 
         return voteEntryRepository.countByRestaurantId(restaurantId);
     }
 
-    public long getRating(long restaurantId, LocalDate date) {
+    public int getRating(long restaurantId, LocalDate date) {
         log.debug("getRating params: restaurantId={}, date={}", restaurantId, date);
 
         return voteEntryRepository.countByRestaurantIdAndDateEquals(restaurantId, date);
     }
 
-    public long getRating(long restaurantId, LocalDate dateStart, LocalDate dateEnd) {
+    public int getRating(long restaurantId, LocalDate dateStart, LocalDate dateEnd) {
         log.debug("getRating params: restaurantId={}, dateStart={}, dateEnd={}", restaurantId,
                 dateStart, dateEnd);
 
