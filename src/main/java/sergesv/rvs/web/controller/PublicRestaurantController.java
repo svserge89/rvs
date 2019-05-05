@@ -121,7 +121,11 @@ public class PublicRestaurantController {
     @GetMapping("/{restaurantId}/menu")
     public PageTo<MenuEntryTo> getMenu(@PathVariable long restaurantId,
                                        @RequestParam(required = false)
-                                       @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate,
+                                       @DateTimeFormat(iso = ISO.DATE) LocalDate date,
+                                       @RequestParam(required = false)
+                                       @DateTimeFormat(iso = ISO.DATE) LocalDate dateStart,
+                                       @RequestParam(required = false)
+                                       @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd,
                                        @RequestParam(required = false) Integer page,
                                        @RequestParam(required = false) Integer size,
                                        @RequestParam(required = false) String sort) {
@@ -129,8 +133,16 @@ public class PublicRestaurantController {
                 getSort(sort, MENU_ENTRY_PARAMS).orElse(propertyResolver.getSortMenuEntry()),
                 propertyResolver.getMenuEntryPageSize());
 
-        return menuEntryService.getAllByRestaurant(restaurantId,
-                Optional.ofNullable(menuDate).orElse(getCurrentDate()), pageable);
+        switch (resolveParams(date, dateStart, dateEnd)) {
+            case BY_DATE:
+                return menuEntryService.getAllByRestaurant(restaurantId, date, pageable);
+            case BETWEEN_DATES:
+                return menuEntryService.getAllByRestaurant(restaurantId,
+                        Optional.ofNullable(dateStart).orElse(MIN_DATE),
+                        Optional.ofNullable(dateEnd).orElse(MAX_DATE), pageable);
+            default:
+                return menuEntryService.getAllByRestaurant(restaurantId, pageable);
+        }
     }
 
     @GetMapping("/{restaurantId}/menu/{id}")
