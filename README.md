@@ -53,11 +53,11 @@ Restaurant Voting Service
 -X GET "http://localhost:8080/api/public/restaurants?menu=true&rating=true"`
 
 #### 2. Get single restaurant info
-**Description**: Get a single Restaurant object.  
+**Description**: Get a single `Restaurant` object.  
 **Method**: `GET`  
 **URL**: `http://localhost:8080/api/public/restaurants/{id}`  
 **Path variables**:
-  + **`id`** - `id` value of Restaurant object.
+  + **`id`** - `id` value of `Restaurant` object.
 
 **URL parameters**:
   + **`menu`** - include menu.  
@@ -92,20 +92,21 @@ Restaurant Voting Service
 -X GET "http://localhost:8080/api/public/restaurants/1?menu=true&rating=true"`
 
 #### 3. Get menu entries by restaurant
-**Description**: Get a `Page` object containing an array of `MenuEntry` objects by `restaurantId`.  
+**Description**: Get a `Page` object containing an array of `MenuEntry` objects by `restaurantId`.
+If date parameters (`date`, `dateStart`, `dateEnd`) are not set: return menu entries for all time.  
 **Method**: `GET`  
 **URL**: `http://localhost:8080/api/public/restaurants/{restaurantId}/menu`  
 **Path variables**:
-  + **`restaurantId`** - `id` value of Restaurant object.
+  + **`restaurantId`** - `id` value of `Restaurant` object.
 
 **URL parameters**:
-  + **`menuDate`** - set menu date. If `menuDateStart` is set, or `menuDateEnd` is set: ignored.  
+  + **`date`** - set menu date. If `dateStart` is set, or `dateEnd` is set: ignored.  
   Value type: ISO date.  
   Default value: empty.
-  + **`menuDateStart`** - set min menu date.  
+  + **`dateStart`** - set min menu date.  
   Value type: ISO date.  
   Default value: empty.
-  + **`menuDateEnd`** - set max menu date.  
+  + **`dateEnd`** - set max menu date.  
   Value type: ISO date.  
   Default value: empty.
   + **`page`** - page number.  
@@ -125,12 +126,12 @@ Restaurant Voting Service
 -X GET "http://localhost:8080/api/public/restaurants/1/menu"`
 
 #### 4. Get single menu entry by restaurant
-**Description**: Get a single MenuEntry object by `id` and `restaurantId`.  
+**Description**: Get a single `MenuEntry` object by `id` and `restaurantId`.  
 **Method**: `GET`  
 **URL**: `http://localhost:8080/api/public/restaurants/{restaurantId}/menu/{id}`  
 **Path variables**:
   + **`restaurantId`** - `id` value of Restaurant object.
-  + **`id`** - `id` value of MenuEntry object.
+  + **`id`** - `id` value of `MenuEntry` object.
 
 **Return**: `MenuEntry` object.  
 **Example**: `$ curl -H "Content-Type: application/json" 
@@ -142,7 +143,7 @@ Restaurant Voting Service
 **Method**: `GET`  
 **URL**: `http://localhost:8080/api/public/restaurants/{restaurantId}/rating`  
 **Path variables**:
-  + **`restaurantId`** - `id` value of Restaurant object.
+  + **`restaurantId`** - `id` value of `Restaurant` object.
 
 **URL parameters**:
   + **`date`** - set rating date. If `dateStart` is set, or `dateEnd` is set: ignored.  
@@ -161,7 +162,7 @@ Restaurant Voting Service
 
 ### User API
 #### 1. Get vote entries for authorized user
-**Description**: Get a Page object containing an array of VoteEntry objects by authorized user. 
+**Description**: Get a `Page` object containing an array of `VoteEntry` objects by authorized user. 
 If date parameters (`dateStart`, `dateEnd`) are not set: return vote entries for all time.  
 **Method**: `GET`  
 **URL**: `http://localhost:8080/api/user/votes`  
@@ -189,22 +190,22 @@ If date parameters (`dateStart`, `dateEnd`) are not set: return vote entries for
 -X GET "http://localhost:8080/api/user/votes"`
 
 #### 2. Add vote for restaurant
-**Description**: Create VoteEntry by restaurant, authorized user, and current date.  
+**Description**: Create `VoteEntry` by restaurant, authorized user, and current date.  
 **Method**: `POST`  
 **URL**: `http://localhost:8080/api/user/restaurants/{restaurantId}/vote`  
 **Path variables**:
-  + **`restaurantId`** - `id` value of Restaurant object.
+  + **`restaurantId`** - `id` value of `Restaurant` object.
 
 **Return**: Created `VoteEntry` object.  
 **Example**: `$ curl --user user_1:password -H "Content-Type: application/json" 
 -X POST "http://localhost:8080/api/user/restaurants/1/vote"`
 
 #### 3. Remove vote for restaurant
-**Description**: Remove VoteEntry by restaurant, authorized user, and current date.  
+**Description**: Remove `VoteEntry` by restaurant, authorized user, and current date.  
 **Method**: `DELETE`  
 **URL**: `http://localhost:8080/api/user/restaurants/{restaurantId}/vote`  
 **Path variables**:
-  + **`restaurantId`** - `id` value of Restaurant object.
+  + **`restaurantId`** - `id` value of `Restaurant` object.
 
 **Example**: `$ curl --user user_1:password -H "Content-Type: application/json" 
 -X DELETE "http://localhost:8080/api/user/restaurants/1/vote"`
