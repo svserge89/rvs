@@ -392,7 +392,7 @@ is not set: use current date.
 **Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
 -X DELETE "http://localhost:8080/api/admin/users"`
 
-###JSON transfer objects
+### JSON transfer objects
 #### 1. `Page`
 **Fields**:
   + **`content`** - array of transfer objects. Value type: `Array`
