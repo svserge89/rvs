@@ -4,6 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import sergesv.rvs.model.User;
 
@@ -21,5 +23,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(User.GRAPH_WITH_ROLES)
     Optional<User> findByNickName(String nickname);
 
+    @Override
+    @Modifying
+    @Query("DELETE FROM User user WHERE user.id = :id")
+    void deleteById(Long id);
+
+    @Modifying
+    @Query("DELETE FROM User user WHERE user.id <> :id")
     void deleteAllByIdNot(Long id);
 }
