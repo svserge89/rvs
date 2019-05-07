@@ -1,9 +1,10 @@
 # RVS
 Restaurant Voting Service
 
-## API Documentation
+## REST API Documentation
 ### Public API
-#### 1. Get restaurants info
+**Authorization**: not required.
+#### 1. Get restaurants
 **Description**: Get a `Page` object containing an array of `Restaurant` objects.  
 **Method**: `GET`  
 **URL**: `http://localhost:8080/api/public/restaurants`  
@@ -12,7 +13,7 @@ Restaurant Voting Service
   Value type: `boolean`.  
   Default value: `false`.
   + **`menuDate`** - set filtering by date for menu. If `menu` is not set: ignored.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: current date.
   + **`rating`** - include rating. If date parameters (`ratingDate`, `ratingDateStart`, 
   `ratingDateEnd`) are not set: return rating for all time.  
@@ -20,21 +21,21 @@ Restaurant Voting Service
   Default value: `false`.
   + **`ratingDate`** - set filtering by date for rating. if `rating` is not set, or 
   `ratingDateStart` is set, or `ratingDateEnd` is set: ignored.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`ratingDateStart`** - set filtering by minimum date for rating. if `rating` is not set: 
   ignored.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`ratingDateEnd`** - set filtering by maximum date for rating. if `rating` is not set: 
   ignored.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`page`** - page number.  
-  Value type: `integer`.  
+  Value type: `number`.  
   Default value: `0`.
   + **`size`** - page size.  
-  Value type: `integer`.  
+  Value type: `number`.  
   Default value: use the `rvs.restaurant-page-size` property from `application.properties`.
   + **`sort`** - comma-separated sorting options.  
   Direction option (`asc`, `desc`) must be placed after the field name option (Example:
@@ -54,7 +55,7 @@ Restaurant Voting Service
 **Example**: `$ curl -H "Content-Type: application/json" 
 -X GET "http://localhost:8080/api/public/restaurants?menu=true&rating=true"`
 
-#### 2. Get single restaurant info
+#### 2. Get single restaurant
 **Description**: Get a single `Restaurant` object.  
 **Method**: `GET`  
 **URL**: `http://localhost:8080/api/public/restaurants/{id}`  
@@ -66,7 +67,7 @@ Restaurant Voting Service
   Value type: `boolean`.  
   Default value: `false`.
   + **`menuDate`** - set filtering by date for menu. If `menu` is not set: ignored.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: current date.
   + **`rating`** - include rating. If date parameters (`ratingDate`, `ratingDateStart`, 
   `ratingDateEnd`) are not set: return rating for all time.  
@@ -74,14 +75,14 @@ Restaurant Voting Service
   Default value: `false`.
   + **`ratingDate`** - set filtering by date for rating. If `rating` is not set, or 
   `ratingDateStart` is set, or `ratingDateEnd` is set: ignored.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`ratingDateStart`** - set filtering by minimum date for rating. If `rating` is not set: 
   ignored.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`ratingDateEnd`** - set filtering by maximum date for rating. If `rating` is not set: ignored.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`sort`** - comma-separated sorting options. If `menu` is not set: ignored.  
   Direction option (`asc`, `desc`) must be placed after the field name option (Example: 
@@ -104,19 +105,19 @@ If date parameters (`date`, `dateStart`, `dateEnd`) are not set: return menu ent
 
 **URL parameters**:
   + **`date`** - set filtering by date. If `dateStart` is set, or `dateEnd` is set: ignored.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`dateStart`** - set filtering by minimum date.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`dateEnd`** - set filtering by maximum date.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`page`** - page number.  
-  Value type: `integer`.  
+  Value type: `number`.  
   Default value: `0`.
   + **`size`** - page size.  
-  Value type: `integer`.  
+  Value type: `number`.  
   Default: use the `rvs.menu-entry-page-size` property from `application.properties`.
   + **`sort`** - comma-separated sorting options.  
   Direction option (`asc`, `desc`) must be placed after the field name option (Example: 
@@ -150,20 +151,22 @@ If date parameters (`date`, `dateStart`, `dateEnd`) are not set: return menu ent
 
 **URL parameters**:
   + **`date`** - set filtering by date. If `dateStart` is set, or `dateEnd` is set: ignored.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`dateStart`** - set filtering by minimum date.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`dateEnd`** - set filtering by maximum date.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
 
-**Return**: `integer` value.  
+**Return**: `number` value.  
 **Example**: `$ curl -H "Content-Type: application/json" 
 -X GET "http://localhost:8080/api/public/restaurants/1/rating"`
 
 ### User API
+**Authorization**: required.  
+**User role**: regular user.
 #### 1. Get vote entries for authorized user
 **Description**: Get a `Page` object containing an array of `VoteEntry` objects by authorized user. 
 If date parameters (`dateStart`, `dateEnd`) are not set: return vote entries for all time.  
@@ -171,16 +174,16 @@ If date parameters (`dateStart`, `dateEnd`) are not set: return vote entries for
 **URL**: `http://localhost:8080/api/user/votes`  
 **URL parameters**:
   + **`dateStart`** - set filtering by minimum date.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`dateEnd`** - set filtering by maximum date.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`page`** - page number.  
-  Value type: `integer`.  
+  Value type: `number`.  
   Default value: `0`.
   + **`size`** - page size.  
-  Value type: `integer`.  
+  Value type: `number`.  
   Default: use the `rvs.vote-entry-page-size` property from `application.properties`.
   + **`sort`** - comma-separated sorting options.  
   Direction option (`asc`, `desc`) must be placed after the field name option (Example: 
@@ -215,7 +218,9 @@ and current date.
 -X DELETE "http://localhost:8080/api/user/restaurants/1/vote"`
 
 ### Admin API
-#### 1. Add new restaurant information
+**Authorization**: required.  
+**User role**: administrator.
+#### 1. Add new restaurant
 **Description**: Create new `Restaurant` object.  
 **Method**: `POST`  
 **URL**: `http://localhost:8080/api/admin/restaurants`  
@@ -225,7 +230,7 @@ and current date.
 **Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
 -X POST -d '{"name":"New Restaurant"}' "http://localhost:8080/api/admin/restaurants"`
 
-#### 2. Update existing restaurant information
+#### 2. Update existing restaurant
 **Description**: Update existing `Restaurant` object.  
 **Method**: `PUT`  
 **URL**: `http://localhost:8080/api/admin/restaurants/{id}`  
@@ -236,7 +241,7 @@ and current date.
 **Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
 -X PUT -d '{"name":"Existing Restaurant"}' "http://localhost:8080/api/admin/restaurants/1"`
 
-#### 3. Delete restaurant information
+#### 3. Delete restaurant
 **Description**: Delete `Restaurant` object by `id`.  
 **Method**: `DELETE`  
 **URL**: `http://localhost:8080/api/admin/restaurants/{id}`  
@@ -246,7 +251,7 @@ and current date.
 **Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
 -X DELETE "http://localhost:8080/api/admin/restaurants/1"`
 
-#### 4. Delete all restaurants information
+#### 4. Delete all restaurants
 **Description**: Delete all `Restaurant` objects.  
 **Method**: `DELETE`  
 **URL**: `http://localhost:8080/api/admin/restaurants`  
@@ -292,8 +297,7 @@ is not set: use current date.
 -X DELETE "http://localhost:8080/api/admin/restaurants/1/menu/1"`
 
 #### 8. Delete menu entries for restaurant
-**Description**: Delete `MenuEntry` objects by `restaurantId`. If date parameters (`date`, 
-`dateStart`, `dateEnd`) are not set: delete `MenuEntry` objects for current date.  
+**Description**: Delete `MenuEntry` objects by `restaurantId`.  
 **Method**: `DELETE`  
 **URL**: `http://localhost:8080/api/admin/restaurants/{restaurantId}/menu`  
 **Path variables**:
@@ -301,14 +305,123 @@ is not set: use current date.
 
 **URL parameters**:
   + **`date`** - set filtering by date. If `dateStart` is set, or `dateEnd` is set: ignored.  
-  Value type: ISO date.  
-  Default value: empty.
+  Value type: `string` in ISO date format.  
+  Default value: current date.
   + **`dateStart`** - set filtering by minimum date.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
   + **`dateEnd`** - set filtering by maximum date.  
-  Value type: ISO date.  
+  Value type: `string` in ISO date format.  
   Default value: empty.
 
 **Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
 -X DELETE "http://localhost:8080/api/admin/restaurants/1/menu"`
+
+#### 9. Get all users
+**Description**: Get a `Page` object containing an array of `User` objects.  
+**Method**: `GET`  
+**URL**: `http://localhost:8080/api/admin/users`  
+**URL parameters**:
+  + **`page`** - page number.  
+  Value type: `number`.  
+  Default value: `0`.
+  + **`size`** - page size.  
+  Value type: `number`.  
+  Default: use the `rvs.user-page-size` property from `application.properties`.
+  + **`sort`** - comma-separated sorting options.  
+  Direction option (`asc`, `desc`) must be placed after the field name option (Example: 
+  `sort=name,desc`).  
+  Sorting options: `id`, `nickName`, `email`, `firstName`, `lastName`, `asc`, `desc`.  
+  Default value: use the `rvs.sort-menu-entry` property from `application.properties`.
+
+**Return**: `Page` object where `content` field contains an array of `User` objects.  
+**Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
+-X GET "http://localhost:8080/api/admin/users"`
+
+#### 10. Get a single user
+**Description**: Get a single `User` object by `id`.  
+**Method**: `GET`  
+**URL**: `http://localhost:8080/api/admin/users/{id}`  
+**Path variables**:
+  + **`id`** - `id` value of `User` object.
+
+**Return**: `User` object without `password` field.  
+**Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
+-X GET "http://localhost:8080/api/admin/users/1"`
+
+#### 11. Add new user
+**Description**: Create new `User` object.  
+**Method**: `POST`  
+**URL**: `http://localhost:8080/api/admin/users`  
+**Request body**: `User` object. Required fields: `nickName`, `email`, `password`. Ignored fields: 
+`id`.  
+**Return**: Created `User` object without `password` field.  
+**Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
+-X POST -d '{"nickName":"New_user","email":"newUser@email.com","password":"password",
+"regular":true}' "http://localhost:8080/api/admin/users"`
+
+#### 12. Update existing user
+**Description**: Update existing `User` object by `id`.  
+**Method**: `PUT`  
+**URL**: `http://localhost:8080/api/admin/users/{id}`  
+**Path variables**:
+  + **`id`** - `id` value of existing `User` object.
+
+**Request body**: `User` object. Ignored fields: `id`.  
+**Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
+-X PUT -d '{"nickName":"Existing_user","email":"existingUser@email.com"}'
+"http://localhost:8080/api/admin/users/1"`
+
+#### 13. Delete single user
+**Description**: Delete `user` object by `id` when `id` is not equal to authorized `user.id`.  
+**Method**: `DELETE`  
+**URL**: `http://localhost:8080/api/admin/users/{id}`  
+**Path variables**:
+  + **`id`** - `id` value of `User` object.
+
+**Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
+-X DELETE "http://localhost:8080/api/admin/users/1"`
+
+#### 14. Delete all users
+**Description**: Delete all `user` objects without authorized `user` object.  
+**Method**: `DELETE`  
+**URL**: `http://localhost:8080/api/admin/users`  
+**Path variables**:
+  + **`id`** - `id` value of `User` object.
+
+**Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
+-X DELETE "http://localhost:8080/api/admin/users"`
+
+###JSON transfer objects
+#### 1. `Page`
+**Fields**:
+  + **`content`** - array of transfer objects. Value type: `Array`
+  + **`current`** - number of current page. Value type: `number`.
+  + **`size`** - maximum number of transfer objects. Value type: `number`
+  + **`total`** - total pages. Value type: `number`.
+#### 2. `Restaurant`
+**Fields**:
+  + **`id`** - primary key. Value type: `number`.
+  + **`name`** - restaurant name. Value type: `string`.
+  + **`menu`** - array of `MenuEntry` objects. Value type: `Array`
+  + **`rating`** - restaurant rating. Value type: `number`.
+#### 3. `MenuEntry`
+**Fields**:
+  + **`id`** - primary key. Value type: `number`.
+  + **`name`** - menu entry name. Value type: `string`.
+  + **`price`** - dish price. Value type: `number`.
+  + **`date`** - menu entry date. Value type: `string` in ISO date format.
+#### 4. `VoteEntry`
+**Fields**:
+  + **`resturant`** - associated `Restaurant` object. Value type: `Restaurant`.
+  + **`dateTime`** - menu entry date. Value type: `string` in ISO date and time format.
+#### 5. `User`
+**Fields**:
+  + **`id`** - primary key. Value type: `number`.
+  + **`nickName`** - user nickname. Value type: `string`.
+  + **`firstName`** - user first name. Value type: `string`.
+  + **`lastName`** - user last name. Value type: `string`.
+  + **`email`** - user email. Value type: `string`.
+  + **`password`** - user password. Value type: `string`.
+  + **`admin`** - administrator sign. Value type: `boolean`.
+  + **`regular`** - regular user sign. Value type: `boolean`.
