@@ -28,6 +28,8 @@ public interface VoteEntryRepository extends JpaRepository<VoteEntry, Long> {
     Page<VoteEntry> findAllByUserIdAndDateBetween(Long userId, LocalDate dateStart,
                                                   LocalDate dateEnd, Pageable pageable);
 
+    @Query("SELECT voteEntry FROM VoteEntry voteEntry WHERE voteEntry.user.id = :userId " +
+                "AND voteEntry.date = :date")
     Optional<VoteEntry> findByUserIdAndDate(Long userId, LocalDate date);
 
     @Modifying
