@@ -49,7 +49,7 @@ public final class ToUtil {
 
     // From Restaurant to RestaurantTo
     public static RestaurantTo toTo(Restaurant restaurant, boolean withMenu, boolean withRating) {
-        Set<MenuEntryTo> menuEntryTos = null;
+        LinkedHashSet<MenuEntryTo> menuEntryTos = null;
 
         if (withMenu) {
             menuEntryTos = restaurant.getMenuEntry().stream()

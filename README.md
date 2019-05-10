@@ -15,22 +15,9 @@ Restaurant Voting Service
   + **`menuDate`** - set filtering by date for menu. If `menu` is not set: ignored.  
   Value type: `string` in ISO date format.  
   Default value: current date.
-  + **`rating`** - include rating. If date parameters (`ratingDate`, `ratingDateStart`, 
-  `ratingDateEnd`) are not set: returns rating for all time.  
+  + **`rating`** - include rating. Returns rating for all time.  
   Value type: `boolean`.  
   Default value: `false`.
-  + **`ratingDate`** - set filtering by date for rating. if `rating` is not set, or 
-  `ratingDateStart` is set, or `ratingDateEnd` is set: ignored.  
-  Value type: `string` in ISO date format.  
-  Default value: empty.
-  + **`ratingDateStart`** - set filtering by minimum date for rating. if `rating` is not set: 
-  ignored.  
-  Value type: `string` in ISO date format.  
-  Default value: empty.
-  + **`ratingDateEnd`** - set filtering by maximum date for rating. if `rating` is not set: 
-  ignored.  
-  Value type: `string` in ISO date format.  
-  Default value: empty.
   + **`page`** - page number.  
   Value type: `number`.  
   Default value: `0`.

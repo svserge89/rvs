@@ -45,22 +45,6 @@ public class RestaurantService {
                 false, true);
     }
 
-    public PageTo<RestaurantTo> getAllWithRating(LocalDate date, Pageable pageable) {
-        log.debug("getAllWithRating params: pageable=\"{}\", date={}", pageable, date);
-
-        return toRestaurantTos(restaurantRepository.findAllWithRatingBy(date, pageable),
-                false, true);
-    }
-
-    public PageTo<RestaurantTo> getAllWithRating(LocalDate dateStart, LocalDate dateEnd,
-                                                 Pageable pageable) {
-        log.debug("getAllWithRating params: pageable=\"{}\", dateStart={}, dateEnd={}", pageable,
-                dateStart, dateEnd);
-
-        return toRestaurantTos(restaurantRepository.findAllWithRatingBetween(dateStart, dateEnd,
-                pageable), false, true);
-    }
-
     public PageTo<RestaurantTo> getAllWithMenu(LocalDate menuDate, Pageable pageable) {
         log.debug("getAllWithMenu params: pageable=\"{}\", menuDate={}", pageable, menuDate);
 
@@ -74,27 +58,6 @@ public class RestaurantService {
 
         return toRestaurantTos(restaurantRepository.findAllWithMenuAndRating(
                 menuDate, pageable), true, true);
-    }
-
-    public PageTo<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, LocalDate ratingDate,
-                                                        Pageable pageable) {
-        log.debug("getAllWithMenuAndRating params: pageable=\"{}\", menuDate={}, " +
-                        "ratingDate={}", pageable, menuDate, ratingDate);
-
-        return toRestaurantTos(restaurantRepository.findAllWithMenuAndRatingBy(menuDate, ratingDate,
-                pageable), true, true);
-    }
-
-    public PageTo<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate,
-                                                        LocalDate ratingDateStart,
-                                                        LocalDate ratingDateEnd,
-                                                        Pageable pageable) {
-        log.debug("getAllWithMenuAndRating params: pageable=\"{}\", menuDate={}, " +
-                        "ratingDateStart={}, ratingDateEnd={}", pageable, menuDate, ratingDateStart,
-                ratingDateEnd);
-
-        return toRestaurantTos(restaurantRepository.findAllWithMenuAndRatingBetween(
-                menuDate, ratingDateStart, ratingDateEnd, pageable), true, true);
     }
 
     public RestaurantTo getOne(long id) {

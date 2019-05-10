@@ -18,43 +18,23 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     @Query("SELECT restaurant FROM Restaurant restaurant")
     Page<Restaurant> findAllWithRating(Pageable pageable);
 
-    @EntityGraph(Restaurant.GRAPH_WITH_VOTE)
-    @Query("SELECT restaurant FROM Restaurant restaurant " +
-                "LEFT JOIN restaurant.voteEntry voteEntry ON voteEntry.date = :ratingDate")
-    Page<Restaurant> findAllWithRatingBy(LocalDate ratingDate, Pageable pageable);
-
-    @EntityGraph(Restaurant.GRAPH_WITH_VOTE)
-    @Query("SELECT restaurant FROM Restaurant restaurant " +
-                "LEFT JOIN restaurant.voteEntry voteEntry " +
-                    "ON voteEntry.date BETWEEN :ratingDateStart AND :ratingDateEnd")
-    Page<Restaurant> findAllWithRatingBetween(LocalDate ratingDateStart, LocalDate ratingDateEnd,
-                                              Pageable pageable);
-
     @EntityGraph(Restaurant.GRAPH_WITH_MENU)
-    @Query("SELECT restaurant FROM Restaurant restaurant " +
-                "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate")
+    @Query(value = "SELECT restaurant FROM Restaurant restaurant " +
+                        "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate",
+            countQuery = "SELECT COUNT (DISTINCT restaurant) FROM Restaurant restaurant " +
+                            "LEFT JOIN restaurant.menuEntry menuEntry " +
+                                "ON menuEntry.date = :menuDate")
     Page<Restaurant> findAllWithMenu(LocalDate menuDate, Pageable pageable);
 
     @EntityGraph(Restaurant.GRAPH_WITH_MENU_AND_VOTE)
-    @Query("SELECT restaurant FROM Restaurant restaurant " +
-                "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate " +
-                "LEFT JOIN restaurant.voteEntry voteEntry")
+    @Query(value = "SELECT restaurant FROM Restaurant restaurant " +
+                        "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate " +
+                        "LEFT JOIN restaurant.voteEntry voteEntry",
+            countQuery = "SELECT COUNT (DISTINCT restaurant) FROM Restaurant restaurant " +
+                            "LEFT JOIN restaurant.menuEntry menuEntry " +
+                                "ON menuEntry.date = :menuDate " +
+                            "LEFT JOIN restaurant.voteEntry voteEntry")
     Page<Restaurant> findAllWithMenuAndRating(LocalDate menuDate, Pageable pageable);
-
-    @EntityGraph(Restaurant.GRAPH_WITH_MENU_AND_VOTE)
-    @Query("SELECT restaurant FROM Restaurant restaurant " +
-                "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate " +
-                "LEFT JOIN restaurant.voteEntry voteEntry ON voteEntry.date = :ratingDate")
-    Page<Restaurant> findAllWithMenuAndRatingBy(LocalDate menuDate, LocalDate ratingDate,
-                                                Pageable pageable);
-
-    @EntityGraph(Restaurant.GRAPH_WITH_MENU_AND_VOTE)
-    @Query("SELECT restaurant FROM Restaurant restaurant " +
-                "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate " +
-                "LEFT JOIN restaurant.voteEntry voteEntry " +
-                    "ON voteEntry.date BETWEEN :ratingDateStart AND :ratingDateEnd")
-    Page<Restaurant> findAllWithMenuAndRatingBetween(LocalDate menuDate, LocalDate ratingDateStart,
-                                                     LocalDate ratingDateEnd, Pageable pageable);
 
     @EntityGraph(Restaurant.GRAPH_WITH_VOTE)
     @Query("SELECT restaurant FROM Restaurant restaurant WHERE restaurant.id = :id")

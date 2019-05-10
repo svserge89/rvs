@@ -51,6 +51,10 @@ public final class ControllerUtil {
         }
     }
 
+    public static ParamsCondition resolveParams(boolean rating, boolean menu) {
+        return resolveParams(rating, menu, null, null, null);
+    }
+
     public static ParamsCondition resolveParams(LocalDate date, LocalDate dateStart,
                                           LocalDate dateEnd) {
         if (date == null && dateStart == null && dateEnd == null) {

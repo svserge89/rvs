@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 @Getter
 @RequiredArgsConstructor
@@ -18,7 +18,7 @@ public class RestaurantTo {
     private final String name;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final Set<MenuEntryTo> menu;
+    private final LinkedHashSet<MenuEntryTo> menu;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final Integer rating;
