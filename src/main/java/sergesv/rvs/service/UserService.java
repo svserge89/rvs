@@ -89,9 +89,8 @@ public class UserService {
     public void delete(long id, long authUserId) {
         log.debug("delete params: id={}, authUserId={}", id, authUserId);
 
-        if (id != authUserId) {
-            checkException(userRepository.delete(id) != 0, entityNotFoundSupplier(User.class, id));
-        }
+        checkException(id != authUserId, deleteCurrentUserSupplier());
+        checkException(userRepository.delete(id) != 0, entityNotFoundSupplier(User.class, id));
     }
 
     @Transactional

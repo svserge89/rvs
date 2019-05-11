@@ -45,6 +45,10 @@ public final class ValidationUtil {
                 String.format("Can not change vote again after %s", maxVoteTime));
     }
 
+    public static Supplier<EntityConflictException> deleteCurrentUserSupplier() {
+        return () -> new EntityConflictException("Can not delete current authorized user");
+    }
+
     public static void checkException(boolean condition,
                                       Supplier<? extends RuntimeException> supplier) {
         if (!condition) {
@@ -74,10 +78,8 @@ public final class ValidationUtil {
     }
 
     public static String checkPassword(UserTo userTo) {
-        String password = Optional.ofNullable(userTo.getPassword())
+        return Optional.ofNullable(userTo.getPassword())
                 .orElseThrow(() -> new BadRequestException("Password is null"));
-
-        return password;
     }
 
     public static String getConstraintViolationsMessage(ConstraintViolationException exception) {

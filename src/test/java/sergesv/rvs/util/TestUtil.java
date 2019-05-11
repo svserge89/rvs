@@ -98,6 +98,13 @@ public final class TestUtil {
                 .isEqualTo(HttpStatus.NOT_FOUND);
     }
 
+    public static void checkDeleteConflict(TestRestTemplate restTemplate, String url) {
+        var response = getDeleteResponseEntity(restTemplate, url);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+    }
+
     public static void checkDeleteNotFound(TestRestTemplate restTemplate, String url) {
         var response = getDeleteResponseEntity(restTemplate, url);
 

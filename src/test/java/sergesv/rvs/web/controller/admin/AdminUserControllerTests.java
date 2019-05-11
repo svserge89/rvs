@@ -99,6 +99,12 @@ class AdminUserControllerTests extends AbstractControllerTests {
 
     @Test
     @DirtiesContext(methodMode = AFTER_METHOD)
+    void deleteConflict() {
+        checkDeleteConflict(adminRestTemplate(), "/api/admin/users/1");
+    }
+
+    @Test
+    @DirtiesContext(methodMode = AFTER_METHOD)
     void deleteNotFound() {
         checkDeleteNotFound(adminRestTemplate(), "/api/admin/users/10");
     }
