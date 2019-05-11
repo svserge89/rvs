@@ -5,6 +5,7 @@ import org.springframework.http.*;
 import sergesv.rvs.web.to.MenuEntryTo;
 import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.RestaurantTo;
+import sergesv.rvs.web.to.UserTo;
 
 import java.util.List;
 
@@ -13,18 +14,26 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 
 public final class TestUtil {
     public static <T> void checkGet(TestRestTemplate restTemplate, String url,
-                                    Class<? extends T> toClass, T expected) {
+                                    Class<? extends T> toClass, T expected,
+                                    String... ignoredFields) {
         var response = restTemplate.getForEntity(url, toClass);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
-        assertThat(response.getBody()).isEqualToComparingFieldByField(expected);
+        assertThat(response.getBody()).isEqualToIgnoringGivenFields(expected, ignoredFields);
     }
 
     public static void checkGetNotFound(TestRestTemplate restTemplate, String url) {
         var response = restTemplate.getForEntity(url, Object.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+    }
+
+    public static void checkGetForbidden(TestRestTemplate restTemplate, String url) {
+        var response = restTemplate.getForEntity(url, Object.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
         assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
     }
 
@@ -51,8 +60,7 @@ public final class TestUtil {
         var response = restTemplate.postForEntity(url, toEntry, Object.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(response.getHeaders().getContentType())
-                .isEqualTo(APPLICATION_JSON_UTF8);
+        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
     }
 
     public static <T> void checkPut(TestRestTemplate restTemplate, String url, T toEntry,
@@ -69,8 +77,7 @@ public final class TestUtil {
         var response = getPutResponseEntity(restTemplate, url, toEntry);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getHeaders().getContentType())
-                .isEqualTo(APPLICATION_JSON_UTF8);
+        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
     }
 
     public static void checkPutForbidden(TestRestTemplate restTemplate, String url,
@@ -78,8 +85,7 @@ public final class TestUtil {
         var response = getPutResponseEntity(restTemplate, url, toEntry);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(response.getHeaders().getContentType())
-                .isEqualTo(APPLICATION_JSON_UTF8);
+        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
     }
 
     public static <T> void checkDelete(TestRestTemplate restTemplate, String url, Class<T> toClass,
@@ -126,6 +132,12 @@ public final class TestUtil {
     public static class MenuEntryPageTo extends PageTo<MenuEntryTo> {
         public MenuEntryPageTo(List<MenuEntryTo> content, Integer current, Integer size,
                                Integer total) {
+            super(content, current, size, total);
+        }
+    }
+
+    public static class UserPageTo extends PageTo<UserTo> {
+        public UserPageTo(List<UserTo> content, Integer current, Integer size, Integer total) {
             super(content, current, size, total);
         }
     }

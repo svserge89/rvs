@@ -3,6 +3,7 @@ package sergesv.rvs.util;
 import sergesv.rvs.web.to.MenuEntryTo;
 import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.RestaurantTo;
+import sergesv.rvs.web.to.UserTo;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -86,6 +87,19 @@ public final class TestData {
             buildMenuEntryTos(PREV_1D_MENU_FIRST_ID, FIRST_ID, PREV_1D_DATE);
     public static final MenuEntryTo[] PREV_2D_MENU_ENTRY_TOS =
             buildMenuEntryTos(PREV_2D_MENU_FIRST_ID, FIRST_ID, PREV_2D_DATE);
+
+    public static final UserTo NEW_USER_TO = new UserTo(0, "new_user",
+            "new_first_name", "new_last_name", "newUser@mail.com",
+            "password", false, true);
+
+    public static final UserTo ADMIN = new UserTo(FIRST_ID, "admin", null,
+            null, "admin@mail.com", "password", true, true);
+    public static final UserTo USER_1 = new UserTo(FIRST_ID + 1, "user_1",
+            "first_name_1", "last_name_1", "user1@mail.com",
+            "password", false, true);
+    public static final UserTo USER_2 = new UserTo(FIRST_ID + 2, "user_2",
+            "first_name_2", "last_name_2", "user2@mail.com",
+            "password", false, true);
 
     private static RestaurantTo buildRestaurantTo(long id, LinkedHashSet<MenuEntryTo> menu,
                                                   Integer rating) {

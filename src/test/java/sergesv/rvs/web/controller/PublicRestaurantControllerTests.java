@@ -1,11 +1,8 @@
 package sergesv.rvs.web.controller;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import sergesv.rvs.RvsPropertyResolver;
 import sergesv.rvs.util.TestUtil.MenuEntryPageTo;
 import sergesv.rvs.util.TestUtil.RestaurantPageTo;
 import sergesv.rvs.web.to.MenuEntryTo;
@@ -18,13 +15,7 @@ import static sergesv.rvs.util.TestUtil.checkGet;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
-class PublicRestaurantControllerTests {
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @Autowired
-    private RvsPropertyResolver propertyResolver;
-
+class PublicRestaurantControllerTests extends AbstractControllerTests {
     @Test
     void getAll() {
         checkGet(restTemplate, "/api/public/restaurants", RestaurantPageTo.class,

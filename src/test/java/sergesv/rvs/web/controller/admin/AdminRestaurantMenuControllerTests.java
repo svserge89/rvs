@@ -1,12 +1,10 @@
 package sergesv.rvs.web.controller.admin;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import sergesv.rvs.RvsPropertyResolver;
+import sergesv.rvs.web.controller.AbstractControllerTests;
 import sergesv.rvs.web.to.MenuEntryTo;
 
 import java.util.Collections;
@@ -19,67 +17,57 @@ import static sergesv.rvs.util.TestUtil.*;
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
-class AdminRestaurantMenuControllerTests {
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @Autowired
-    private RvsPropertyResolver propertyResolver;
-
+class AdminRestaurantMenuControllerTests extends AbstractControllerTests {
     @Test
     void create() {
-        checkPost(restTemplate.withBasicAuth("admin", "password"),
-                "/api/admin/restaurants/1/menu", NEW_MENU_ENTRY_TO, "id");
+        checkPost(adminRestTemplate(), "/api/admin/restaurants/1/menu", NEW_MENU_ENTRY_TO,
+                "id");
     }
 
     @Test
     void createConflict() {
-        checkPostConflict(restTemplate.withBasicAuth("admin", "password"),
-                "/api/admin/restaurants/1/menu", CURRENT_MENU_ENTRY_TOS[FIRST]);
+        checkPostConflict(adminRestTemplate(), "/api/admin/restaurants/1/menu",
+                CURRENT_MENU_ENTRY_TOS[FIRST]);
     }
 
     @Test
     void createForbidden() {
-        checkPostForbidden(restTemplate.withBasicAuth("user_1", "password"),
-                "/api/admin/restaurants/1/menu", NEW_MENU_ENTRY_TO);
+        checkPostForbidden(userRestTemplate(), "/api/admin/restaurants/1/menu",
+                NEW_MENU_ENTRY_TO);
     }
 
     @Test
     void update() {
-        checkPut(restTemplate.withBasicAuth("admin", "password"),
-                "/api/admin/restaurants/1/menu/311", NEW_MENU_ENTRY_TO,
+        checkPut(adminRestTemplate(), "/api/admin/restaurants/1/menu/311", NEW_MENU_ENTRY_TO,
                 "/api/public/restaurants/1/menu/311", "id");
     }
 
     @Test
     void updateNotFound() {
-        checkPutNotFound(restTemplate.withBasicAuth("admin", "password"),
-                "/api/admin/restaurants/1/menu/600", NEW_MENU_ENTRY_TO);
+        checkPutNotFound(adminRestTemplate(), "/api/admin/restaurants/1/menu/600",
+                NEW_MENU_ENTRY_TO);
     }
 
     @Test
     void updateForbidden() {
-        checkPutForbidden(restTemplate.withBasicAuth("user_1", "password"),
-                "/api/admin/restaurants/1/menu/311", NEW_MENU_ENTRY_TO);
+        checkPutForbidden(userRestTemplate(), "/api/admin/restaurants/1/menu/311",
+                NEW_MENU_ENTRY_TO);
     }
 
     @Test
     void delete() {
-        checkDelete(restTemplate.withBasicAuth("admin", "password"),
-                "/api/admin/restaurants/1/menu/311", MenuEntryTo.class,
+        checkDelete(adminRestTemplate(), "/api/admin/restaurants/1/menu/311", MenuEntryTo.class,
                 "/api/public/restaurants/1/menu/311");
     }
 
     @Test
     void deleteNotFound() {
-        checkDeleteNotFound(restTemplate.withBasicAuth("admin", "password"),
-                "/api/admin/restaurants/1/menu/600");
+        checkDeleteNotFound(adminRestTemplate(), "/api/admin/restaurants/1/menu/600");
     }
 
     @Test
     void deleteForbidden() {
-        checkDeleteForbidden(restTemplate.withBasicAuth("user_1", "password"),
-                "/api/admin/restaurants/1/menu/311");
+        checkDeleteForbidden(userRestTemplate(), "/api/admin/restaurants/1/menu/311");
     }
 
     @Test
@@ -90,8 +78,7 @@ class AdminRestaurantMenuControllerTests {
 
     @Test
     void deleteAllForbidden() {
-        checkDeleteForbidden(restTemplate.withBasicAuth("user_1", "password"),
-                "/api/admin/restaurants/1/menu");
+        checkDeleteForbidden(userRestTemplate(), "/api/admin/restaurants/1/menu");
     }
 
     @Test
@@ -122,8 +109,7 @@ class AdminRestaurantMenuControllerTests {
     }
 
     private void deleteAllHelper(String url, String checkUrl) {
-        checkDeleteAll(restTemplate.withBasicAuth("admin", "password"), url,
-                new MenuEntryPageTo(Collections.emptyList(), PAGE,
-                        propertyResolver.getMenuEntryPageSize(), TOTAL_EMPTY_PAGE), checkUrl);
+        checkDeleteAll(adminRestTemplate(), url, new MenuEntryPageTo(Collections.emptyList(), PAGE,
+                propertyResolver.getMenuEntryPageSize(), TOTAL_EMPTY_PAGE), checkUrl);
     }
 }
