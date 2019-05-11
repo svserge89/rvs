@@ -92,7 +92,8 @@ public class MenuEntryService {
     public void deleteByRestaurant(long id, long restaurantId) {
         log.debug("deleteByRestaurant params: id={}, restaurantId={}", id, restaurantId);
 
-        menuEntryRepository.deleteByIdAndRestaurantId(id, restaurantId);
+        checkException(menuEntryRepository.deleteByIdAndRestaurantId(id, restaurantId) != 0,
+                entityNotFoundSupplier(id, restaurantId));
     }
 
     @Transactional
