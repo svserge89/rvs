@@ -16,6 +16,7 @@ public final class TestData {
 
     public static final int PAGE = 0;
     public static final int TOTAL_PAGES = 1;
+    public static final int TOTAL_EMPTY_PAGE = 0;
 
     public static final int FIRST = 0;
     public static final int SECOND = 1;
@@ -40,6 +41,9 @@ public final class TestData {
             Comparator.comparing(MenuEntryTo::getPrice).thenComparing(MenuEntryTo::getName);
     private static Comparator<MenuEntryTo> menuNameDescComparator =
             Comparator.comparing(MenuEntryTo::getName).reversed();
+
+    public static final RestaurantTo NEW_RESTAURANT_TO =
+            new RestaurantTo(0, "New Restaurant", null, null);
 
     public static final RestaurantTo[] RESTAURANT_TOS =
             buildRestaurantTos(false, false, CURRENT_DATE, menuPriceComparator);
