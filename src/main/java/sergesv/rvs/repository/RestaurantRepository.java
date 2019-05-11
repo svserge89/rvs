@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import sergesv.rvs.model.Restaurant;
@@ -21,19 +22,14 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     @EntityGraph(Restaurant.GRAPH_WITH_MENU)
     @Query(value = "SELECT restaurant FROM Restaurant restaurant " +
                         "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate",
-            countQuery = "SELECT COUNT (DISTINCT restaurant) FROM Restaurant restaurant " +
-                            "LEFT JOIN restaurant.menuEntry menuEntry " +
-                                "ON menuEntry.date = :menuDate")
+            countQuery = "SELECT COUNT (restaurant) FROM Restaurant restaurant")
     Page<Restaurant> findAllWithMenu(LocalDate menuDate, Pageable pageable);
 
     @EntityGraph(Restaurant.GRAPH_WITH_MENU_AND_VOTE)
     @Query(value = "SELECT restaurant FROM Restaurant restaurant " +
                         "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate " +
                         "LEFT JOIN restaurant.voteEntry voteEntry",
-            countQuery = "SELECT COUNT (DISTINCT restaurant) FROM Restaurant restaurant " +
-                            "LEFT JOIN restaurant.menuEntry menuEntry " +
-                                "ON menuEntry.date = :menuDate " +
-                            "LEFT JOIN restaurant.voteEntry voteEntry")
+            countQuery = "SELECT COUNT (restaurant) FROM Restaurant restaurant")
     Page<Restaurant> findAllWithMenuAndRating(LocalDate menuDate, Pageable pageable);
 
     @EntityGraph(Restaurant.GRAPH_WITH_VOTE)
@@ -83,4 +79,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     Optional<Restaurant> findByIdWithMenuAndRatingBetween(Long id, LocalDate menuDate,
                                                           LocalDate ratingDateStart,
                                                           LocalDate ratingDateEnd, Sort sort);
+
+    @Modifying
+    @Query("DELETE FROM Restaurant restaurant WHERE restaurant.id = :id")
+    Integer delete(Long id);
 }

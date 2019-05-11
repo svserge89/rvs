@@ -14,11 +14,18 @@ import java.util.Optional;
 
 @Repository
 public interface VoteEntryRepository extends JpaRepository<VoteEntry, Long> {
-    int countByRestaurantId(Long restaurantId);
+    @Query("SELECT COUNT (voteEntry) FROM VoteEntry voteEntry " +
+            "WHERE voteEntry.restaurant.id = :restaurantId")
+    Integer countByRestaurantId(Long restaurantId);
 
-    int countByRestaurantIdAndDateEquals(Long restaurantId, LocalDate date);
+    @Query("SELECT COUNT (voteEntry) FROM VoteEntry voteEntry " +
+            "WHERE voteEntry.restaurant.id = :restaurantId AND voteEntry.date = :date")
+    Integer countByRestaurantIdAndDateEquals(Long restaurantId, LocalDate date);
 
-    int countByRestaurantIdAndDateBetween(Long restaurantId, LocalDate dateStart,
+    @Query("SELECT COUNT (voteEntry) FROM VoteEntry voteEntry " +
+            "WHERE voteEntry.restaurant.id = :restaurantId " +
+                "AND voteEntry.date BETWEEN :dateStart AND :dateEnd")
+    Integer countByRestaurantIdAndDateBetween(Long restaurantId, LocalDate dateStart,
                                            LocalDate dateEnd);
 
     @EntityGraph(VoteEntry.GRAPH_WITH_RESTAURANT)

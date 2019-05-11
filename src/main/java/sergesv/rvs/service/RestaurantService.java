@@ -183,7 +183,8 @@ public class RestaurantService {
     public void delete(long id) {
         log.debug("delete params: id={}", id);
 
-        restaurantRepository.deleteById(id);
+        checkException(restaurantRepository.delete(id) != 0,
+                entityNotFoundSupplier(Restaurant.class, id));
     }
 
     @Transactional

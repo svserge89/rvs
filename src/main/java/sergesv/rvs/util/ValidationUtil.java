@@ -45,9 +45,9 @@ public final class ValidationUtil {
                 String.format("Can not change vote again after %s", maxVoteTime));
     }
 
-    public static void checkException(boolean exists,
+    public static void checkException(boolean condition,
                                       Supplier<? extends RuntimeException> supplier) {
-        if (!exists) {
+        if (!condition) {
             throw supplier.get();
         }
     }
