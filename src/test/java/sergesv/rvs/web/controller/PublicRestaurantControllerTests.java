@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import sergesv.rvs.RvsPropertyResolver;
 import sergesv.rvs.util.TestUtil.MenuEntryPageTo;
@@ -13,14 +12,12 @@ import sergesv.rvs.web.to.MenuEntryTo;
 import sergesv.rvs.web.to.RestaurantTo;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.*;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_CLASS;
 import static sergesv.rvs.util.TestData.*;
 import static sergesv.rvs.util.TestUtil.checkGetNotFound;
 import static sergesv.rvs.util.TestUtil.checkGet;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
-@DirtiesContext(classMode = BEFORE_CLASS)
 class PublicRestaurantControllerTests {
     @Autowired
     private TestRestTemplate restTemplate;

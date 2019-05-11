@@ -77,6 +77,9 @@ public final class TestData {
             buildRestaurantTo(FIRST_ID, buildMenuEntryToSet(buildMenuEntryTos(CURRENT_MENU_FIRST_ID,
                     FIRST_ID, CURRENT_DATE), menuPriceComparator), END_PREV_1D_RATING[FIRST]);
 
+    public static final MenuEntryTo NEW_MENU_ENTRY_TO =
+            new MenuEntryTo(0, "New Menu Entry", 20.5, CURRENT_DATE);
+
     public static final MenuEntryTo[] CURRENT_MENU_ENTRY_TOS =
             buildMenuEntryTos(CURRENT_MENU_FIRST_ID, FIRST_ID, CURRENT_DATE);
     public static final MenuEntryTo[] PREV_1D_MENU_ENTRY_TOS =

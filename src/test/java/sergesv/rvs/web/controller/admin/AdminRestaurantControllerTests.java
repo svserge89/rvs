@@ -13,13 +13,13 @@ import sergesv.rvs.web.to.RestaurantTo;
 import java.util.Collections;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 import static sergesv.rvs.util.TestData.*;
 import static sergesv.rvs.util.TestUtil.*;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class AdminRestaurantControllerTests {
     @Autowired
     private TestRestTemplate restTemplate;
@@ -85,7 +85,7 @@ class AdminRestaurantControllerTests {
 
     @Test
     void deleteAll() {
-        chackDeleteAll(restTemplate.withBasicAuth("admin", "password"),
+        checkDeleteAll(restTemplate.withBasicAuth("admin", "password"),
                 "/api/admin/restaurants", new RestaurantPageTo(Collections.emptyList(), PAGE,
                         propertyResolver.getRestaurantPageSize(), TOTAL_EMPTY_PAGE),
                 "/api/public/restaurants");

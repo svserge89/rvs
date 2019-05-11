@@ -106,7 +106,7 @@ public final class TestUtil {
         assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
     }
 
-    public static <T> void chackDeleteAll(TestRestTemplate restTemplate, String url, T emptyToEntry,
+    public static <T> void checkDeleteAll(TestRestTemplate restTemplate, String url, T emptyToEntry,
                                           String checkUrl) {
         var response = getDeleteResponseEntity(restTemplate, url);
 
