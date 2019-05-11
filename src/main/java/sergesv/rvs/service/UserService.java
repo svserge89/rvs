@@ -90,7 +90,7 @@ public class UserService {
         log.debug("delete params: id={}, authUserId={}", id, authUserId);
 
         if (id != authUserId) {
-            userRepository.deleteById(id);
+            checkException(userRepository.delete(id) != 0, entityNotFoundSupplier(User.class, id));
         }
     }
 

@@ -25,6 +25,7 @@ public class UserTo {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private final String password;
 
     private final Boolean admin;

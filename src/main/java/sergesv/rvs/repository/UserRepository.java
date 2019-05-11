@@ -23,10 +23,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(User.GRAPH_WITH_ROLES)
     Optional<User> findByNickName(String nickname);
 
-    @Override
     @Modifying
     @Query("DELETE FROM User user WHERE user.id = :id")
-    void deleteById(Long id);
+    Integer delete(Long id);
 
     @Modifying
     @Query("DELETE FROM User user WHERE user.id <> :id")
