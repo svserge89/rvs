@@ -80,10 +80,13 @@ public class VoteEntryService {
     public void delete(long userId, long restaurantId) {
         log.debug("delete params: userId={}, restaurantId={}", userId, restaurantId);
 
+        LocalDate currentDate = getCurrentDate();
+
         checkException(checkTime(getCurrentTime(), propertyResolver.getMaxVoteTime()),
                 voteAgainSupplier(propertyResolver.getMaxVoteTime()));
-        voteEntryRepository.deleteByUserIdAndRestaurantIdAndDate(userId, restaurantId,
-                getCurrentDate());
+        checkException(voteEntryRepository.deleteByUserIdAndRestaurantIdAndDate(userId,
+                restaurantId, currentDate) != 0, voteEntryNotFoundSupplier(userId, restaurantId,
+                currentDate));
     }
 
     private static PageTo<VoteEntryTo> toVoteEntryTos(Page<VoteEntry> voteEntryPage) {

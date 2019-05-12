@@ -3,14 +3,12 @@ package sergesv.rvs.util;
 import org.springframework.dao.DataIntegrityViolationException;
 import sergesv.rvs.exception.BadRequestException;
 import sergesv.rvs.exception.EntityConflictException;
-import sergesv.rvs.model.EntityWithId;
-import sergesv.rvs.model.MenuEntry;
-import sergesv.rvs.model.Restaurant;
-import sergesv.rvs.model.User;
+import sergesv.rvs.model.*;
 import sergesv.rvs.web.to.UserTo;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -47,6 +45,14 @@ public final class ValidationUtil {
 
     public static Supplier<EntityConflictException> deleteCurrentUserSupplier() {
         return () -> new EntityConflictException("Can not delete current authorized user");
+    }
+
+    public static Supplier<EntityNotFoundException> voteEntryNotFoundSupplier(long userId,
+                                                                              long restaurantId,
+                                                                              LocalDate date) {
+        return () -> new EntityNotFoundException(
+                String.format("Unable to find %s with userId %d, restaurantId %d, and date %s",
+                        VoteEntry.class.getCanonicalName(), userId, restaurantId, date));
     }
 
     public static void checkException(boolean condition,

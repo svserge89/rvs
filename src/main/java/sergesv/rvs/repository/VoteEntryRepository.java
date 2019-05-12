@@ -42,5 +42,5 @@ public interface VoteEntryRepository extends JpaRepository<VoteEntry, Long> {
     @Modifying
     @Query("DELETE FROM VoteEntry voteEntry WHERE voteEntry.user.id = :userId " +
                 "AND voteEntry.restaurant.id = :restaurantId AND voteEntry.date = :date")
-    void deleteByUserIdAndRestaurantIdAndDate(Long userId, Long restaurantId, LocalDate date);
+    Integer deleteByUserIdAndRestaurantIdAndDate(Long userId, Long restaurantId, LocalDate date);
 }
