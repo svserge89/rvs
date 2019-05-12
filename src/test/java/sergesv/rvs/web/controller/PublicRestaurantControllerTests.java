@@ -55,7 +55,7 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
         checkGet(restTemplate, "/api/public/restaurants?rating=true", RestaurantPageTo.class,
                 buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
                         TOTAL_PAGES, RESTAURANT_TOS_WITH_RATING[FIRST],
-                        RESTAURANT_TOS_WITH_RATING[SECOND], RESTAURANT_TOS_WITH_RATING[THIRD]));
+                        RESTAURANT_TOS_WITH_RATING[THIRD], RESTAURANT_TOS_WITH_RATING[SECOND]));
     }
 
     @Test
@@ -63,8 +63,8 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
         checkGet(restTemplate,
                 "/api/public/restaurants?rating=true&sort=rating,name,desc",
                 RestaurantPageTo.class, buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
-                        TOTAL_PAGES, RESTAURANT_TOS_WITH_RATING[THIRD],
-                        RESTAURANT_TOS_WITH_RATING[SECOND], RESTAURANT_TOS_WITH_RATING[FIRST]));
+                        TOTAL_PAGES, RESTAURANT_TOS_WITH_RATING[SECOND],
+                        RESTAURANT_TOS_WITH_RATING[THIRD], RESTAURANT_TOS_WITH_RATING[FIRST]));
     }
 
     @Test
@@ -72,8 +72,8 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
         checkGet(restTemplate, "/api/public/restaurants?rating=true&menu=true",
                 RestaurantPageTo.class, buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
                         TOTAL_PAGES, RESTAURANT_TOS_WITH_MENU_AND_RATING[FIRST],
-                        RESTAURANT_TOS_WITH_MENU_AND_RATING[SECOND],
-                        RESTAURANT_TOS_WITH_MENU_AND_RATING[THIRD]));
+                        RESTAURANT_TOS_WITH_MENU_AND_RATING[THIRD],
+                        RESTAURANT_TOS_WITH_MENU_AND_RATING[SECOND]));
     }
 
     @Test
@@ -81,8 +81,8 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
         checkGet(restTemplate, "/api/public/restaurants?rating=true&menu=true" +
                         "&sort=rating,name,desc,menuEntry.name,desc",
                 RestaurantPageTo.class, buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
-                        TOTAL_PAGES, RESTAURANT_TOS_WITH_MENU_DESC_AND_RATING[THIRD],
-                        RESTAURANT_TOS_WITH_MENU_DESC_AND_RATING[SECOND],
+                        TOTAL_PAGES, RESTAURANT_TOS_WITH_MENU_DESC_AND_RATING[SECOND],
+                        RESTAURANT_TOS_WITH_MENU_DESC_AND_RATING[THIRD],
                         RESTAURANT_TOS_WITH_MENU_DESC_AND_RATING[FIRST]));
     }
 

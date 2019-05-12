@@ -2,10 +2,7 @@ package sergesv.rvs.util;
 
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import sergesv.rvs.web.to.MenuEntryTo;
-import sergesv.rvs.web.to.PageTo;
-import sergesv.rvs.web.to.RestaurantTo;
-import sergesv.rvs.web.to.UserTo;
+import sergesv.rvs.web.to.*;
 
 import java.util.List;
 
@@ -37,6 +34,13 @@ public final class TestUtil {
         assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
     }
 
+    public static void checkGetUnauthorized(TestRestTemplate restTemplate, String url) {
+        var response = restTemplate.getForEntity(url, Object.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+    }
+
     public static <T> void checkPost(TestRestTemplate restTemplate, String url, T toEntry,
                                      String... ignoredFields) {
         var response = restTemplate.postForEntity(url, toEntry, toEntry.getClass());
@@ -47,9 +51,26 @@ public final class TestUtil {
                 .isEqualToIgnoringGivenFields(toEntry, ignoredFields);
     }
 
+    public static <T> void checkPost(TestRestTemplate restTemplate, String url, String checkUrl,
+                                     T checkValue) {
+        var response = getPostResponseEntity(restTemplate, url);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+        assertThat(restTemplate.getForObject(checkUrl, checkValue.getClass()))
+                .isEqualTo(checkValue);
+    }
+
     public static void checkPostConflict(TestRestTemplate restTemplate, String url,
                                          Object toEntry) {
         var response = restTemplate.postForEntity(url, toEntry, Object.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+    }
+
+    public static void checkPostConflict(TestRestTemplate restTemplate, String url) {
+        var response = getPostResponseEntity(restTemplate, url);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
         assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
@@ -60,6 +81,13 @@ public final class TestUtil {
         var response = restTemplate.postForEntity(url, toEntry, Object.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+    }
+
+    public static void checkPostUnauthorized(TestRestTemplate restTemplate, String url) {
+        var response = getPostResponseEntity(restTemplate, url);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
     }
 
@@ -98,6 +126,16 @@ public final class TestUtil {
                 .isEqualTo(HttpStatus.NOT_FOUND);
     }
 
+    public static <T> void checkDelete(TestRestTemplate restTemplate, String url, String checkUrl,
+                                       T checkValue) {
+        var response = getDeleteResponseEntity(restTemplate, url);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(response.hasBody()).isFalse();
+        assertThat(restTemplate.getForObject(checkUrl, checkValue.getClass()))
+                .isEqualTo(checkValue);
+    }
+
     public static void checkDeleteConflict(TestRestTemplate restTemplate, String url) {
         var response = getDeleteResponseEntity(restTemplate, url);
 
@@ -116,6 +154,13 @@ public final class TestUtil {
         var response = getDeleteResponseEntity(restTemplate, url);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+    }
+
+    public static void checkDeleteUnauthorized(TestRestTemplate restTemplate, String url) {
+        var response = getDeleteResponseEntity(restTemplate, url);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
     }
 
@@ -149,6 +194,13 @@ public final class TestUtil {
         }
     }
 
+    public static class VoteEntryPageTo extends PageTo<VoteEntryTo> {
+        public VoteEntryPageTo(List<VoteEntryTo> content, Integer current, Integer size,
+                               Integer total) {
+            super(content, current, size, total);
+        }
+    }
+
     private static ResponseEntity<Object> getPutResponseEntity(TestRestTemplate restTemplate,
                                                                String url, Object toEntry) {
         var httpHeaders = new HttpHeaders();
@@ -169,6 +221,17 @@ public final class TestUtil {
         var httpEntity = new HttpEntity<>(httpHeaders);
 
         return restTemplate.exchange(url, HttpMethod.DELETE, httpEntity, Object.class);
+    }
+
+    private static ResponseEntity<Object> getPostResponseEntity(TestRestTemplate restTemplate,
+                                                                String url) {
+        var httpHeaders = new HttpHeaders();
+
+        httpHeaders.setContentType(APPLICATION_JSON_UTF8);
+
+        var httpEntity = new HttpEntity<>(httpHeaders);
+
+        return restTemplate.exchange(url, HttpMethod.POST, httpEntity, Object.class);
     }
 
     private TestUtil() {

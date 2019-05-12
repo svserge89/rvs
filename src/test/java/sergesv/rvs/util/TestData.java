@@ -1,19 +1,19 @@
 package sergesv.rvs.util;
 
-import sergesv.rvs.web.to.MenuEntryTo;
-import sergesv.rvs.web.to.PageTo;
-import sergesv.rvs.web.to.RestaurantTo;
-import sergesv.rvs.web.to.UserTo;
+import sergesv.rvs.web.to.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public final class TestData {
     public static final LocalDate CURRENT_DATE = LocalDate.now();
-    public static final LocalDate PREV_2D_DATE = CURRENT_DATE.minus(Period.ofDays(2));
     public static final LocalDate PREV_1D_DATE = CURRENT_DATE.minus(Period.ofDays(1));
+
+    private static final LocalDate PREV_2D_DATE = CURRENT_DATE.minus(Period.ofDays(2));
 
     public static final int PAGE = 0;
     public static final int TOTAL_PAGES = 1;
@@ -25,10 +25,9 @@ public final class TestData {
 
     private static final double[] PRICE = {50.0, 10.5, 50.0};
 
-    public static final int[] FULL_RATING = {3, 2, 2};
-    public static final int[] CURRENT_RATING = {1, 2, 0};
+    public static final int[] FULL_RATING = {3, 1, 2};
     public static final int[] PREV_1D_RATING = {0, 0, 2};
-    public static final int[] START_PREV_1D_RATING = {1, 2, 2};
+    public static final int[] START_PREV_1D_RATING = {1, 1, 2};
     public static final int[] END_PREV_1D_RATING = {2, 0, 2};
 
     private static final int COUNT_RESTAURANTS = 3;
@@ -100,6 +99,15 @@ public final class TestData {
     public static final UserTo USER_2 = new UserTo(FIRST_ID + 2, "user_2",
             "first_name_2", "last_name_2", "user2@mail.com",
             "password", false, true);
+
+    public static final VoteEntryTo[] USER_1_VOTE_ENTRY_TOS = {
+            new VoteEntryTo(RESTAURANT_TOS[FIRST], LocalDateTime.of(PREV_2D_DATE,
+                    LocalTime.of(15, 30))),
+            new VoteEntryTo(RESTAURANT_TOS[THIRD], LocalDateTime.of(PREV_1D_DATE,
+                    LocalTime.of(12, 0))),
+            new VoteEntryTo(RESTAURANT_TOS[SECOND], LocalDateTime.of(CURRENT_DATE,
+                    LocalTime.of(9, 0)))
+    };
 
     private static RestaurantTo buildRestaurantTo(long id, LinkedHashSet<MenuEntryTo> menu,
                                                   Integer rating) {

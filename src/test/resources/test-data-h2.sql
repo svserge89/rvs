@@ -39,13 +39,12 @@ INSERT INTO menu_entry (id, name, price, date, restaurant_id) VALUES
     (322, 'r2_menu_entry_2', 10.5, CURRENT_DATE, 2),
     (323, 'r2_menu_entry_3', 50.0, CURRENT_DATE, 2);
 
-INSERT INTO vote_entry (user_id, restaurant_id, date) VALUES
-    (1, 1, DATEADD('DAY', -2, CURRENT_DATE)),
-    (2, 1, DATEADD('DAY', -2, CURRENT_DATE)),
+INSERT INTO vote_entry (user_id, restaurant_id, date, time) VALUES
+    (1, 1, DATEADD('DAY', -2, CURRENT_DATE), '14:00'),
+    (2, 1, DATEADD('DAY', -2, CURRENT_DATE), '15:30'),
 
-    (2, 3, DATEADD('DAY', -1, CURRENT_DATE)),
-    (3, 3, DATEADD('DAY', -1, CURRENT_DATE)),
+    (2, 3, DATEADD('DAY', -1, CURRENT_DATE), '12:00'),
+    (3, 3, DATEADD('DAY', -1, CURRENT_DATE), '12:30'),
 
-    (1, 1, CURRENT_DATE),
-    (2, 2, CURRENT_DATE),
-    (3, 2, CURRENT_DATE);
+    (1, 1, CURRENT_DATE, '8:00'),
+    (2, 2, CURRENT_DATE, '9:00');

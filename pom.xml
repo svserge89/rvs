@@ -20,6 +20,7 @@
 		<java.version>11</java.version>
 		<jsoup.version>1.11.3</jsoup.version>
 		<junit-jupiter.version>5.4.2</junit-jupiter.version>
+		<httpclient.version>4.5.8</httpclient.version>
 	</properties>
 
 	<dependencies>
@@ -75,6 +76,12 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<version>${junit-jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpclient.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
