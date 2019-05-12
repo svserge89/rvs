@@ -3,7 +3,6 @@ package sergesv.rvs.web.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import sergesv.rvs.RvsPropertyResolver;
 import sergesv.rvs.service.MenuEntryService;
@@ -15,7 +14,6 @@ import sergesv.rvs.web.to.RestaurantTo;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.springframework.format.annotation.DateTimeFormat.*;
 import static sergesv.rvs.util.DateTimeUtil.*;
 import static sergesv.rvs.util.SortUtil.*;
 import static sergesv.rvs.util.web.ControllerUtil.*;
@@ -31,8 +29,7 @@ public class PublicRestaurantController {
     @GetMapping
     public PageTo<RestaurantTo> getAll(@RequestParam(required = false) boolean rating,
                                        @RequestParam(required = false) boolean menu,
-                                       @RequestParam(required = false)
-                                       @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate,
+                                       @RequestParam(required = false) LocalDate menuDate,
                                        @RequestParam(required = false) Integer page,
                                        @RequestParam(required = false) Integer size,
                                        @RequestParam(required = false) String sort) {
@@ -57,14 +54,10 @@ public class PublicRestaurantController {
     public RestaurantTo getOne(@PathVariable long id,
                                @RequestParam(required = false) boolean rating,
                                @RequestParam(required = false) boolean menu,
-                               @RequestParam(required = false)
-                               @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDate,
-                               @RequestParam(required = false)
-                               @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateStart,
-                               @RequestParam(required = false)
-                               @DateTimeFormat(iso = ISO.DATE) LocalDate ratingDateEnd,
-                               @RequestParam(required = false)
-                               @DateTimeFormat(iso = ISO.DATE) LocalDate menuDate,
+                               @RequestParam(required = false) LocalDate ratingDate,
+                               @RequestParam(required = false) LocalDate ratingDateStart,
+                               @RequestParam(required = false) LocalDate ratingDateEnd,
+                               @RequestParam(required = false) LocalDate menuDate,
                                @RequestParam(required = false) String sort) {
         Sort sorter = menu ? getSort(sort, SINGLE_RESTAURANT_MENU_ENTRY_PARAMS)
                 .orElse(propertyResolver.getSortSingleRestaurantMenuEntry()) : Sort.unsorted();
@@ -99,12 +92,9 @@ public class PublicRestaurantController {
 
     @GetMapping("/{restaurantId}/menu")
     public PageTo<MenuEntryTo> getMenu(@PathVariable long restaurantId,
-                                       @RequestParam(required = false)
-                                       @DateTimeFormat(iso = ISO.DATE) LocalDate date,
-                                       @RequestParam(required = false)
-                                       @DateTimeFormat(iso = ISO.DATE) LocalDate dateStart,
-                                       @RequestParam(required = false)
-                                       @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd,
+                                       @RequestParam(required = false) LocalDate date,
+                                       @RequestParam(required = false) LocalDate dateStart,
+                                       @RequestParam(required = false) LocalDate dateEnd,
                                        @RequestParam(required = false) Integer page,
                                        @RequestParam(required = false) Integer size,
                                        @RequestParam(required = false) String sort) {
@@ -131,12 +121,9 @@ public class PublicRestaurantController {
 
     @GetMapping("/{restaurantId}/rating")
     public int getRating(@PathVariable long restaurantId,
-                         @RequestParam(required = false)
-                         @DateTimeFormat(iso = ISO.DATE) LocalDate date,
-                         @RequestParam(required = false)
-                         @DateTimeFormat(iso = ISO.DATE) LocalDate dateStart,
-                         @RequestParam(required = false)
-                         @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd) {
+                         @RequestParam(required = false) LocalDate date,
+                         @RequestParam(required = false) LocalDate dateStart,
+                         @RequestParam(required = false) LocalDate dateEnd) {
         switch (resolveParams(date, dateStart, dateEnd)) {
             case BY_DATE:
                 return restaurantService.getRating(restaurantId, date);

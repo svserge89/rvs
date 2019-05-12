@@ -2,7 +2,6 @@ package sergesv.rvs.web.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sergesv.rvs.RvsPropertyResolver;
@@ -13,7 +12,6 @@ import sergesv.rvs.web.to.VoteEntryTo;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.springframework.format.annotation.DateTimeFormat.*;
 import static sergesv.rvs.util.DateTimeUtil.MAX_DATE;
 import static sergesv.rvs.util.DateTimeUtil.MIN_DATE;
 import static sergesv.rvs.util.SortUtil.*;
@@ -30,10 +28,8 @@ public class UserVoteController {
     private final RvsPropertyResolver propertyResolver;
 
     @GetMapping("/votes")
-    public PageTo<VoteEntryTo> getAll(@RequestParam(required = false)
-                                      @DateTimeFormat(iso = ISO.DATE) LocalDate dateStart,
-                                      @RequestParam(required = false)
-                                      @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd,
+    public PageTo<VoteEntryTo> getAll(@RequestParam(required = false) LocalDate dateStart,
+                                      @RequestParam(required = false) LocalDate dateEnd,
                                       @RequestParam(required = false) Integer page,
                                       @RequestParam(required = false) Integer size,
                                       @RequestParam(required = false) String sort) {

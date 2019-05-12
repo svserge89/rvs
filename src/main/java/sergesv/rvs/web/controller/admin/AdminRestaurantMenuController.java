@@ -1,7 +1,6 @@
 package sergesv.rvs.web.controller.admin;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sergesv.rvs.service.MenuEntryService;
@@ -10,7 +9,6 @@ import sergesv.rvs.web.to.MenuEntryTo;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.springframework.format.annotation.DateTimeFormat.*;
 import static sergesv.rvs.util.DateTimeUtil.*;
 import static sergesv.rvs.util.web.ControllerUtil.ParamsCondition.BETWEEN_DATES;
 import static sergesv.rvs.util.web.ControllerUtil.resolveParams;
@@ -44,12 +42,9 @@ public class AdminRestaurantMenuController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAll(@PathVariable long restaurantId,
-                          @RequestParam(required = false)
-                          @DateTimeFormat(iso = ISO.DATE) LocalDate date,
-                          @RequestParam(required = false)
-                          @DateTimeFormat(iso = ISO.DATE) LocalDate dateStart,
-                          @RequestParam(required = false)
-                          @DateTimeFormat(iso = ISO.DATE) LocalDate dateEnd) {
+                          @RequestParam(required = false) LocalDate date,
+                          @RequestParam(required = false) LocalDate dateStart,
+                          @RequestParam(required = false) LocalDate dateEnd) {
         if (resolveParams(date, dateStart, dateEnd) == BETWEEN_DATES) {
             menuEntryService.deleteAllByRestaurant(restaurantId,
                     Optional.ofNullable(dateStart).orElse(MIN_DATE),
