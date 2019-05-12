@@ -4,7 +4,10 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import sergesv.rvs.web.to.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
@@ -21,24 +24,15 @@ public final class TestUtil {
     }
 
     public static void checkGetNotFound(TestRestTemplate restTemplate, String url) {
-        var response = restTemplate.getForEntity(url, Object.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+        assertError(restTemplate.getForEntity(url, Object.class), HttpStatus.NOT_FOUND);
     }
 
     public static void checkGetForbidden(TestRestTemplate restTemplate, String url) {
-        var response = restTemplate.getForEntity(url, Object.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+        assertError(restTemplate.getForEntity(url, Object.class), HttpStatus.FORBIDDEN);
     }
 
     public static void checkGetUnauthorized(TestRestTemplate restTemplate, String url) {
-        var response = restTemplate.getForEntity(url, Object.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+        assertError(restTemplate.getForEntity(url, Object.class), HttpStatus.UNAUTHORIZED);
     }
 
     public static <T> void checkPost(TestRestTemplate restTemplate, String url, T toEntry,
@@ -63,32 +57,26 @@ public final class TestUtil {
 
     public static void checkPostConflict(TestRestTemplate restTemplate, String url,
                                          Object toEntry) {
-        var response = restTemplate.postForEntity(url, toEntry, Object.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+        assertError(restTemplate.postForEntity(url, toEntry, Object.class), HttpStatus.CONFLICT);
     }
 
     public static void checkPostConflict(TestRestTemplate restTemplate, String url) {
-        var response = getPostResponseEntity(restTemplate, url);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+        assertError(getPostResponseEntity(restTemplate, url), HttpStatus.CONFLICT);
     }
 
     public static void checkPostForbidden(TestRestTemplate restTemplate, String url,
                                           Object toEntry) {
-        var response = restTemplate.postForEntity(url, toEntry, Object.class);
+        assertError(restTemplate.postForEntity(url, toEntry, Object.class), HttpStatus.FORBIDDEN);
+    }
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+    public static void checkPostUnauthorized(TestRestTemplate restTemplate, String url,
+                                             Object toEntry) {
+        assertError(restTemplate.postForEntity(url, toEntry, Object.class),
+                HttpStatus.UNAUTHORIZED);
     }
 
     public static void checkPostUnauthorized(TestRestTemplate restTemplate, String url) {
-        var response = getPostResponseEntity(restTemplate, url);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+        assertError(getPostResponseEntity(restTemplate, url), HttpStatus.UNAUTHORIZED);
     }
 
     public static <T> void checkPut(TestRestTemplate restTemplate, String url, T toEntry,
@@ -102,18 +90,17 @@ public final class TestUtil {
     }
 
     public static void checkPutNotFound(TestRestTemplate restTemplate, String url, Object toEntry) {
-        var response = getPutResponseEntity(restTemplate, url, toEntry);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+        assertError(getPutResponseEntity(restTemplate, url, toEntry), HttpStatus.NOT_FOUND);
     }
 
     public static void checkPutForbidden(TestRestTemplate restTemplate, String url,
                                          Object toEntry) {
-        var response = getPutResponseEntity(restTemplate, url, toEntry);
+        assertError(getPutResponseEntity(restTemplate, url, toEntry), HttpStatus.FORBIDDEN);
+    }
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+    public static void checkPutUnauthorized(TestRestTemplate restTemplate, String url,
+                                            Object toEntry) {
+        assertError(getPutResponseEntity(restTemplate, url, toEntry), HttpStatus.UNAUTHORIZED);
     }
 
     public static <T> void checkDelete(TestRestTemplate restTemplate, String url, Class<T> toClass,
@@ -137,31 +124,19 @@ public final class TestUtil {
     }
 
     public static void checkDeleteConflict(TestRestTemplate restTemplate, String url) {
-        var response = getDeleteResponseEntity(restTemplate, url);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+        assertError(getDeleteResponseEntity(restTemplate, url), HttpStatus.CONFLICT);
     }
 
     public static void checkDeleteNotFound(TestRestTemplate restTemplate, String url) {
-        var response = getDeleteResponseEntity(restTemplate, url);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+        assertError(getDeleteResponseEntity(restTemplate, url), HttpStatus.NOT_FOUND);
     }
 
     public static void checkDeleteForbidden(TestRestTemplate restTemplate, String url) {
-        var response = getDeleteResponseEntity(restTemplate, url);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+        assertError(getDeleteResponseEntity(restTemplate, url), HttpStatus.FORBIDDEN);
     }
 
     public static void checkDeleteUnauthorized(TestRestTemplate restTemplate, String url) {
-        var response = getDeleteResponseEntity(restTemplate, url);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+        assertError(getDeleteResponseEntity(restTemplate, url), HttpStatus.UNAUTHORIZED);
     }
 
     public static <T> void checkDeleteAll(TestRestTemplate restTemplate, String url, T emptyToEntry,
@@ -232,6 +207,14 @@ public final class TestUtil {
         var httpEntity = new HttpEntity<>(httpHeaders);
 
         return restTemplate.exchange(url, HttpMethod.POST, httpEntity, Object.class);
+    }
+
+    private static void assertError(ResponseEntity<Object> response, HttpStatus httpStatus) {
+        var map = (Map)Optional.ofNullable(response.getBody()).orElse(Collections.emptyMap());
+
+        assertThat(response.getStatusCode()).isEqualTo(httpStatus);
+        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON_UTF8);
+        assertThat(map.get("status")).isEqualTo(httpStatus.value());
     }
 
     private TestUtil() {

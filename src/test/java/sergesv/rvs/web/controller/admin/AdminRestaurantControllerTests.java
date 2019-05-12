@@ -36,6 +36,11 @@ class AdminRestaurantControllerTests extends AbstractControllerTests {
     }
 
     @Test
+    void createUnauthorized() {
+        checkPostUnauthorized(restTemplate, "/api/admin/restaurants", NEW_RESTAURANT_TO);
+    }
+
+    @Test
     void update() {
         checkPut(adminRestTemplate(), "/api/admin/restaurants/1", NEW_RESTAURANT_TO,
                 "/api/public/restaurants/1", "id");
@@ -49,6 +54,11 @@ class AdminRestaurantControllerTests extends AbstractControllerTests {
     @Test
     void updateForbidden() {
         checkPutForbidden(userRestTemplate(), "/api/admin/restaurants/1", NEW_RESTAURANT_TO);
+    }
+
+    @Test
+    void updateUnauthorized() {
+        checkPutUnauthorized(restTemplate, "/api/admin/restaurants/1", NEW_RESTAURANT_TO);
     }
 
     @Test
@@ -68,6 +78,11 @@ class AdminRestaurantControllerTests extends AbstractControllerTests {
     }
 
     @Test
+    void deleteUnauthorized() {
+        checkDeleteUnauthorized(restTemplate, "/api/admin/restaurants/1");
+    }
+
+    @Test
     void deleteAll() {
         checkDeleteAll(adminRestTemplate(), "/api/admin/restaurants",
                 new RestaurantPageTo(Collections.emptyList(), PAGE,
@@ -78,5 +93,10 @@ class AdminRestaurantControllerTests extends AbstractControllerTests {
     @Test
     void deleteAllForbidden() {
         checkDeleteForbidden(userRestTemplate(), "/api/admin/restaurants");
+    }
+
+    @Test
+    void deleteAllUnauthorized() {
+        checkDeleteUnauthorized(restTemplate, "/api/admin/restaurants");
     }
 }

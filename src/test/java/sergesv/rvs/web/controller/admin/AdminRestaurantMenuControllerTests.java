@@ -37,6 +37,12 @@ class AdminRestaurantMenuControllerTests extends AbstractControllerTests {
     }
 
     @Test
+    void createUnauthorized() {
+        checkPostUnauthorized(restTemplate, "/api/admin/restaurants/1/menu",
+                NEW_MENU_ENTRY_TO);
+    }
+
+    @Test
     void update() {
         checkPut(adminRestTemplate(), "/api/admin/restaurants/1/menu/311", NEW_MENU_ENTRY_TO,
                 "/api/public/restaurants/1/menu/311", "id");
@@ -51,6 +57,12 @@ class AdminRestaurantMenuControllerTests extends AbstractControllerTests {
     @Test
     void updateForbidden() {
         checkPutForbidden(userRestTemplate(), "/api/admin/restaurants/1/menu/311",
+                NEW_MENU_ENTRY_TO);
+    }
+
+    @Test
+    void updateUnauthorized() {
+        checkPutUnauthorized(restTemplate, "/api/admin/restaurants/1/menu/311",
                 NEW_MENU_ENTRY_TO);
     }
 
@@ -71,6 +83,11 @@ class AdminRestaurantMenuControllerTests extends AbstractControllerTests {
     }
 
     @Test
+    void deleteUnauthorized() {
+        checkDeleteUnauthorized(restTemplate, "/api/admin/restaurants/1/menu/311");
+    }
+
+    @Test
     void deleteAll() {
         deleteAllHelper("/api/admin/restaurants/1/menu",
                 "/api/public/restaurants/1/menu?date=" + CURRENT_DATE);
@@ -79,6 +96,11 @@ class AdminRestaurantMenuControllerTests extends AbstractControllerTests {
     @Test
     void deleteAllForbidden() {
         checkDeleteForbidden(userRestTemplate(), "/api/admin/restaurants/1/menu");
+    }
+
+    @Test
+    void deleteAllUnauthorized() {
+        checkDeleteUnauthorized(restTemplate, "/api/admin/restaurants/1/menu");
     }
 
     @Test

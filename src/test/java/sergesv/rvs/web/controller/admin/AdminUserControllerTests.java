@@ -37,6 +37,11 @@ class AdminUserControllerTests extends AbstractControllerTests {
     }
 
     @Test
+    void getAllUnauthorized() {
+        checkGetUnauthorized(restTemplate, "/api/admin/users");
+    }
+
+    @Test
     void getOne() {
         checkGet(adminRestTemplate(), "/api/admin/users/2", UserTo.class, USER_1,
                 "password");
@@ -50,6 +55,11 @@ class AdminUserControllerTests extends AbstractControllerTests {
     @Test
     void getOneForbidden() {
         checkGetForbidden(userRestTemplate(), "/api/admin/users/1");
+    }
+
+    @Test
+    void getOneUnauthorized() {
+        checkGetUnauthorized(restTemplate, "/api/admin/users/1");
     }
 
     @Test
@@ -73,6 +83,12 @@ class AdminUserControllerTests extends AbstractControllerTests {
 
     @Test
     @DirtiesContext(methodMode = AFTER_METHOD)
+    void createUnauthorized() {
+        checkPostUnauthorized(restTemplate, "/api/admin/users", NEW_USER_TO);
+    }
+
+    @Test
+    @DirtiesContext(methodMode = AFTER_METHOD)
     void update() {
         checkPut(adminRestTemplate(), "/api/admin/users/2", NEW_USER_TO,
                 "/api/admin/users/2", "id", "password");
@@ -88,6 +104,12 @@ class AdminUserControllerTests extends AbstractControllerTests {
     @DirtiesContext(methodMode = AFTER_METHOD)
     void updateForbidden() {
         checkPutForbidden(userRestTemplate(), "/api/admin/users/2", NEW_USER_TO);
+    }
+
+    @Test
+    @DirtiesContext(methodMode = AFTER_METHOD)
+    void updateUnauthorized() {
+        checkPutUnauthorized(restTemplate, "/api/admin/users/2", NEW_USER_TO);
     }
 
     @Test
@@ -117,6 +139,12 @@ class AdminUserControllerTests extends AbstractControllerTests {
 
     @Test
     @DirtiesContext(methodMode = AFTER_METHOD)
+    void deleteUnauthorized() {
+        checkDeleteUnauthorized(restTemplate, "/api/admin/users/1");
+    }
+
+    @Test
+    @DirtiesContext(methodMode = AFTER_METHOD)
     void deleteAll() {
         checkDeleteAll(adminRestTemplate(), "/api/admin/users", new UserPageTo(List.of(ADMIN),
                         PAGE, propertyResolver.getUserPageSize(), TOTAL_PAGES),
@@ -127,5 +155,11 @@ class AdminUserControllerTests extends AbstractControllerTests {
     @DirtiesContext(methodMode = AFTER_METHOD)
     void deleteAllForbidden() {
         checkDeleteForbidden(userRestTemplate(), "/api/admin/users");
+    }
+
+    @Test
+    @DirtiesContext(methodMode = AFTER_METHOD)
+    void deleteAllUnauthorized() {
+        checkDeleteUnauthorized(restTemplate, "/api/admin/users");
     }
 }
