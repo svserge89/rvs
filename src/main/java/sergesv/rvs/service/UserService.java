@@ -3,6 +3,8 @@ package sergesv.rvs.service;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,7 @@ public class UserService {
                 .orElseThrow(entityNotFoundSupplier(User.class, id)));
     }
 
+    @Cacheable(value = "user", key = "#p0")
     public Optional<User> findByUserName(String userName) {
         log.debug("findByUserName params: userName={}", userName);
 
@@ -63,6 +66,8 @@ public class UserService {
                 () -> userRepository.save(toModel(userTo, passwordEncoder)), User.class));
     }
 
+
+    @CacheEvict(value = "user", allEntries = true)
     @Transactional
     public void update(long id, UserTo userTo) {
         log.debug("update params: id={}, userTo={}", id, userTo);
@@ -85,6 +90,7 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @CacheEvict(value = "user", allEntries = true)
     @Transactional
     public void delete(long id, long authUserId) {
         log.debug("delete params: id={}, authUserId={}", id, authUserId);
@@ -93,6 +99,7 @@ public class UserService {
         checkException(userRepository.delete(id) != 0, entityNotFoundSupplier(User.class, id));
     }
 
+    @CacheEvict(value = "user", allEntries = true)
     @Transactional
     public void deleteAll(long authUserId) {
         log.debug("deleteAll params: authUserId={}", authUserId);
