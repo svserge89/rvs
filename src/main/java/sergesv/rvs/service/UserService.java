@@ -47,7 +47,7 @@ public class UserService {
                 .orElseThrow(entityNotFoundSupplier(User.class, id)));
     }
 
-    @Cacheable(value = "user", key = "#p0")
+    @Cacheable(value = "user", key = "#p0", unless = "#result == null")
     public Optional<User> findByUserName(String userName) {
         log.debug("findByUserName params: userName={}", userName);
 
