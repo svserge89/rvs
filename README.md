@@ -1,5 +1,20 @@
 # RVS
-Restaurant Voting Service
+Restaurant Voting System
+
+## Configuration Documentation
+### Properties
++ **`rvs.max-vote-time`**: The time until which the user can vote.  
+  Value type: `string` in ISO time format.
++ **`rvs.restaurant-page-size`**: Default page size for a `Page` object with `Restaurant` objects.  
+  Value type: `number`.
++ **`rvs.menu-entry-page-size`**: Default page size for a `Page` object with `MenuEntry` objects.  
+  Value type: `number`.
++ **`rvs.user-page-size`**: Default page size for a `Page` object with `User` objects.  
+  Value type: `number`.
++ **`rvs.vote-entry-page-size`**: Default page size for a `Page` object with `VoteEntry` objects.  
+  Value type: `number`.
++ **`rvs.sort-*`**: Default sort parameters. Valid values are similar to those specified in the
+  REST API Documentation.
 
 ## REST API Documentation
 ### Public API
@@ -126,7 +141,7 @@ If date parameters (`date`, `dateStart`, `dateEnd`) are not set: returns menu en
 
 **Return**: `MenuEntry` object.  
 **Example**: `$ curl -H "Content-Type: application/json" 
--X GET "http://localhost:8080/api/public/restaurants/1/menu/1"`
+-X GET "http://localhost:8080/api/public/restaurants/1/menu/311"`
 
 #### 5. Get rating by restaurant
 **Description**: Get a rating value for restaurant. If date parameters (`date`, `dateStart`, 
@@ -273,7 +288,7 @@ is not set: use current date.
 **Request body**: `MenuEntry` object. Ignored fields: `id`.  
 **Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
 -X PUT -d '{"name":"Existing menu entry","price":14.5}' 
-"http://localhost:8080/api/admin/restaurants/1/menu/1"`
+"http://localhost:8080/api/admin/restaurants/1/menu/311"`
 
 #### 7. Delete menu entry for restaurant
 **Description**: Delete a `MenuEntry` object by `id` and `restaurantId`.  
@@ -284,7 +299,7 @@ is not set: use current date.
   + **`id`** - the field value `id` of the `MenuEntry` object.
 
 **Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
--X DELETE "http://localhost:8080/api/admin/restaurants/1/menu/1"`
+-X DELETE "http://localhost:8080/api/admin/restaurants/1/menu/312"`
 
 #### 8. Delete menu entries for restaurant
 **Description**: Delete `MenuEntry` objects by `restaurantId`.  
@@ -360,7 +375,7 @@ is not set: use current date.
 **Request body**: `User` object. Ignored fields: `id`.  
 **Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
 -X PUT -d '{"nickName":"Existing_user","email":"existingUser@email.com"}'
-"http://localhost:8080/api/admin/users/1"`
+"http://localhost:8080/api/admin/users/6"`
 
 #### 13. Delete single user
 **Description**: Delete a `User` object by `id` when `id` is not equal to the authorized `User.id`.  
@@ -370,7 +385,7 @@ is not set: use current date.
   + **`id`** - the field value `id` of the `User` object.
 
 **Example**: `$ curl --user admin:password -H "Content-Type: application/json" 
--X DELETE "http://localhost:8080/api/admin/users/1"`
+-X DELETE "http://localhost:8080/api/admin/users/6"`
 
 #### 14. Delete all users
 **Description**: Delete all `User` objects without the authorized `User` object.  
