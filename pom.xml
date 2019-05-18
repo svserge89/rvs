@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.4.RELEASE</version>
+		<version>2.1.5.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>sergesv</groupId>
@@ -18,7 +18,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
-		<jsoup.version>1.11.3</jsoup.version>
+		<jsoup.version>1.12.1</jsoup.version>
 		<junit-jupiter.version>5.4.2</junit-jupiter.version>
 		<httpclient.version>4.5.8</httpclient.version>
 	</properties>
