@@ -61,6 +61,12 @@ public final class ToUtil {
                 withRating ? restaurant.getVoteEntry().size() : null);
     }
 
+    // From RestaurantWithRating to RestaurantTo
+    public static RestaurantTo toTo(RestaurantWithRating restaurant) {
+        return new RestaurantTo(restaurant.getId(), restaurant.getName(), null,
+                (int) restaurant.getRating());
+    }
+
     // From MenuEntry to MenuEntryTo
     public static MenuEntryTo toTo(MenuEntry menuEntry) {
         return new MenuEntryTo(menuEntry.getId(), menuEntry.getName(),

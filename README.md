@@ -24,15 +24,12 @@ Restaurant Voting System
 **Method**: `GET`  
 **URL**: `http://localhost:8080/api/public/restaurants`  
 **URL parameters**:
-  + **`menu`** - include menu.  
+  + **`rating`** - include rating.  
   Value type: `boolean`.  
   Default value: `false`.
-  + **`menuDate`** - set filtering by date for menu. If `menu` is not set: ignored.  
+  + **`date`** - set filtering by date for rating. If `rating` is not set: ignored.  
   Value type: `string` in ISO date format.  
   Default value: current date.
-  + **`rating`** - include rating. Returns rating for all time.  
-  Value type: `boolean`.  
-  Default value: `false`.
   + **`page`** - page number.  
   Value type: `number`.  
   Default value: `0`.
@@ -43,19 +40,14 @@ Restaurant Voting System
   Direction option (`asc`, `desc`) must be placed after the field name option (Example:
   `sort=name,desc`).  
   Sorting options:
-    + With menu and raring: `name`, `menuEntry.name`, `menuEntry.price`, `rating`, `asc`, `desc`.  
-    Default value: use the `rvs.sort-restaurant-with-menu-and-rating` property from
-    `application.properties`.
-    + With menu only: `name`, `menuEntry.name`, `menuEntry.price`, `asc`, `desc`.  
-    Default value: use the `rvs.sort-restaurant-with-menu` property from `application.properties`.
-    + With rating only: `name`, `rating`, `asc`, `desc`.  
+    + With rating: `name`, `rating`, `asc`, `desc`.  
     Default value: use the `rvs.sort-restaurant-with-rating` property from `application.properties`.
-    + Without menu and rating: `name`, `asc`, `desc`.  
+    + Without rating: `name`, `asc`, `desc`.  
     Default value: use the `rvs.sort-restaurant` property from `application.properties`.
 
 **Return**: `Page` object where `content` field contains an array of `Restaurant` objects.  
 **Example**: `$ curl -H "Content-Type: application/json" 
--X GET "http://localhost:8080/api/public/restaurants?menu=true&rating=true"`
+-X GET "http://localhost:8080/api/public/restaurants?rating=true"`
 
 #### 2. Get single restaurant
 **Description**: Get a single `Restaurant` object.  
@@ -68,24 +60,13 @@ Restaurant Voting System
   + **`menu`** - include menu.  
   Value type: `boolean`.  
   Default value: `false`.
-  + **`menuDate`** - set filtering by date for menu. If `menu` is not set: ignored.  
-  Value type: `string` in ISO date format.  
-  Default value: current date.
-  + **`rating`** - include rating. If date parameters (`ratingDate`, `ratingDateStart`, 
-  `ratingDateEnd`) are not set: returns rating for all time.  
+  + **`rating`** - include rating.
   Value type: `boolean`.  
   Default value: `false`.
-  + **`ratingDate`** - set filtering by date for rating. If `rating` is not set, or 
-  `ratingDateStart` is set, or `ratingDateEnd` is set: ignored.  
-  Value type: `string` in ISO date format.  
-  Default value: empty.
-  + **`ratingDateStart`** - set filtering by minimum date for rating. If `rating` is not set: 
+  + **`date`** - set filtering by date for menu and rating. If `rating` and `menu` are not set:
   ignored.  
   Value type: `string` in ISO date format.  
-  Default value: empty.
-  + **`ratingDateEnd`** - set filtering by maximum date for rating. If `rating` is not set: ignored.  
-  Value type: `string` in ISO date format.  
-  Default value: empty.
+  Default value: current date.
   + **`sort`** - comma-separated sorting options. If `menu` is not set: ignored.  
   Direction option (`asc`, `desc`) must be placed after the field name option (Example: 
   `sort=name,desc`).  
@@ -152,15 +133,9 @@ If date parameters (`date`, `dateStart`, `dateEnd`) are not set: returns menu en
   + **`restaurantId`** - the field value `id` of the `Restaurant` object.
 
 **URL parameters**:
-  + **`date`** - set filtering by date. If `dateStart` is set, or `dateEnd` is set: ignored.  
+  + **`date`** - set filtering by date.  
   Value type: `string` in ISO date format.  
-  Default value: empty.
-  + **`dateStart`** - set filtering by minimum date.  
-  Value type: `string` in ISO date format.  
-  Default value: empty.
-  + **`dateEnd`** - set filtering by maximum date.  
-  Value type: `string` in ISO date format.  
-  Default value: empty.
+  Default value: current date.
 
 **Return**: `number` value.  
 **Example**: `$ curl -H "Content-Type: application/json" 

@@ -28,10 +28,6 @@ public final class SortUtil {
 
     public static final String[] RESTAURANT_PARAMS = {NAME, ASC, DESC};
     public static final String[] RESTAURANT_WITH_RATING_PARAMS = {NAME, RATING, ASC, DESC};
-    public static final String[] RESTAURANT_WITH_MENU_PARAMS =
-            {NAME, MENU_ENTRY_NAME, MENU_ENTRY_PRICE, ASC, DESC};
-    public static final String[] RESTAURANT_WITH_MENU_AND_RATING_PARAMS =
-            {NAME, RATING, MENU_ENTRY_NAME, MENU_ENTRY_PRICE, ASC, DESC};
     public static final String[] MENU_ENTRY_PARAMS = {NAME, PRICE, DATE, ASC, DESC};
     public static final String[] SINGLE_RESTAURANT_MENU_ENTRY_PARAMS =
             {MENU_ENTRY_NAME, MENU_ENTRY_PRICE, ASC, DESC};
@@ -87,7 +83,7 @@ public final class SortUtil {
 
     private static Sort compute(Sort sort, String param, Sort.Direction direction) {
         Sort resultSort = param.equals(RATING) ?
-                JpaSort.unsafe(direction, "size(voteEntry)") :
+                JpaSort.unsafe(direction, "COUNT (voteEntry)") :
                 Sort.by(direction, param);
 
         return sort == null ? resultSort : sort.and(resultSort);

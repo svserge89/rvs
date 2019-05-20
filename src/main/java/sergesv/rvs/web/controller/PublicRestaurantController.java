@@ -28,25 +28,18 @@ public class PublicRestaurantController {
 
     @GetMapping
     public PageTo<RestaurantTo> getAll(@RequestParam(required = false) boolean rating,
-                                       @RequestParam(required = false) boolean menu,
-                                       @RequestParam(required = false) LocalDate menuDate,
+                                       @RequestParam(required = false) LocalDate date,
                                        @RequestParam(required = false) Integer page,
                                        @RequestParam(required = false) Integer size,
                                        @RequestParam(required = false) String sort) {
-        Pageable pageable = resolvePageable(page, size, resolveSort(sort, menu, rating,
+        Pageable pageable = resolvePageable(page, size, resolveSort(sort, rating,
                 propertyResolver), propertyResolver.getRestaurantPageSize());
 
-        switch (resolveParams(rating, menu)) {
-            case MENU:
-                return restaurantService.getAllWithMenu(
-                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), pageable);
-            case RATING:
-                return restaurantService.getAllWithRating(pageable);
-            case MENU_AND_RATING:
-                return restaurantService.getAllWithMenuAndRating(
-                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), pageable);
-            default:
-                return restaurantService.getAll(pageable);
+        if (rating) {
+            return restaurantService.getAllWithRating(
+                    Optional.ofNullable(date).orElse(getCurrentDate()), pageable);
+        } else {
+            return restaurantService.getAll(pageable);
         }
     }
 
@@ -54,37 +47,21 @@ public class PublicRestaurantController {
     public RestaurantTo getOne(@PathVariable long id,
                                @RequestParam(required = false) boolean rating,
                                @RequestParam(required = false) boolean menu,
-                               @RequestParam(required = false) LocalDate ratingDate,
-                               @RequestParam(required = false) LocalDate ratingDateStart,
-                               @RequestParam(required = false) LocalDate ratingDateEnd,
-                               @RequestParam(required = false) LocalDate menuDate,
+                               @RequestParam(required = false) LocalDate date,
                                @RequestParam(required = false) String sort) {
         Sort sorter = menu ? getSort(sort, SINGLE_RESTAURANT_MENU_ENTRY_PARAMS)
                 .orElse(propertyResolver.getSortSingleRestaurantMenuEntry()) : Sort.unsorted();
 
-        switch (resolveParams(rating, menu, ratingDate, ratingDateStart, ratingDateEnd)) {
+        switch (resolveParams(rating, menu)) {
             case MENU:
                 return restaurantService.getOneWithMenu(id,
-                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), sorter);
+                        Optional.ofNullable(date).orElse(getCurrentDate()), sorter);
             case RATING:
-                return restaurantService.getOneWithRating(id);
-            case RATING_BY_DATE:
-                return restaurantService.getOneWithRating(id, ratingDate);
-            case RATING_BETWEEN_DATES:
                 return restaurantService.getOneWithRating(id,
-                        Optional.ofNullable(ratingDateStart).orElse(MIN_DATE),
-                        Optional.ofNullable(ratingDateEnd).orElse(MAX_DATE));
+                        Optional.ofNullable(date).orElse(getCurrentDate()));
             case MENU_AND_RATING:
                 return restaurantService.getOneWithMenuAndRating(id,
-                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), sorter);
-            case MENU_AND_RATING_BY_DATE:
-                return restaurantService.getOneWithMenuAndRating(id,
-                        Optional.ofNullable(menuDate).orElse(getCurrentDate()), ratingDate, sorter);
-            case MENU_AND_RATING_BETWEEN_DATES:
-                return restaurantService.getOneWithMenuAndRating(id,
-                        Optional.ofNullable(menuDate).orElse(getCurrentDate()),
-                        Optional.ofNullable(ratingDateStart).orElse(MIN_DATE),
-                        Optional.ofNullable(ratingDateEnd).orElse(MAX_DATE), sorter);
+                        Optional.ofNullable(date).orElse(getCurrentDate()), sorter);
             default:
                 return restaurantService.getOne(id);
         }
@@ -121,18 +98,8 @@ public class PublicRestaurantController {
 
     @GetMapping("/{restaurantId}/rating")
     public int getRating(@PathVariable long restaurantId,
-                         @RequestParam(required = false) LocalDate date,
-                         @RequestParam(required = false) LocalDate dateStart,
-                         @RequestParam(required = false) LocalDate dateEnd) {
-        switch (resolveParams(date, dateStart, dateEnd)) {
-            case BY_DATE:
-                return restaurantService.getRating(restaurantId, date);
-            case BETWEEN_DATES:
-                return restaurantService.getRating(restaurantId,
-                        Optional.ofNullable(dateStart).orElse(MIN_DATE),
-                        Optional.ofNullable(dateEnd).orElse(MAX_DATE));
-            default:
-                return restaurantService.getRating(restaurantId);
-        }
+                         @RequestParam(required = false) LocalDate date) {
+        return restaurantService.getRating(restaurantId,
+                Optional.ofNullable(date).orElse(getCurrentDate()));
     }
 }

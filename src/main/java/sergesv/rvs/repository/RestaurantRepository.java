@@ -9,76 +9,39 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import sergesv.rvs.model.Restaurant;
+import sergesv.rvs.model.RestaurantWithRating;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 @Repository
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
-    @EntityGraph(Restaurant.GRAPH_WITH_VOTE)
-    @Query("SELECT restaurant FROM Restaurant restaurant")
-    Page<Restaurant> findAllWithRating(Pageable pageable);
-
-    @EntityGraph(Restaurant.GRAPH_WITH_MENU)
-    @Query(value = "SELECT restaurant FROM Restaurant restaurant " +
-                        "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate",
+    @Query(value = "SELECT new sergesv.rvs.model.RestaurantWithRating(restaurant.id, " +
+                            "restaurant.name, COUNT (voteEntry)) " +
+                    "FROM Restaurant restaurant LEFT JOIN restaurant.voteEntry voteEntry " +
+                            "ON voteEntry.date = :date " +
+                    "GROUP BY restaurant",
             countQuery = "SELECT COUNT (restaurant) FROM Restaurant restaurant")
-    Page<Restaurant> findAllWithMenu(LocalDate menuDate, Pageable pageable);
-
-    @EntityGraph(Restaurant.GRAPH_WITH_MENU_AND_VOTE)
-    @Query(value = "SELECT restaurant FROM Restaurant restaurant " +
-                        "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate " +
-                        "LEFT JOIN restaurant.voteEntry voteEntry",
-            countQuery = "SELECT COUNT (restaurant) FROM Restaurant restaurant")
-    Page<Restaurant> findAllWithMenuAndRating(LocalDate menuDate, Pageable pageable);
-
-    @EntityGraph(Restaurant.GRAPH_WITH_VOTE)
-    @Query("SELECT restaurant FROM Restaurant restaurant WHERE restaurant.id = :id")
-    Optional<Restaurant> findByIdWithRating(Long id);
+    Page<RestaurantWithRating> findAllWithRating(LocalDate date, Pageable pageable);
 
     @EntityGraph(Restaurant.GRAPH_WITH_VOTE)
     @Query("SELECT restaurant FROM Restaurant restaurant " +
-                "LEFT JOIN restaurant.voteEntry voteEntry ON voteEntry.date = :ratingDate " +
+                "LEFT JOIN restaurant.voteEntry voteEntry ON voteEntry.date = :date " +
             "WHERE restaurant.id = :id")
-    Optional<Restaurant> findByIdWithRatingBy(Long id, LocalDate ratingDate);
-
-    @EntityGraph(Restaurant.GRAPH_WITH_VOTE)
-    @Query("SELECT restaurant FROM Restaurant restaurant " +
-                "LEFT JOIN restaurant.voteEntry voteEntry " +
-                    "ON voteEntry.date BETWEEN :ratingDateStart AND :ratingDateEnd " +
-            "WHERE restaurant.id = :id")
-    Optional<Restaurant> findByIdWithRatingBetween(Long id, LocalDate ratingDateStart,
-                                                   LocalDate ratingDateEnd);
+    Optional<Restaurant> findByIdWithRating(Long id, LocalDate date);
 
     @EntityGraph(Restaurant.GRAPH_WITH_MENU)
     @Query("SELECT DISTINCT restaurant FROM Restaurant restaurant " +
-                "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate " +
+                "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :date " +
             "WHERE restaurant.id = :id")
-    Optional<Restaurant> findByIdWithMenu(Long id, LocalDate menuDate, Sort sort);
+    Optional<Restaurant> findByIdWithMenu(Long id, LocalDate date, Sort sort);
 
     @EntityGraph(Restaurant.GRAPH_WITH_MENU_AND_VOTE)
     @Query("SELECT restaurant FROM Restaurant restaurant " +
-                "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate " +
+                "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :date " +
+                "LEFT JOIN restaurant.voteEntry voteEntry ON voteEntry.date = :date " +
             "WHERE restaurant.id = :id")
-    Optional<Restaurant> findByIdWithMenuAndRating(Long id, LocalDate menuDate, Sort sort);
-
-    @EntityGraph(Restaurant.GRAPH_WITH_MENU_AND_VOTE)
-    @Query("SELECT restaurant FROM Restaurant restaurant " +
-                "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate " +
-                "LEFT JOIN restaurant.voteEntry voteEntry ON voteEntry.date = :ratingDate " +
-            "WHERE restaurant.id = :id")
-    Optional<Restaurant> findByIdWithMenuAndRatingBy(Long id, LocalDate menuDate,
-                                                     LocalDate ratingDate, Sort sort);
-
-    @EntityGraph(Restaurant.GRAPH_WITH_MENU_AND_VOTE)
-    @Query("SELECT restaurant FROM Restaurant restaurant " +
-                "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :menuDate " +
-                "LEFT JOIN restaurant.voteEntry voteEntry " +
-                    "ON voteEntry.date BETWEEN :ratingDateStart AND :ratingDateEnd " +
-            "WHERE restaurant.id = :id")
-    Optional<Restaurant> findByIdWithMenuAndRatingBetween(Long id, LocalDate menuDate,
-                                                          LocalDate ratingDateStart,
-                                                          LocalDate ratingDateEnd, Sort sort);
+    Optional<Restaurant> findByIdWithMenuAndRating(Long id, LocalDate date, Sort sort);
 
     @Modifying
     @Query("DELETE FROM Restaurant restaurant WHERE restaurant.id = :id")

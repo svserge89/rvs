@@ -24,38 +24,12 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
     }
 
     @Test
-    void getAllWithMenu() {
-        checkGet(restTemplate, "/api/public/restaurants?menu=true", RestaurantPageTo.class,
-                buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
-                        TOTAL_PAGES, RESTAURANT_TOS_WITH_MENU[FIRST],
-                        RESTAURANT_TOS_WITH_MENU[SECOND], RESTAURANT_TOS_WITH_MENU[THIRD]));
-    }
-
-    @Test
-    void getAllWithMenuSortedByNameDescMenuEntryNameDesc() {
-        checkGet(restTemplate,
-                "/api/public/restaurants?menu=true&sort=name,desc,menuEntry.name,desc",
-                RestaurantPageTo.class, buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
-                        TOTAL_PAGES, RESTAURANT_TOS_WITH_MENU_DESC[THIRD],
-                        RESTAURANT_TOS_WITH_MENU_DESC[SECOND],
-                        RESTAURANT_TOS_WITH_MENU_DESC[FIRST]));
-    }
-
-    @Test
-    void getAllWithMenuByDate() {
-        checkGet(restTemplate, "/api/public/restaurants?menu=true&menuDate=" + PREV_1D_DATE,
-                RestaurantPageTo.class, buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
-                        TOTAL_PAGES, RESTAURANT_TOS_WITH_MENU_BY_PREV_1D[FIRST],
-                        RESTAURANT_TOS_WITH_MENU_BY_PREV_1D[SECOND],
-                        RESTAURANT_TOS_WITH_MENU_BY_PREV_1D[THIRD]));
-    }
-
-    @Test
     void getAllWithRating() {
         checkGet(restTemplate, "/api/public/restaurants?rating=true", RestaurantPageTo.class,
                 buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
-                        TOTAL_PAGES, RESTAURANT_TOS_WITH_RATING[FIRST],
-                        RESTAURANT_TOS_WITH_RATING[THIRD], RESTAURANT_TOS_WITH_RATING[SECOND]));
+                        TOTAL_PAGES, RESTAURANT_TOS_WITH_CURRENT_RATING[FIRST],
+                        RESTAURANT_TOS_WITH_CURRENT_RATING[SECOND],
+                        RESTAURANT_TOS_WITH_CURRENT_RATING[THIRD]));
     }
 
     @Test
@@ -63,27 +37,18 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
         checkGet(restTemplate,
                 "/api/public/restaurants?rating=true&sort=rating,name,desc",
                 RestaurantPageTo.class, buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
-                        TOTAL_PAGES, RESTAURANT_TOS_WITH_RATING[SECOND],
-                        RESTAURANT_TOS_WITH_RATING[THIRD], RESTAURANT_TOS_WITH_RATING[FIRST]));
+                        TOTAL_PAGES, RESTAURANT_TOS_WITH_CURRENT_RATING[THIRD],
+                        RESTAURANT_TOS_WITH_CURRENT_RATING[SECOND],
+                        RESTAURANT_TOS_WITH_CURRENT_RATING[FIRST]));
     }
 
     @Test
-    void getAllWithMenuAndRating() {
-        checkGet(restTemplate, "/api/public/restaurants?rating=true&menu=true",
+    void getAllWithRatingByDate() {
+        checkGet(restTemplate, "/api/public/restaurants?rating=true&date=" + PREV_1D_DATE,
                 RestaurantPageTo.class, buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
-                        TOTAL_PAGES, RESTAURANT_TOS_WITH_MENU_AND_RATING[FIRST],
-                        RESTAURANT_TOS_WITH_MENU_AND_RATING[THIRD],
-                        RESTAURANT_TOS_WITH_MENU_AND_RATING[SECOND]));
-    }
-
-    @Test
-    void getAllWithMenuAndRatingSortedByRatingAscMenuEntryNameDesc() {
-        checkGet(restTemplate, "/api/public/restaurants?rating=true&menu=true" +
-                        "&sort=rating,name,desc,menuEntry.name,desc",
-                RestaurantPageTo.class, buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
-                        TOTAL_PAGES, RESTAURANT_TOS_WITH_MENU_DESC_AND_RATING[SECOND],
-                        RESTAURANT_TOS_WITH_MENU_DESC_AND_RATING[THIRD],
-                        RESTAURANT_TOS_WITH_MENU_DESC_AND_RATING[FIRST]));
+                        TOTAL_PAGES, RESTAURANT_TOS_WITH_PREV_1D_RATING[THIRD],
+                        RESTAURANT_TOS_WITH_PREV_1D_RATING[FIRST],
+                        RESTAURANT_TOS_WITH_PREV_1D_RATING[SECOND]));
     }
 
     @Test
@@ -100,84 +65,45 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
     @Test
     void getOneWithMenu() {
         checkGet(restTemplate, "/api/public/restaurants/1?menu=true", RestaurantTo.class,
-                RESTAURANT_TOS_WITH_MENU[FIRST]);
+                RESTAURANT_TO_WITH_MENU);
     }
 
     @Test
     void getOneWithMenuSortedByNameDesc() {
         checkGet(restTemplate, "/api/public/restaurants/1?menu=true&sort=menuEntry.name,desc",
-                RestaurantTo.class, RESTAURANT_TOS_WITH_MENU_DESC[FIRST]);
+                RestaurantTo.class, RESTAURANT_TO_WITH_MENU_DESC);
     }
 
     @Test
     void getOneWithRating() {
         checkGet(restTemplate, "/api/public/restaurants/1?rating=true", RestaurantTo.class,
-                RESTAURANT_TOS_WITH_RATING[FIRST]);
+                RESTAURANT_TO_WITH_CURRENT_RATING);
     }
 
     @Test
     void getOneWithRatingByDate() {
-        checkGet(restTemplate, "/api/public/restaurants/1?rating=true&ratingDate=" +
-                        PREV_1D_DATE, RestaurantTo.class, RESTAURANT_TO_WITH_RATING_BY_DATE);
-    }
-
-    @Test
-    void getOneWithRatingStartDate() {
-        checkGet(restTemplate, "/api/public/restaurants/1?rating=true&ratingDateStart=" +
-                        PREV_1D_DATE, RestaurantTo.class, RESTAURANT_TO_WITH_RATING_START_DATE);
-    }
-
-    @Test
-    void getOneWithRatingEndDate() {
-        checkGet(restTemplate, "/api/public/restaurants/1?rating=true&ratingDateEnd=" +
-                        PREV_1D_DATE, RestaurantTo.class, RESTAURANT_TO_WITH_RATING_END_DATE);
-    }
-
-    @Test
-    void getOneWithRatingBetweenDate() {
-        checkGet(restTemplate, String.format("/api/public/restaurants/1?rating=true&" +
-                        "ratingDateStart=%s&ratingDateEnd=%s", PREV_1D_DATE, PREV_1D_DATE),
-                RestaurantTo.class, RESTAURANT_TO_WITH_RATING_BY_DATE);
+        checkGet(restTemplate, "/api/public/restaurants/1?rating=true&date=" + PREV_1D_DATE,
+                RestaurantTo.class, RESTAURANT_TO_WITH_PREV_1D_RATING);
     }
 
     @Test
     void getOneWithMenuAndRating() {
         checkGet(restTemplate, "/api/public/restaurants/1?menu=true&rating=true",
-                RestaurantTo.class, RESTAURANT_TOS_WITH_MENU_AND_RATING[FIRST]);
+                RestaurantTo.class, RESTAURANT_TO_WITH_CURRENT_MENU_AND_RATING);
     }
 
     @Test
     void getOneWithMenuAndRatingSortedByNameDesc() {
         checkGet(restTemplate, "/api/public/restaurants/1?menu=true&rating=true&" +
                         "sort=menuEntry.name,desc", RestaurantTo.class,
-                RESTAURANT_TOS_WITH_MENU_DESC_AND_RATING[FIRST]);
+                RESTAURANT_TO_WITH_CURRENT_MENU_DESC_AND_RATING);
     }
 
     @Test
     void getOneWithMenuAndRatingByDate() {
-        checkGet(restTemplate, "/api/public/restaurants/1?menu=true&rating=true&ratingDate=" +
-                        PREV_1D_DATE, RestaurantTo.class, RESTAURANT_TO_WITH_MENU_AND_RATING_DATE);
-    }
-
-    @Test
-    void getOneWithMenuAndRatingStartDate() {
-        checkGet(restTemplate, "/api/public/restaurants/1?menu=true&rating=true&" +
-                        "ratingDateStart=" + PREV_1D_DATE, RestaurantTo.class,
-                RESTAURANT_TO_WITH_MENU_AND_RATING_START_DATE);
-    }
-
-    @Test
-    void getOneWithMenuAndRatingEndDate() {
-        checkGet(restTemplate, "/api/public/restaurants/1?menu=true&rating=true&" +
-                        "ratingDateEnd=" + PREV_1D_DATE, RestaurantTo.class,
-                RESTAURANT_TO_WITH_MENU_AND_RATING_END_DATE);
-    }
-
-    @Test
-    void getOneWithMenuAndRatingBetweenDate() {
-        checkGet(restTemplate, String.format("/api/public/restaurants/1?menu=true&rating=true&" +
-                        "ratingDateStart=%s&ratingDateEnd=%s", PREV_1D_DATE, PREV_1D_DATE),
-                RestaurantTo.class, RESTAURANT_TO_WITH_MENU_AND_RATING_DATE);
+        checkGet(restTemplate, "/api/public/restaurants/1?menu=true&rating=true&date=" +
+                        PREV_1D_DATE, RestaurantTo.class,
+                RESTAURANT_TO_WITH_PREV_1D_MENU_AND_RATING);
     }
 
     @Test
@@ -252,31 +178,12 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
     @Test
     void getRating() {
         checkGet(restTemplate, "/api/public/restaurants/1/rating", Integer.class,
-                FULL_RATING[FIRST]);
+                CURRENT_RATING[FIRST]);
     }
 
     @Test
     void getRatingByDate() {
         checkGet(restTemplate, "/api/public/restaurants/1/rating?date=" + PREV_1D_DATE,
                 Integer.class, PREV_1D_RATING[FIRST]);
-    }
-
-    @Test
-    void getRatingByStartDate() {
-        checkGet(restTemplate, "/api/public/restaurants/1/rating?dateStart=" + PREV_1D_DATE,
-                Integer.class, START_PREV_1D_RATING[FIRST]);
-    }
-
-    @Test
-    void getRatingByEndDate() {
-        checkGet(restTemplate, "/api/public/restaurants/1/rating?dateEnd=" + PREV_1D_DATE,
-                Integer.class, END_PREV_1D_RATING[FIRST]);
-    }
-
-    @Test
-    void getRatingBetweenDate() {
-        checkGet(restTemplate, String.format("/api/public/restaurants/1/rating?dateStart=%s&" +
-                        "dateEnd=%s", PREV_1D_DATE, PREV_1D_DATE), Integer.class,
-                PREV_1D_RATING[FIRST]);
     }
 }

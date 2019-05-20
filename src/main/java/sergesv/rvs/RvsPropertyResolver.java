@@ -25,10 +25,6 @@ public class RvsPropertyResolver {
     private static final String PROPERTY_SORT_RESTAURANT = "rvs.sort-restaurant";
     private static final String PROPERTY_SORT_RESTAURANT_WITH_RATING =
             "rvs.sort-restaurant-with-rating";
-    private static final String PROPERTY_SORT_RESTAURANT_WITH_MENU =
-            "rvs.sort-restaurant-with-menu";
-    private static final String PROPERTY_SORT_RESTAURANT_WITH_MENU_AND_RATING =
-            "rvs.sort-restaurant-with-menu-and-rating";
     private static final String PROPERTY_SORT_MENU_ENTRY = "rvs.sort-menu-entry";
     private static final String PROPERTY_SORT_SINGLE_RESTAURANT_MENU_ENTRY =
             "rvs.sort-single-restaurant-menu-entry";
@@ -57,10 +53,6 @@ public class RvsPropertyResolver {
     private String sortRestaurant;
 
     private String sortRestaurantWithRating;
-
-    private String sortRestaurantWithMenu;
-
-    private String sortRestaurantWithMenuAndRating;
 
     private String sortMenuEntry;
 
@@ -109,17 +101,6 @@ public class RvsPropertyResolver {
     public Sort getSortRestaurantWithRating() {
         return getDefaultSort(sortRestaurantWithRating, PROPERTY_SORT_RESTAURANT_WITH_RATING,
                 RESTAURANT_WITH_RATING_PARAMS);
-    }
-
-    public Sort getSortRestaurantWithMenu() {
-        return getDefaultSort(sortRestaurantWithMenu, PROPERTY_SORT_RESTAURANT_WITH_MENU,
-                RESTAURANT_WITH_MENU_PARAMS);
-    }
-
-    public Sort getSortRestaurantWithMenuAndRating() {
-        return getDefaultSort(sortRestaurantWithMenuAndRating,
-                PROPERTY_SORT_RESTAURANT_WITH_MENU_AND_RATING,
-                RESTAURANT_WITH_MENU_AND_RATING_PARAMS);
     }
 
     public Sort getSortMenuEntry() {

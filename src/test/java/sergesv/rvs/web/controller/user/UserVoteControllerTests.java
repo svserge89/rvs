@@ -64,7 +64,7 @@ class UserVoteControllerTests extends AbstractControllerTests {
     void createNew() {
         checkPost(restTemplate.withBasicAuth(USER_2.getNickName(), USER_2.getPassword()),
                 "/api/user/restaurants/1/vote", "/api/public/restaurants/1/rating",
-                4);
+                CURRENT_RATING[FIRST] + 1);
     }
 
     @Test
@@ -73,7 +73,7 @@ class UserVoteControllerTests extends AbstractControllerTests {
         DateTimeUtil.setTestLocalTime(propertyResolver.getMaxVoteTime());
 
         checkPost(userRestTemplate(), "/api/user/restaurants/1/vote",
-                "/api/public/restaurants/1/rating", FULL_RATING[FIRST] + 1);
+                "/api/public/restaurants/1/rating", CURRENT_RATING[FIRST] + 1);
     }
 
     @Test
@@ -96,7 +96,7 @@ class UserVoteControllerTests extends AbstractControllerTests {
         DateTimeUtil.setTestLocalTime(propertyResolver.getMaxVoteTime());
 
         checkDelete(userRestTemplate(), "/api/user/restaurants/2/vote",
-                "/api/public/restaurants/2/rating", FULL_RATING[SECOND] - 1);
+                "/api/public/restaurants/2/rating", CURRENT_RATING[SECOND] - 1);
     }
 
     @Test

@@ -25,13 +25,10 @@ public final class TestData {
 
     private static final double[] PRICE = {50.0, 10.5, 50.0};
 
-    public static final int[] FULL_RATING = {3, 1, 2};
+    public static final int[] CURRENT_RATING = {1, 1, 0};
     public static final int[] PREV_1D_RATING = {0, 0, 2};
-    public static final int[] START_PREV_1D_RATING = {1, 1, 2};
-    public static final int[] END_PREV_1D_RATING = {2, 0, 2};
 
     private static final int COUNT_RESTAURANTS = 3;
-    private static final int EMPTY_RESTAURANT_ID = 3;
     private static final int FIRST_ID = 1;
     private static final int CURRENT_MENU_FIRST_ID = 311;
     private static final int PREV_1D_MENU_FIRST_ID = 211;
@@ -46,36 +43,36 @@ public final class TestData {
             new RestaurantTo(0, "New Restaurant", null, null);
 
     public static final RestaurantTo[] RESTAURANT_TOS =
-            buildRestaurantTos(false, false, CURRENT_DATE, menuPriceComparator);
-    public static final RestaurantTo[] RESTAURANT_TOS_WITH_MENU =
-            buildRestaurantTos(true, false, CURRENT_DATE, menuPriceComparator);
-    public static final RestaurantTo[] RESTAURANT_TOS_WITH_RATING =
-            buildRestaurantTos(false, true, CURRENT_DATE, menuPriceComparator);
-    public static final RestaurantTo[] RESTAURANT_TOS_WITH_MENU_AND_RATING =
-            buildRestaurantTos(true, true, CURRENT_DATE, menuPriceComparator);
-    public static final RestaurantTo[] RESTAURANT_TOS_WITH_MENU_BY_PREV_1D =
-            buildRestaurantTos(true, false, PREV_1D_DATE, menuPriceComparator);
-    public static final RestaurantTo[] RESTAURANT_TOS_WITH_MENU_DESC =
-            buildRestaurantTos(true, false, CURRENT_DATE, menuNameDescComparator);
-    public static final RestaurantTo[] RESTAURANT_TOS_WITH_MENU_DESC_AND_RATING =
-            buildRestaurantTos(true, true, CURRENT_DATE, menuNameDescComparator);
+            buildRestaurantTos(false, CURRENT_RATING);
+    public static final RestaurantTo[] RESTAURANT_TOS_WITH_CURRENT_RATING =
+            buildRestaurantTos(true, CURRENT_RATING);
+    public static final RestaurantTo[] RESTAURANT_TOS_WITH_PREV_1D_RATING =
+            buildRestaurantTos(true, PREV_1D_RATING);
 
-    public static final RestaurantTo RESTAURANT_TO_WITH_RATING_BY_DATE =
-            buildRestaurantTo(FIRST_ID, null, PREV_1D_RATING[FIRST]);
-    public static final RestaurantTo RESTAURANT_TO_WITH_RATING_START_DATE =
-            buildRestaurantTo(FIRST_ID, null, START_PREV_1D_RATING[FIRST]);
-    public static final RestaurantTo RESTAURANT_TO_WITH_RATING_END_DATE =
-            buildRestaurantTo(FIRST_ID, null, END_PREV_1D_RATING[FIRST]);
-    public static final RestaurantTo RESTAURANT_TO_WITH_MENU_AND_RATING_DATE =
+    public static final RestaurantTo RESTAURANT_TO_WITH_MENU =
             buildRestaurantTo(FIRST_ID, buildMenuEntryToSet(buildMenuEntryTos(
                     CURRENT_MENU_FIRST_ID, FIRST_ID, CURRENT_DATE), menuPriceComparator),
+                    null);
+    public static final RestaurantTo RESTAURANT_TO_WITH_MENU_DESC =
+            buildRestaurantTo(FIRST_ID, buildMenuEntryToSet(buildMenuEntryTos(
+                    CURRENT_MENU_FIRST_ID, FIRST_ID, CURRENT_DATE), menuNameDescComparator),
+                    null);
+    public static final RestaurantTo RESTAURANT_TO_WITH_CURRENT_RATING =
+            buildRestaurantTo(FIRST_ID, null, CURRENT_RATING[FIRST]);
+    public static final RestaurantTo RESTAURANT_TO_WITH_PREV_1D_RATING =
+            buildRestaurantTo(FIRST_ID, null, PREV_1D_RATING[FIRST]);
+    public static final RestaurantTo RESTAURANT_TO_WITH_CURRENT_MENU_AND_RATING =
+            buildRestaurantTo(FIRST_ID, buildMenuEntryToSet(buildMenuEntryTos(
+                    CURRENT_MENU_FIRST_ID, FIRST_ID, CURRENT_DATE), menuPriceComparator),
+                    CURRENT_RATING[FIRST]);
+    public static final RestaurantTo RESTAURANT_TO_WITH_CURRENT_MENU_DESC_AND_RATING =
+            buildRestaurantTo(FIRST_ID, buildMenuEntryToSet(buildMenuEntryTos(
+                    CURRENT_MENU_FIRST_ID, FIRST_ID, CURRENT_DATE), menuNameDescComparator),
+                    CURRENT_RATING[FIRST]);
+    public static final RestaurantTo RESTAURANT_TO_WITH_PREV_1D_MENU_AND_RATING =
+            buildRestaurantTo(FIRST_ID, buildMenuEntryToSet(buildMenuEntryTos(
+                    PREV_1D_MENU_FIRST_ID, FIRST_ID, PREV_1D_DATE), menuPriceComparator),
                     PREV_1D_RATING[FIRST]);
-    public static final RestaurantTo RESTAURANT_TO_WITH_MENU_AND_RATING_START_DATE =
-            buildRestaurantTo(FIRST_ID, buildMenuEntryToSet(buildMenuEntryTos(CURRENT_MENU_FIRST_ID,
-                    FIRST_ID, CURRENT_DATE), menuPriceComparator), START_PREV_1D_RATING[FIRST]);
-    public static final RestaurantTo RESTAURANT_TO_WITH_MENU_AND_RATING_END_DATE =
-            buildRestaurantTo(FIRST_ID, buildMenuEntryToSet(buildMenuEntryTos(CURRENT_MENU_FIRST_ID,
-                    FIRST_ID, CURRENT_DATE), menuPriceComparator), END_PREV_1D_RATING[FIRST]);
 
     public static final MenuEntryTo NEW_MENU_ENTRY_TO =
             new MenuEntryTo(0, "New Menu Entry", 20.5, CURRENT_DATE);
@@ -138,27 +135,17 @@ public final class TestData {
                 .sorted(comparator).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    private static RestaurantTo[] buildRestaurantTos(boolean menu, boolean rating,
-                                                     LocalDate menuDate,
-                                                     Comparator<MenuEntryTo> menuComparator) {
+    private static RestaurantTo[] buildRestaurantTos(boolean rating, int[] ratings) {
         var result = new RestaurantTo[COUNT_RESTAURANTS];
 
         for (int i = 0; i < result.length; ++i) {
-            int id = i + 1;
-            LinkedHashSet<MenuEntryTo> menuEntrySet = null;
             Integer ratingValue = null;
 
-            int startId = menuDate.equals(CURRENT_DATE) ? 300 : 200;
-
-            if (menu) {
-                menuEntrySet = getMenuEntryToSet(startId, id, menuDate, menuComparator);
-                result[i] = buildRestaurantTo(i + 1, menuEntrySet, null);
-            }
             if (rating) {
-                ratingValue = FULL_RATING[i];
+                ratingValue = ratings[i];
             }
 
-            result[i] = buildRestaurantTo(i + 1, menuEntrySet, ratingValue);
+            result[i] = buildRestaurantTo(i + 1, null, ratingValue);
         }
 
         return result;
@@ -166,19 +153,6 @@ public final class TestData {
 
     public static <T> PageTo<T> buildPageTo(int page, int size, int total, T ...objects) {
         return new PageTo<>(List.of(objects), page, size, total);
-    }
-
-    private static LinkedHashSet<MenuEntryTo> getMenuEntryToSet(long startId, long restaurantId,
-                                                                LocalDate date,
-                                                                Comparator<MenuEntryTo>
-                                                                comparator) {
-        if (restaurantId != EMPTY_RESTAURANT_ID) {
-            return Arrays.stream(buildMenuEntryTos(
-                    startId + restaurantId * 10 + 1, restaurantId, date))
-                    .sorted(comparator).collect(Collectors.toCollection(LinkedHashSet::new));
-        } else {
-            return new LinkedHashSet<>();
-        }
     }
 
     private TestData() {

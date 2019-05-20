@@ -9,8 +9,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sergesv.rvs.model.Restaurant;
+import sergesv.rvs.model.RestaurantWithRating;
 import sergesv.rvs.repository.RestaurantRepository;
 import sergesv.rvs.repository.VoteEntryRepository;
+import sergesv.rvs.util.ToUtil;
 import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.RestaurantTo;
 
@@ -34,30 +36,13 @@ public class RestaurantService {
     public PageTo<RestaurantTo> getAll(Pageable pageable) {
         log.debug("getAll params: pageable=\"{}\"", pageable);
 
-        return toRestaurantTos(restaurantRepository.findAll(pageable),
-                false, false);
+        return toPageTo(restaurantRepository.findAll(pageable));
     }
 
-    public PageTo<RestaurantTo> getAllWithRating(Pageable pageable) {
+    public PageTo<RestaurantTo> getAllWithRating(LocalDate date, Pageable pageable) {
         log.debug("getAllWithRating params: pageable=\"{}\"", pageable);
 
-        return toRestaurantTos(restaurantRepository.findAllWithRating(pageable),
-                false, true);
-    }
-
-    public PageTo<RestaurantTo> getAllWithMenu(LocalDate menuDate, Pageable pageable) {
-        log.debug("getAllWithMenu params: pageable=\"{}\", menuDate={}", pageable, menuDate);
-
-        return toRestaurantTos(restaurantRepository.findAllWithMenu(
-                menuDate, pageable), true, false);
-    }
-
-    public PageTo<RestaurantTo> getAllWithMenuAndRating(LocalDate menuDate, Pageable pageable) {
-        log.debug("getAllWithMenuAndRating params: pageable=\"{}\", menuDate={}", pageable,
-                menuDate);
-
-        return toRestaurantTos(restaurantRepository.findAllWithMenuAndRating(
-                menuDate, pageable), true, true);
+        return toPageToWithRating(restaurantRepository.findAllWithRating(date, pageable));
     }
 
     public RestaurantTo getOne(long id) {
@@ -68,95 +53,37 @@ public class RestaurantService {
                 false, false);
     }
 
-    public RestaurantTo getOneWithRating(long id) {
-        log.debug("getOneWithRating params: id={}", id);
-
-        Restaurant restaurant = restaurantRepository.findByIdWithRating(id)
-                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
-
-        return toTo(restaurant, false, true);
-    }
-
     public RestaurantTo getOneWithRating(long id, LocalDate date) {
         log.debug("getOneWithRating params: id={}, date={}", id, date);
 
-        Restaurant restaurant = restaurantRepository.findByIdWithRatingBy(id, date)
+        Restaurant restaurant = restaurantRepository.findByIdWithRating(id, date)
                 .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, false, true);
     }
 
-    public RestaurantTo getOneWithRating(long id, LocalDate dateStart, LocalDate dateEnd) {
-        log.debug("getOneWithRating params: id={}, dateStart={}, dateEnd={}", id, dateStart,
-                dateEnd);
+    public RestaurantTo getOneWithMenu(long id, LocalDate date, Sort sort) {
+        log.debug("getOneWithMenu params: id={}, menuDate={}, sort=\"{}\"", id, date, sort);
 
-        Restaurant restaurant = restaurantRepository.findByIdWithRatingBetween(id, dateStart,
-                dateEnd).orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
-
-        return toTo(restaurant, false, true);
-    }
-
-    public RestaurantTo getOneWithMenu(long id, LocalDate menuDate, Sort sort) {
-        log.debug("getOneWithMenu params: id={}, menuDate={}, sort=\"{}\"", id, menuDate, sort);
-
-        return toTo(restaurantRepository.findByIdWithMenu(id, menuDate, sort)
+        return toTo(restaurantRepository.findByIdWithMenu(id, date, sort)
                 .orElseThrow(entityNotFoundSupplier(Restaurant.class, id)),
                 true, false);
     }
 
-    public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate, Sort sort) {
-        log.debug("getOneWithMenuAndRating params: id={}, menuDate={}, sort=\"{}\"", id, menuDate,
+    public RestaurantTo getOneWithMenuAndRating(long id, LocalDate date, Sort sort) {
+        log.debug("getOneWithMenuAndRating params: id={}, menuDate={}, sort=\"{}\"", id, date,
                 sort);
 
-        Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRating(id, menuDate, sort)
+        Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRating(id, date, sort)
                 .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, true, true);
-    }
-
-    public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate, LocalDate ratingDate,
-                                                Sort sort) {
-        log.debug("getOneWithMenuAndRating params: id={}, menuDate={}, ratingDate={}, sort=\"{}\"",
-                id, menuDate, ratingDate, sort);
-
-        Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRatingBy(id, menuDate,
-                ratingDate, sort).orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
-
-        return toTo(restaurant, true, true);
-    }
-
-    public RestaurantTo getOneWithMenuAndRating(long id, LocalDate menuDate,
-                                                LocalDate ratingDateStart,
-                                                LocalDate ratingDateEnd, Sort sort) {
-        log.debug("getOneWithMenuAndRating params: id={}, menuDate={}, ratingDateStart={}, " +
-                        "ratingDateEnd={}, sort=\"{}\"", id, menuDate, ratingDateStart,
-                ratingDateEnd, sort);
-
-        Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRatingBetween(
-                id, menuDate, ratingDateStart, ratingDateEnd, sort)
-                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
-
-        return toTo(restaurant, true, true);
-    }
-
-    public int getRating(long restaurantId) {
-        log.debug("getRating params: restaurantId={}", restaurantId);
-
-        return voteEntryRepository.countByRestaurantId(restaurantId);
     }
 
     public int getRating(long restaurantId, LocalDate date) {
         log.debug("getRating params: restaurantId={}, date={}", restaurantId, date);
 
         return voteEntryRepository.countByRestaurantIdAndDateEquals(restaurantId, date);
-    }
-
-    public int getRating(long restaurantId, LocalDate dateStart, LocalDate dateEnd) {
-        log.debug("getRating params: restaurantId={}, dateStart={}, dateEnd={}", restaurantId,
-                dateStart, dateEnd);
-
-        return voteEntryRepository.countByRestaurantIdAndDateBetween(restaurantId, dateStart,
-                dateEnd);
     }
 
     @Transactional
@@ -194,10 +121,15 @@ public class RestaurantService {
         restaurantRepository.deleteAll();
     }
 
-    private static PageTo<RestaurantTo> toRestaurantTos(Page<Restaurant> restaurantPage,
-                                                        boolean withMenu, boolean rating) {
+    private static PageTo<RestaurantTo> toPageTo(Page<Restaurant> restaurantPage) {
         return toTo(restaurantPage, page -> page.get()
-                .map(restaurant -> toTo(restaurant, withMenu, rating))
+                .map(restaurant -> toTo(restaurant, false, false))
                 .collect(Collectors.toList()));
+    }
+
+    private static PageTo<RestaurantTo> toPageToWithRating(
+            Page<RestaurantWithRating> restaurantPage) {
+        return toTo(restaurantPage, page -> page.get()
+                .map(ToUtil::toTo).collect(Collectors.toList()));
     }
 }
