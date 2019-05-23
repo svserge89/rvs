@@ -25,7 +25,7 @@ public class AdminUserController {
                                  @RequestParam(required = false) Integer size,
                                  @RequestParam(required = false) String sort) {
         Pageable pageable = resolvePageable(page, size,
-                getSort(sort, USER_PARAMS).orElse(propertyResolver.getSortUser()),
+                getSort(sort, USER_PARAMS).orElse(propertyResolver.getUserSorter()),
                 propertyResolver.getUserPageSize());
 
         return userService.getAll(pageable);

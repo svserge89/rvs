@@ -56,8 +56,8 @@ public final class ControllerUtil {
     public static Sort resolveSort(String params, boolean withRating,
                                    RvsPropertyResolver propertyResolver) {
         return withRating ? getSort(params, RESTAURANT_WITH_RATING_PARAMS)
-                .orElse(propertyResolver.getSortRestaurantWithRating())
-                : getSort(params, RESTAURANT_PARAMS).orElse(propertyResolver.getSortRestaurant());
+                .orElse(propertyResolver.getRestaurantWithRatingSorter())
+                : getSort(params, RESTAURANT_PARAMS).orElse(propertyResolver.getRestaurantSorter());
     }
 
     private ControllerUtil() {

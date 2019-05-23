@@ -34,7 +34,7 @@ public class UserVoteController {
                                       @RequestParam(required = false) Integer size,
                                       @RequestParam(required = false) String sort) {
         Pageable pageable = resolvePageable(page, size,
-                getSort(sort, VOTE_ENTRY_PARAMS).orElse(propertyResolver.getSortVoteEntry()),
+                getSort(sort, VOTE_ENTRY_PARAMS).orElse(propertyResolver.getVoteEntrySorter()),
                 propertyResolver.getVoteEntryPageSize());
 
         if (resolveParams(dateStart, dateEnd) == BETWEEN_DATES) {

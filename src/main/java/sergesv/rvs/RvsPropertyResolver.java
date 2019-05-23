@@ -1,5 +1,6 @@
 package sergesv.rvs;
 
+import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,21 +8,22 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
+import javax.annotation.PostConstruct;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
-import java.util.Optional;
 
 import static org.springframework.format.annotation.DateTimeFormat.*;
 import static sergesv.rvs.util.SortUtil.*;
+import static sergesv.rvs.util.ValidationUtil.MIN_PAGE_SIZE;
 
 @Component
 @ConfigurationProperties(prefix = "rvs")
-@Setter
+@Validated
 public class RvsPropertyResolver {
-    private static final String PROPERTY_RESTAURANT_PAGE_SIZE = "rvs.restaurant-page-size";
-    private static final String PROPERTY_MENU_ENTRY_PAGE_SIZE = "rvs.menu-entry-page-size";
-    private static final String PROPERTY_USER_PAGE_SIZE = "rvs.user-page-size";
-    private static final String PROPERTY_VOTE_ENTRY_PAGE_SIZE = "rvs.vote-entry-page-size";
     private static final String PROPERTY_SORT_RESTAURANT = "rvs.sort-restaurant";
     private static final String PROPERTY_SORT_RESTAURANT_WITH_RATING =
             "rvs.sort-restaurant-with-rating";
@@ -31,104 +33,89 @@ public class RvsPropertyResolver {
     private static final String PROPERTY_SORT_USER = "rvs.sort-user";
     private static final String PROPERTY_SORT_VOTE_ENTRY = "rvs.sort-vote-entry";
 
-    private static final int DEFAULT_RESTAURANT_PAGE_SIZE = 10;
-    private static final int DEFAULT_MENU_ENTRY_PAGE_SIZE = 10;
-    private static final int DEFAULT_USER_PAGE_SIZE = 10;
-    private static final int DEFAULT_VOTE_ENTRY_PAGE_SIZE = 10;
-    private static final LocalTime DEFAULT_MAX_VOTE_TIME = LocalTime.of(11, 0);
-
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    @NotNull
     @DateTimeFormat(iso = ISO.TIME)
+    @Getter
+    @Setter
     private LocalTime maxVoteTime;
 
+    @Min(MIN_PAGE_SIZE)
+    @Getter
+    @Setter
     private int restaurantPageSize;
 
+    @Min(MIN_PAGE_SIZE)
+    @Getter
+    @Setter
     private int menuEntryPageSize;
 
+    @Min(MIN_PAGE_SIZE)
+    @Getter
+    @Setter
     private int userPageSize;
 
+    @Min(MIN_PAGE_SIZE)
+    @Getter
+    @Setter
     private int voteEntryPageSize;
 
+    @NotEmpty
+    @Setter
     private String sortRestaurant;
 
+    @NotEmpty
+    @Setter
     private String sortRestaurantWithRating;
 
+    @NotEmpty
+    @Setter
     private String sortMenuEntry;
 
+    @NotEmpty
+    @Setter
     private String sortSingleRestaurantMenuEntry;
 
+    @NotEmpty
+    @Setter
     private String sortUser;
 
+    @NotEmpty
+    @Setter
     private String sortVoteEntry;
 
-    public LocalTime getMaxVoteTime() {
-        var optional = Optional.ofNullable(maxVoteTime);
+    @Getter
+    private Sort restaurantSorter;
 
-        if (optional.isPresent()) {
-            return optional.get();
-        } else {
-            log.warn("Property rvs.max-vote-time has incorrect value, using default value {}",
-                    DEFAULT_MAX_VOTE_TIME);
+    @Getter
+    private Sort restaurantWithRatingSorter;
 
-            return DEFAULT_MAX_VOTE_TIME;
-        }
-    }
+    @Getter
+    private Sort menuEntrySorter;
 
-    public int getRestaurantPageSize() {
-        return getDefaultPageSize(restaurantPageSize, DEFAULT_RESTAURANT_PAGE_SIZE,
-                PROPERTY_RESTAURANT_PAGE_SIZE);
-    }
+    @Getter
+    private Sort singleRestaurantMenuEntrySorter;
 
-    public int getMenuEntryPageSize() {
-        return getDefaultPageSize(menuEntryPageSize, DEFAULT_MENU_ENTRY_PAGE_SIZE,
-                PROPERTY_MENU_ENTRY_PAGE_SIZE);
-    }
+    @Getter
+    private Sort userSorter;
 
-    public int getUserPageSize() {
-        return getDefaultPageSize(userPageSize, DEFAULT_USER_PAGE_SIZE, PROPERTY_USER_PAGE_SIZE);
-    }
+    @Getter
+    private Sort voteEntrySorter;
 
-    public int getVoteEntryPageSize() {
-        return getDefaultPageSize(voteEntryPageSize, DEFAULT_VOTE_ENTRY_PAGE_SIZE,
-                PROPERTY_VOTE_ENTRY_PAGE_SIZE);
-    }
-
-    public Sort getSortRestaurant() {
-        return getDefaultSort(sortRestaurant, PROPERTY_SORT_RESTAURANT, RESTAURANT_PARAMS);
-    }
-
-    public Sort getSortRestaurantWithRating() {
-        return getDefaultSort(sortRestaurantWithRating, PROPERTY_SORT_RESTAURANT_WITH_RATING,
-                RESTAURANT_WITH_RATING_PARAMS);
-    }
-
-    public Sort getSortMenuEntry() {
-        return getDefaultSort(sortMenuEntry, PROPERTY_SORT_MENU_ENTRY, MENU_ENTRY_PARAMS);
-    }
-
-    public Sort getSortSingleRestaurantMenuEntry() {
-        return getDefaultSort(sortSingleRestaurantMenuEntry,
+    @PostConstruct
+    private void init() {
+        restaurantSorter = getDefaultSort(sortRestaurant, PROPERTY_SORT_RESTAURANT,
+                RESTAURANT_PARAMS);
+        restaurantWithRatingSorter = getDefaultSort(sortRestaurantWithRating,
+                PROPERTY_SORT_RESTAURANT_WITH_RATING, RESTAURANT_WITH_RATING_PARAMS);
+        menuEntrySorter = getDefaultSort(sortMenuEntry, PROPERTY_SORT_MENU_ENTRY,
+                MENU_ENTRY_PARAMS);
+        singleRestaurantMenuEntrySorter = getDefaultSort(sortSingleRestaurantMenuEntry,
                 PROPERTY_SORT_SINGLE_RESTAURANT_MENU_ENTRY, SINGLE_RESTAURANT_MENU_ENTRY_PARAMS);
-    }
-
-    public Sort getSortUser() {
-        return getDefaultSort(sortUser, PROPERTY_SORT_USER, USER_PARAMS);
-    }
-
-    public Sort getSortVoteEntry() {
-        return getDefaultSort(sortVoteEntry, PROPERTY_SORT_VOTE_ENTRY, VOTE_ENTRY_PARAMS);
-    }
-
-    private int getDefaultPageSize(int value, int defaultValue, String propertyName) {
-        if (value > 0) {
-            return value;
-        } else {
-            log.warn("Property {} has incorrect value, using default value {}", propertyName,
-                    defaultValue);
-
-            return defaultValue;
-        }
+        userSorter = getDefaultSort(sortUser, PROPERTY_SORT_USER, USER_PARAMS);
+        voteEntrySorter = getDefaultSort(sortVoteEntry, PROPERTY_SORT_VOTE_ENTRY,
+                VOTE_ENTRY_PARAMS);
     }
 
     private Sort getDefaultSort(String sortValue, String propertyName,
