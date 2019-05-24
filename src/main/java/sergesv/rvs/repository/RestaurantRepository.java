@@ -24,19 +24,19 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
             countQuery = "SELECT COUNT (restaurant) FROM Restaurant restaurant")
     Page<RestaurantWithRating> findAllWithRating(LocalDate date, Pageable pageable);
 
-    @EntityGraph(Restaurant.GRAPH_WITH_VOTE)
+    @EntityGraph(attributePaths = "voteEntry")
     @Query("SELECT restaurant FROM Restaurant restaurant " +
                 "LEFT JOIN restaurant.voteEntry voteEntry ON voteEntry.date = :date " +
             "WHERE restaurant.id = :id")
     Optional<Restaurant> findByIdWithRating(Long id, LocalDate date);
 
-    @EntityGraph(Restaurant.GRAPH_WITH_MENU)
+    @EntityGraph(attributePaths = "menuEntry")
     @Query("SELECT DISTINCT restaurant FROM Restaurant restaurant " +
                 "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :date " +
             "WHERE restaurant.id = :id")
     Optional<Restaurant> findByIdWithMenu(Long id, LocalDate date, Sort sort);
 
-    @EntityGraph(Restaurant.GRAPH_WITH_MENU_AND_VOTE)
+    @EntityGraph(attributePaths = {"menuEntry", "voteEntry"})
     @Query("SELECT restaurant FROM Restaurant restaurant " +
                 "LEFT JOIN restaurant.menuEntry menuEntry ON menuEntry.date = :date " +
                 "LEFT JOIN restaurant.voteEntry voteEntry ON voteEntry.date = :date " +

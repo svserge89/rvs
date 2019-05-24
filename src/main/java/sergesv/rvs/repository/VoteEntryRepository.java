@@ -18,10 +18,10 @@ public interface VoteEntryRepository extends JpaRepository<VoteEntry, Long> {
             "WHERE voteEntry.restaurant.id = :restaurantId AND voteEntry.date = :date")
     Integer countByRestaurantIdAndDateEquals(Long restaurantId, LocalDate date);
 
-    @EntityGraph(VoteEntry.GRAPH_WITH_RESTAURANT)
+    @EntityGraph(attributePaths = "restaurant")
     Page<VoteEntry> findAllByUserId(Long userId, Pageable pageable);
 
-    @EntityGraph(VoteEntry.GRAPH_WITH_RESTAURANT)
+    @EntityGraph(attributePaths = "restaurant")
     Page<VoteEntry> findAllByUserIdAndDateBetween(Long userId, LocalDate dateStart,
                                                   LocalDate dateEnd, Pageable pageable);
 

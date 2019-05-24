@@ -12,15 +12,6 @@ import java.util.Set;
 import static sergesv.rvs.util.ValidationUtil.RESTAURANT_NAME_SIZE;
 
 @Entity
-@NamedEntityGraphs({
-        @NamedEntityGraph(name = Restaurant.GRAPH_WITH_MENU,
-                attributeNodes = @NamedAttributeNode("menuEntry")),
-        @NamedEntityGraph(name = Restaurant.GRAPH_WITH_VOTE,
-                attributeNodes = @NamedAttributeNode("voteEntry")),
-        @NamedEntityGraph(name = Restaurant.GRAPH_WITH_MENU_AND_VOTE,
-                attributeNodes = {@NamedAttributeNode("menuEntry"),
-                                  @NamedAttributeNode("voteEntry")})
-})
 @Table(name = "restaurant")
 @Getter
 @Setter
@@ -29,11 +20,6 @@ import static sergesv.rvs.util.ValidationUtil.RESTAURANT_NAME_SIZE;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Restaurant implements EntityWithId {
-    public static final String GRAPH_WITH_MENU = "Restaurant_graphWithMenuEntry";
-    public static final String GRAPH_WITH_VOTE = "Restaurant_graphWithVoteEntry";
-    public static final String GRAPH_WITH_MENU_AND_VOTE =
-            "Restaurant_graphWithMenuEntryAndVoteEntry";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

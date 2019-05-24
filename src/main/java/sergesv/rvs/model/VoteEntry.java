@@ -8,8 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@NamedEntityGraph(name = VoteEntry.GRAPH_WITH_RESTAURANT,
-        attributeNodes = @NamedAttributeNode("restaurant"))
 @Table(name = "vote_entry")
 @Getter
 @Setter
@@ -18,8 +16,6 @@ import java.time.LocalTime;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class VoteEntry implements EntityWithId {
-    public static final String GRAPH_WITH_RESTAURANT = "VoteEntry_graphWithRestaurant";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
