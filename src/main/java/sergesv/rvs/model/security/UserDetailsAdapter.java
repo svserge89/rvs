@@ -9,18 +9,13 @@ import java.util.stream.Collectors;
 public class UserDetailsAdapter extends User {
     @Getter
     private long id;
-    private boolean enabled;
 
     public UserDetailsAdapter(sergesv.rvs.model.User user) {
-        super(user.getNickName(), user.getEncryptedPassword(), user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
-                .collect(Collectors.toSet()));
+        super(user.getNickName(), user.getEncryptedPassword(), !user.getRoles().isEmpty(),
+                true, true, true,
+                user.getRoles().stream()
+                        .map(role -> new SimpleGrantedAuthority(role.name()))
+                        .collect(Collectors.toSet()));
         id = user.getId();
-        enabled = !user.getRoles().isEmpty();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
     }
 }
