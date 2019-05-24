@@ -2,12 +2,16 @@ package sergesv.rvs.util;
 
 import sergesv.rvs.web.to.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static sergesv.rvs.util.ValidationUtil.PRICE_FRACTION;
 
 public final class TestData {
     public static final LocalDate CURRENT_DATE = LocalDate.now();
@@ -23,7 +27,11 @@ public final class TestData {
     public static final int SECOND = 1;
     public static final int THIRD = 2;
 
-    private static final double[] PRICE = {50.0, 10.5, 50.0};
+    private static final BigDecimal[] PRICE = {
+            new BigDecimal(50.0).setScale(PRICE_FRACTION, RoundingMode.HALF_UP),
+            new BigDecimal(10.5).setScale(PRICE_FRACTION, RoundingMode.HALF_UP),
+            new BigDecimal(50.0).setScale(PRICE_FRACTION, RoundingMode.HALF_UP)
+    };
 
     public static final int[] CURRENT_RATING = {1, 1, 0};
     public static final int[] PREV_1D_RATING = {0, 0, 2};
@@ -75,7 +83,8 @@ public final class TestData {
                     PREV_1D_RATING[FIRST]);
 
     public static final MenuEntryTo NEW_MENU_ENTRY_TO =
-            new MenuEntryTo(0, "New Menu Entry", 20.5, CURRENT_DATE);
+            new MenuEntryTo(0, "New Menu Entry", new BigDecimal(20.5)
+                    .setScale(PRICE_FRACTION, RoundingMode.HALF_UP), CURRENT_DATE);
 
     public static final MenuEntryTo[] CURRENT_MENU_ENTRY_TOS =
             buildMenuEntryTos(CURRENT_MENU_FIRST_ID, FIRST_ID, CURRENT_DATE);
@@ -111,7 +120,7 @@ public final class TestData {
         return new RestaurantTo(id, "restaurant_" + id, menu, rating);
     }
 
-    private static MenuEntryTo buildMenuEntryTo(long id, long restaurantId, double price,
+    private static MenuEntryTo buildMenuEntryTo(long id, long restaurantId, BigDecimal price,
                                                 LocalDate date) {
         return new MenuEntryTo(id, String.format("r%d_menu_entry_%d", restaurantId, id % 10), price,
                 date);

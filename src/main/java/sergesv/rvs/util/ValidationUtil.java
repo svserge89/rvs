@@ -17,12 +17,16 @@ import java.util.stream.Collectors;
 public final class ValidationUtil {
     public static final String CHECK_EMAIL_REGEXP =
             "^[A-Za-z0-9._%\\-+!#$&/=?^|~]+@[A-Za-z0-9.-]+[.][A-Za-z]+$";
+    public static final String MIN_PRICE_VALUE = "0";
+    public static final int PRICE_INTEGER = 19;
+    public static final int PRICE_FRACTION = 2;
     public static final int EMAIL_SIZE = 100;
-    public static final int NICK_NAME_SIZE = 100;
-    public static final int FIRST_NAME_SIZE = 100;
-    public static final int LAST_NAME_SIZE = 100;
-    public static final int RESTAURANT_NAME_SIZE = 100;
-    public static final int MENU_ENTRY_NAME_SIZE = 100;
+    private static final int DEFAULT_NAME_SIZE = 100;
+    public static final int NICK_NAME_SIZE = DEFAULT_NAME_SIZE;
+    public static final int FIRST_NAME_SIZE = DEFAULT_NAME_SIZE;
+    public static final int LAST_NAME_SIZE = DEFAULT_NAME_SIZE;
+    public static final int RESTAURANT_NAME_SIZE = DEFAULT_NAME_SIZE;
+    public static final int MENU_ENTRY_NAME_SIZE = DEFAULT_NAME_SIZE;
     public static final int ENCRYPTED_PASSWORD_SIZE = 68;
     public static final int MIN_PAGE_SIZE = 1;
 

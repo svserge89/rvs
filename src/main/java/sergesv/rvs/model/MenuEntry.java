@@ -5,9 +5,10 @@ import org.hibernate.validator.constraints.SafeHtml;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import static sergesv.rvs.util.ValidationUtil.MENU_ENTRY_NAME_SIZE;
+import static sergesv.rvs.util.ValidationUtil.*;
 
 @Entity
 @Table(name = "menu_entry")
@@ -30,8 +31,11 @@ public class MenuEntry implements EntityWithId {
     @Column(name = "name")
     private String name;
 
+    @NotNull
+    @Digits(integer = PRICE_INTEGER, fraction = PRICE_FRACTION)
+    @DecimalMin(MIN_PRICE_VALUE)
     @Column(name = "price")
-    private double price;
+    private BigDecimal price;
 
     @NotNull
     @Column(name = "date")

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -16,7 +17,7 @@ public class MenuEntryTo {
 
     private final String name;
 
-    private final Double price;
+    private final BigDecimal price;
 
     private final LocalDate date;
 }

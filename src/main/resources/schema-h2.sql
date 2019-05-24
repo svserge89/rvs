@@ -31,11 +31,12 @@ CREATE TABLE restaurant (
 CREATE TABLE menu_entry (
     id LONG PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
-    price DOUBLE NOT NULL,
+    price DECIMAL(19, 2) NOT NULL,
     date DATE NOT NULL DEFAULT NOW(),
     restaurant_id LONG REFERENCES restaurant(id) ON DELETE CASCADE,
     UNIQUE (name, date, restaurant_id),
-    CHECK (TRIM(name) <> '')
+    CHECK (TRIM(name) <> ''),
+    CHECK (price >= 0)
 );
 
 CREATE TABLE vote_entry (
