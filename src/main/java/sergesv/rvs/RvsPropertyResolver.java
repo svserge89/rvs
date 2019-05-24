@@ -35,6 +35,7 @@ public class RvsPropertyResolver {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
+    // Properties
     @NotNull
     @DateTimeFormat(iso = ISO.TIME)
     @Getter
@@ -85,6 +86,7 @@ public class RvsPropertyResolver {
     @Setter
     private String sortVoteEntry;
 
+    // Sorters
     @Getter
     private Sort restaurantSorter;
 
@@ -103,6 +105,7 @@ public class RvsPropertyResolver {
     @Getter
     private Sort voteEntrySorter;
 
+    // Create Sorters from properties
     @PostConstruct
     private void init() {
         restaurantSorter = getDefaultSort(sortRestaurant, PROPERTY_SORT_RESTAURANT,
