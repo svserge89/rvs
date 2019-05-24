@@ -1,16 +1,16 @@
 INSERT INTO user (id, nick_name, first_name, last_name, email, encrypted_password) VALUES
     (1, 'admin', NULL, NULL, 'admin@mail.com',
-     '$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG'),
+     '{bcrypt}$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG'),
     (2, 'user_1', 'first_name_1', 'last_name_1', 'user1@mail.com',
-     '$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG'),
+     '{bcrypt}$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG'),
     (3, 'user_2', 'first_name_2', 'last_name_2', 'user2@mail.com',
-     '$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG'),
+     '{bcrypt}$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG'),
     (4, 'user_3', NULL, 'last_name_3', 'user3@mail.com',
-     '$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG'),
+     '{bcrypt}$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG'),
     (5, 'user_4', 'first_name_4', NULL, 'user4@mail.com',
-     '$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG'),
+     '{bcrypt}$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG'),
     (6, 'user_5', 'first_name_5', 'last_name_5', 'user5@mail.com',
-     '$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG');
+     '{bcrypt}$2a$10$OMKFjezdspPGMIVkpFLf6.TulEAyk09yHg6sHnpXJJx0wtY0tgGQG');
 
 INSERT INTO user_role (user_id, role) VALUES
     (1, 'ROLE_ADMIN'),

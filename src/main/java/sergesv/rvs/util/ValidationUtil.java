@@ -23,7 +23,7 @@ public final class ValidationUtil {
     public static final int LAST_NAME_SIZE = 100;
     public static final int RESTAURANT_NAME_SIZE = 100;
     public static final int MENU_ENTRY_NAME_SIZE = 100;
-    public static final int ENCRYPTED_PASSWORD_SIZE = 60;
+    public static final int ENCRYPTED_PASSWORD_SIZE = 68;
     public static final int MIN_PAGE_SIZE = 1;
 
     public static <T extends EntityWithId> Supplier<EntityNotFoundException>
