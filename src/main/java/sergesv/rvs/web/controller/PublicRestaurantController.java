@@ -1,6 +1,7 @@
 package sergesv.rvs.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +9,6 @@ import sergesv.rvs.RvsPropertyResolver;
 import sergesv.rvs.service.MenuEntryService;
 import sergesv.rvs.service.RestaurantService;
 import sergesv.rvs.web.to.MenuEntryTo;
-import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.RestaurantTo;
 
 import java.time.LocalDate;
@@ -27,11 +27,11 @@ public class PublicRestaurantController {
     private final RvsPropertyResolver propertyResolver;
 
     @GetMapping
-    public PageTo<RestaurantTo> getAll(@RequestParam(required = false) boolean rating,
-                                       @RequestParam(required = false) LocalDate date,
-                                       @RequestParam(required = false) Integer page,
-                                       @RequestParam(required = false) Integer size,
-                                       @RequestParam(required = false) String sort) {
+    public Page<RestaurantTo> getAll(@RequestParam(required = false) boolean rating,
+                                     @RequestParam(required = false) LocalDate date,
+                                     @RequestParam(required = false) Integer page,
+                                     @RequestParam(required = false) Integer size,
+                                     @RequestParam(required = false) String sort) {
         Pageable pageable = resolvePageable(page, size, resolveSort(sort, rating,
                 propertyResolver), propertyResolver.getRestaurantPageSize());
 
@@ -68,13 +68,13 @@ public class PublicRestaurantController {
     }
 
     @GetMapping("/{restaurantId}/menu")
-    public PageTo<MenuEntryTo> getMenu(@PathVariable long restaurantId,
-                                       @RequestParam(required = false) LocalDate date,
-                                       @RequestParam(required = false) LocalDate dateStart,
-                                       @RequestParam(required = false) LocalDate dateEnd,
-                                       @RequestParam(required = false) Integer page,
-                                       @RequestParam(required = false) Integer size,
-                                       @RequestParam(required = false) String sort) {
+    public Page<MenuEntryTo> getMenu(@PathVariable long restaurantId,
+                                     @RequestParam(required = false) LocalDate date,
+                                     @RequestParam(required = false) LocalDate dateStart,
+                                     @RequestParam(required = false) LocalDate dateEnd,
+                                     @RequestParam(required = false) Integer page,
+                                     @RequestParam(required = false) Integer size,
+                                     @RequestParam(required = false) String sort) {
         Pageable pageable = resolvePageable(page, size,
                 getSort(sort, MENU_ENTRY_PARAMS).orElse(propertyResolver.getMenuEntrySorter()),
                 propertyResolver.getMenuEntryPageSize());

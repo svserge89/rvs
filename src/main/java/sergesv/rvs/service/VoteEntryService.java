@@ -13,12 +13,10 @@ import sergesv.rvs.repository.RestaurantRepository;
 import sergesv.rvs.repository.UserRepository;
 import sergesv.rvs.repository.VoteEntryRepository;
 import sergesv.rvs.util.ToUtil;
-import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.VoteEntryTo;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.DateTimeUtil.*;
 import static sergesv.rvs.util.ToUtil.toTo;
@@ -36,19 +34,19 @@ public class VoteEntryService {
 
     private final RvsPropertyResolver propertyResolver;
 
-    public PageTo<VoteEntryTo> getAll(long userId, Pageable pageable) {
+    public Page<VoteEntryTo> getAll(long userId, Pageable pageable) {
         log.debug("getAll params: pageable=\"{}\", userId={}", pageable, userId);
 
-        return toVoteEntryTos(voteEntryRepository.findAllByUserId(userId, pageable));
+        return voteEntryRepository.findAllByUserId(userId, pageable).map(ToUtil::toTo);
     }
 
-    public PageTo<VoteEntryTo> getAll(long userId, LocalDate dateStart, LocalDate dateEnd,
+    public Page<VoteEntryTo> getAll(long userId, LocalDate dateStart, LocalDate dateEnd,
                                     Pageable pageable) {
         log.debug("getAll params: pageable=\"{}\", userId={}, dateStart={}, dateEnd={}", pageable,
                 userId, dateStart, dateEnd);
 
-        return toVoteEntryTos(voteEntryRepository.findAllByUserIdAndDateBetween(userId, dateStart,
-                dateEnd, pageable));
+        return voteEntryRepository.findAllByUserIdAndDateBetween(userId, dateStart, dateEnd,
+                pageable).map(ToUtil::toTo);
     }
 
     @Transactional
@@ -87,11 +85,5 @@ public class VoteEntryService {
         checkException(voteEntryRepository.deleteByUserIdAndRestaurantIdAndDate(userId,
                 restaurantId, currentDate) != 0, voteEntryNotFoundSupplier(userId, restaurantId,
                 currentDate));
-    }
-
-    private static PageTo<VoteEntryTo> toVoteEntryTos(Page<VoteEntry> voteEntryPage) {
-        return toTo(voteEntryPage, page -> page.get()
-                .map(ToUtil::toTo)
-                .collect(Collectors.toList()));
     }
 }

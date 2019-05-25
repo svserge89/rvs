@@ -160,7 +160,7 @@ public final class TestData {
         return result;
     }
 
-    public static <T> PageTo<T> buildPageTo(int page, int size, int total, T ...objects) {
+    public static <T> PageTo<T> buildPage(int page, int size, int total, T ...objects) {
         return new PageTo<>(List.of(objects), page, size, total);
     }
 

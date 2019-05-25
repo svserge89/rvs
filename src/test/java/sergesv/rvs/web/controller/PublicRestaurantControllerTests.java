@@ -19,14 +19,14 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
     @Test
     void getAll() {
         checkGet(restTemplate, "/api/public/restaurants", RestaurantPageTo.class,
-                buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(), TOTAL_PAGES,
+                buildPage(PAGE, propertyResolver.getRestaurantPageSize(), TOTAL_PAGES,
                         RESTAURANT_TOS[FIRST], RESTAURANT_TOS[SECOND], RESTAURANT_TOS[THIRD]));
     }
 
     @Test
     void getAllWithRating() {
         checkGet(restTemplate, "/api/public/restaurants?rating=true", RestaurantPageTo.class,
-                buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
+                buildPage(PAGE, propertyResolver.getRestaurantPageSize(),
                         TOTAL_PAGES, RESTAURANT_TOS_WITH_CURRENT_RATING[FIRST],
                         RESTAURANT_TOS_WITH_CURRENT_RATING[SECOND],
                         RESTAURANT_TOS_WITH_CURRENT_RATING[THIRD]));
@@ -36,7 +36,7 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
     void getAllWithRatingSortedByRatingAscNameDesc() {
         checkGet(restTemplate,
                 "/api/public/restaurants?rating=true&sort=rating,name,desc",
-                RestaurantPageTo.class, buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
+                RestaurantPageTo.class, buildPage(PAGE, propertyResolver.getRestaurantPageSize(),
                         TOTAL_PAGES, RESTAURANT_TOS_WITH_CURRENT_RATING[THIRD],
                         RESTAURANT_TOS_WITH_CURRENT_RATING[SECOND],
                         RESTAURANT_TOS_WITH_CURRENT_RATING[FIRST]));
@@ -45,7 +45,7 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
     @Test
     void getAllWithRatingByDate() {
         checkGet(restTemplate, "/api/public/restaurants?rating=true&date=" + PREV_1D_DATE,
-                RestaurantPageTo.class, buildPageTo(PAGE, propertyResolver.getRestaurantPageSize(),
+                RestaurantPageTo.class, buildPage(PAGE, propertyResolver.getRestaurantPageSize(),
                         TOTAL_PAGES, RESTAURANT_TOS_WITH_PREV_1D_RATING[THIRD],
                         RESTAURANT_TOS_WITH_PREV_1D_RATING[FIRST],
                         RESTAURANT_TOS_WITH_PREV_1D_RATING[SECOND]));
@@ -109,7 +109,7 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
     @Test
     void getMenu() {
         checkGet(restTemplate, "/api/public/restaurants/1/menu", MenuEntryPageTo.class,
-                buildPageTo(PAGE, propertyResolver.getMenuEntryPageSize(), TOTAL_PAGES,
+                buildPage(PAGE, propertyResolver.getMenuEntryPageSize(), TOTAL_PAGES,
                         CURRENT_MENU_ENTRY_TOS[SECOND], CURRENT_MENU_ENTRY_TOS[FIRST],
                         CURRENT_MENU_ENTRY_TOS[THIRD], PREV_1D_MENU_ENTRY_TOS[SECOND],
                         PREV_1D_MENU_ENTRY_TOS[FIRST], PREV_1D_MENU_ENTRY_TOS[THIRD],
@@ -120,7 +120,7 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
     @Test
     void getMenuSortedByNameDate() {
         checkGet(restTemplate, "/api/public/restaurants/1/menu?sort=name,date",
-                MenuEntryPageTo.class, buildPageTo(PAGE, propertyResolver.getMenuEntryPageSize(),
+                MenuEntryPageTo.class, buildPage(PAGE, propertyResolver.getMenuEntryPageSize(),
                         TOTAL_PAGES, PREV_2D_MENU_ENTRY_TOS[FIRST], PREV_1D_MENU_ENTRY_TOS[FIRST],
                         CURRENT_MENU_ENTRY_TOS[FIRST], PREV_2D_MENU_ENTRY_TOS[SECOND],
                         PREV_1D_MENU_ENTRY_TOS[SECOND], CURRENT_MENU_ENTRY_TOS[SECOND],
@@ -131,7 +131,7 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
     @Test
     void getMenuByDate() {
         checkGet(restTemplate, "/api/public/restaurants/1/menu?date=" + PREV_1D_DATE,
-                MenuEntryPageTo.class, buildPageTo(PAGE,
+                MenuEntryPageTo.class, buildPage(PAGE,
                         propertyResolver.getMenuEntryPageSize(), TOTAL_PAGES,
                         PREV_1D_MENU_ENTRY_TOS[SECOND], PREV_1D_MENU_ENTRY_TOS[FIRST],
                         PREV_1D_MENU_ENTRY_TOS[THIRD]));
@@ -140,7 +140,7 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
     @Test
     void getMenuByStartDate() {
         checkGet(restTemplate, "/api/public/restaurants/1/menu?dateStart=" + PREV_1D_DATE,
-                MenuEntryPageTo.class, buildPageTo(PAGE, propertyResolver.getMenuEntryPageSize(),
+                MenuEntryPageTo.class, buildPage(PAGE, propertyResolver.getMenuEntryPageSize(),
                         TOTAL_PAGES, CURRENT_MENU_ENTRY_TOS[SECOND], CURRENT_MENU_ENTRY_TOS[FIRST],
                         CURRENT_MENU_ENTRY_TOS[THIRD], PREV_1D_MENU_ENTRY_TOS[SECOND],
                         PREV_1D_MENU_ENTRY_TOS[FIRST], PREV_1D_MENU_ENTRY_TOS[THIRD]));
@@ -149,7 +149,7 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
     @Test
     void getMenuByEndDate() {
         checkGet(restTemplate, "/api/public/restaurants/1/menu?dateEnd=" + PREV_1D_DATE,
-                MenuEntryPageTo.class, buildPageTo(PAGE, propertyResolver.getMenuEntryPageSize(),
+                MenuEntryPageTo.class, buildPage(PAGE, propertyResolver.getMenuEntryPageSize(),
                         TOTAL_PAGES, PREV_1D_MENU_ENTRY_TOS[SECOND], PREV_1D_MENU_ENTRY_TOS[FIRST],
                         PREV_1D_MENU_ENTRY_TOS[THIRD], PREV_2D_MENU_ENTRY_TOS[SECOND],
                         PREV_2D_MENU_ENTRY_TOS[FIRST], PREV_2D_MENU_ENTRY_TOS[THIRD]));
@@ -159,7 +159,7 @@ class PublicRestaurantControllerTests extends AbstractControllerTests {
     void getMenuByDateBetween() {
         checkGet(restTemplate, String.format("/api/public/restaurants/1/menu?dateStart=%s&" +
                         "dateEnd=%s", PREV_1D_DATE, PREV_1D_DATE), MenuEntryPageTo.class,
-                buildPageTo(PAGE, propertyResolver.getMenuEntryPageSize(), TOTAL_PAGES,
+                buildPage(PAGE, propertyResolver.getMenuEntryPageSize(), TOTAL_PAGES,
                         PREV_1D_MENU_ENTRY_TOS[SECOND], PREV_1D_MENU_ENTRY_TOS[FIRST],
                         PREV_1D_MENU_ENTRY_TOS[THIRD]));
     }

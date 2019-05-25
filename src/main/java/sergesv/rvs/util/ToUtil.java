@@ -1,6 +1,5 @@
 package sergesv.rvs.util;
 
-import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import sergesv.rvs.model.*;
 import sergesv.rvs.model.security.Role;
@@ -8,7 +7,6 @@ import sergesv.rvs.web.to.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.DateTimeUtil.getCurrentDate;
@@ -84,12 +82,6 @@ public final class ToUtil {
     public static VoteEntryTo toTo(VoteEntry voteEntry) {
         return new VoteEntryTo(toTo(voteEntry.getRestaurant(), false, false),
                 LocalDateTime.of(voteEntry.getDate(), voteEntry.getTime()));
-    }
-
-    // From Page<Entity> to PageTo<EntityTo>
-    public static <T, E> PageTo<T> toTo(Page<E> page, Function<Page<E>, List<T>> function) {
-        return new PageTo<>(function.apply(page), page.getNumber(), page.getSize(),
-                page.getTotalPages());
     }
 
     private ToUtil() {

@@ -9,16 +9,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sergesv.rvs.model.Restaurant;
-import sergesv.rvs.model.RestaurantWithRating;
 import sergesv.rvs.repository.RestaurantRepository;
 import sergesv.rvs.repository.VoteEntryRepository;
 import sergesv.rvs.util.ToUtil;
-import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.RestaurantTo;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.ToUtil.toModel;
 import static sergesv.rvs.util.ToUtil.toTo;
@@ -33,16 +30,17 @@ public class RestaurantService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public PageTo<RestaurantTo> getAll(Pageable pageable) {
+    public Page<RestaurantTo> getAll(Pageable pageable) {
         log.debug("getAll params: pageable=\"{}\"", pageable);
 
-        return toPageTo(restaurantRepository.findAll(pageable));
+        return restaurantRepository.findAll(pageable).map(restaurant -> toTo(restaurant,
+                false, false));
     }
 
-    public PageTo<RestaurantTo> getAllWithRating(LocalDate date, Pageable pageable) {
+    public Page<RestaurantTo> getAllWithRating(LocalDate date, Pageable pageable) {
         log.debug("getAllWithRating params: pageable=\"{}\"", pageable);
 
-        return toPageToWithRating(restaurantRepository.findAllWithRating(date, pageable));
+        return restaurantRepository.findAllWithRating(date, pageable).map(ToUtil::toTo);
     }
 
     public RestaurantTo getOne(long id) {
@@ -119,17 +117,5 @@ public class RestaurantService {
         log.debug("deleteAll params: empty");
 
         restaurantRepository.deleteAll();
-    }
-
-    private static PageTo<RestaurantTo> toPageTo(Page<Restaurant> restaurantPage) {
-        return toTo(restaurantPage, page -> page.get()
-                .map(restaurant -> toTo(restaurant, false, false))
-                .collect(Collectors.toList()));
-    }
-
-    private static PageTo<RestaurantTo> toPageToWithRating(
-            Page<RestaurantWithRating> restaurantPage) {
-        return toTo(restaurantPage, page -> page.get()
-                .map(ToUtil::toTo).collect(Collectors.toList()));
     }
 }

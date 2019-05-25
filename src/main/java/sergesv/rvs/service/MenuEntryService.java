@@ -12,12 +12,9 @@ import sergesv.rvs.repository.MenuEntryRepository;
 import sergesv.rvs.repository.RestaurantRepository;
 import sergesv.rvs.util.ToUtil;
 import sergesv.rvs.web.to.MenuEntryTo;
-import sergesv.rvs.web.to.PageTo;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.ToUtil.toModel;
 import static sergesv.rvs.util.ToUtil.toTo;
@@ -32,30 +29,29 @@ public class MenuEntryService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public PageTo<MenuEntryTo> getAllByRestaurant(long restaurantId, Pageable pageable) {
+    public Page<MenuEntryTo> getAllByRestaurant(long restaurantId, Pageable pageable) {
         log.debug("getAllByRestaurant params: pageable=\"{}\", restaurantId={}", pageable,
                 restaurantId);
 
-        return toTo(menuEntryRepository.findAllByRestaurantId(restaurantId, pageable),
-                this::getMenuEntryToList);
+        return menuEntryRepository.findAllByRestaurantId(restaurantId, pageable).map(ToUtil::toTo);
     }
 
-    public PageTo<MenuEntryTo> getAllByRestaurant(long restaurantId, LocalDate date,
-                                                  Pageable pageable) {
+    public Page<MenuEntryTo> getAllByRestaurant(long restaurantId, LocalDate date,
+                                                Pageable pageable) {
         log.debug("getAllByRestaurant params: pageable=\"{}\", restaurantId={}, date={}", pageable,
                 restaurantId, date);
 
-        return toTo(menuEntryRepository.findAllByRestaurantIdAndDate(restaurantId, date, pageable),
-                this::getMenuEntryToList);
+        return menuEntryRepository.findAllByRestaurantIdAndDate(restaurantId, date, pageable)
+                .map(ToUtil::toTo);
     }
 
-    public PageTo<MenuEntryTo> getAllByRestaurant(long restaurantId, LocalDate dateStart,
-                                                  LocalDate dateEnd, Pageable pageable) {
+    public Page<MenuEntryTo> getAllByRestaurant(long restaurantId, LocalDate dateStart,
+                                                LocalDate dateEnd, Pageable pageable) {
         log.debug("getAllByRestaurant params: pageable=\"{}\", restaurantId={}, dateStart={}, " +
                 "dateEnd={}", pageable, restaurantId, dateStart, dateEnd);
 
-        return toTo(menuEntryRepository.findAllByRestaurantIdAndDateBetween(restaurantId, dateStart,
-                dateEnd, pageable), this::getMenuEntryToList);
+        return menuEntryRepository.findAllByRestaurantIdAndDateBetween(restaurantId, dateStart,
+                dateEnd, pageable).map(ToUtil::toTo);
     }
 
     public MenuEntryTo getOneByRestaurant(long id, long restaurantId) {
@@ -110,11 +106,5 @@ public class MenuEntryService {
 
         menuEntryRepository.deleteAllByRestaurantIdAndDateBetween(restaurantId, dateStart,
                 dateEnd);
-    }
-
-    private List<MenuEntryTo> getMenuEntryToList(Page<MenuEntry> page) {
-        return page.get()
-                .map(ToUtil::toTo)
-                .collect(Collectors.toList());
     }
 }

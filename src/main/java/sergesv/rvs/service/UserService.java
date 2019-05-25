@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,11 +14,9 @@ import sergesv.rvs.model.User;
 import sergesv.rvs.model.security.Role;
 import sergesv.rvs.repository.UserRepository;
 import sergesv.rvs.util.ToUtil;
-import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.UserTo;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static sergesv.rvs.util.ToUtil.toModel;
 import static sergesv.rvs.util.ToUtil.toTo;
@@ -32,12 +31,10 @@ public class UserService {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    public PageTo<UserTo> getAll(Pageable pageable) {
+    public Page<UserTo> getAll(Pageable pageable) {
         log.debug("getAll params: pageable=\"{}\"", pageable);
 
-        return toTo(userRepository.findAll(pageable), page -> page.get()
-                .map(ToUtil::toTo)
-                .collect(Collectors.toList()));
+        return userRepository.findAll(pageable).map(ToUtil::toTo);
     }
 
     public UserTo getOne(long id) {

@@ -20,14 +20,14 @@ import static sergesv.rvs.util.TestUtil.*;
 class AdminUserControllerTests extends AbstractControllerTests {
     @Test
     void getAll() {
-        checkGet(adminRestTemplate(), "/api/admin/users", UserPageTo.class, buildPageTo(PAGE,
+        checkGet(adminRestTemplate(), "/api/admin/users", UserPageTo.class, buildPage(PAGE,
                 propertyResolver.getUserPageSize(), TOTAL_PAGES, ADMIN, USER_1, USER_2));
     }
 
     @Test
     void getAllSortedByEmailDesc() {
         checkGet(adminRestTemplate(), "/api/admin/users?sort=email,desc", UserPageTo.class,
-                buildPageTo(PAGE, propertyResolver.getUserPageSize(), TOTAL_PAGES, USER_2, USER_1,
+                buildPage(PAGE, propertyResolver.getUserPageSize(), TOTAL_PAGES, USER_2, USER_1,
                         ADMIN));
     }
 

@@ -1,12 +1,12 @@
 package sergesv.rvs.web.controller.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sergesv.rvs.RvsPropertyResolver;
 import sergesv.rvs.service.VoteEntryService;
-import sergesv.rvs.web.to.PageTo;
 import sergesv.rvs.web.to.VoteEntryTo;
 
 import java.time.LocalDate;
@@ -28,11 +28,11 @@ public class UserVoteController {
     private final RvsPropertyResolver propertyResolver;
 
     @GetMapping("/votes")
-    public PageTo<VoteEntryTo> getAll(@RequestParam(required = false) LocalDate dateStart,
-                                      @RequestParam(required = false) LocalDate dateEnd,
-                                      @RequestParam(required = false) Integer page,
-                                      @RequestParam(required = false) Integer size,
-                                      @RequestParam(required = false) String sort) {
+    public Page<VoteEntryTo> getAll(@RequestParam(required = false) LocalDate dateStart,
+                                    @RequestParam(required = false) LocalDate dateEnd,
+                                    @RequestParam(required = false) Integer page,
+                                    @RequestParam(required = false) Integer size,
+                                    @RequestParam(required = false) String sort) {
         Pageable pageable = resolvePageable(page, size,
                 getSort(sort, VOTE_ENTRY_PARAMS).orElse(propertyResolver.getVoteEntrySorter()),
                 propertyResolver.getVoteEntryPageSize());

@@ -19,7 +19,7 @@ class UserVoteControllerTests extends AbstractControllerTests {
     @Test
     void getAll() {
         checkGet(userRestTemplate(), "/api/user/votes", VoteEntryPageTo.class,
-                buildPageTo(PAGE, propertyResolver.getVoteEntryPageSize(), TOTAL_PAGES,
+                buildPage(PAGE, propertyResolver.getVoteEntryPageSize(), TOTAL_PAGES,
                         USER_1_VOTE_ENTRY_TOS[THIRD], USER_1_VOTE_ENTRY_TOS[SECOND],
                         USER_1_VOTE_ENTRY_TOS[FIRST]));
     }
@@ -27,7 +27,7 @@ class UserVoteControllerTests extends AbstractControllerTests {
     @Test
     void getAllSortedByDate() {
         checkGet(userRestTemplate(), "/api/user/votes?sort=date", VoteEntryPageTo.class,
-                buildPageTo(PAGE, propertyResolver.getVoteEntryPageSize(), TOTAL_PAGES,
+                buildPage(PAGE, propertyResolver.getVoteEntryPageSize(), TOTAL_PAGES,
                         USER_1_VOTE_ENTRY_TOS[FIRST], USER_1_VOTE_ENTRY_TOS[SECOND],
                         USER_1_VOTE_ENTRY_TOS[THIRD]));
     }
@@ -40,21 +40,21 @@ class UserVoteControllerTests extends AbstractControllerTests {
     @Test
     void getAllStartDate() {
         checkGet(userRestTemplate(), "/api/user/votes?dateStart=" + PREV_1D_DATE,
-                VoteEntryPageTo.class, buildPageTo(PAGE, propertyResolver.getVoteEntryPageSize(),
+                VoteEntryPageTo.class, buildPage(PAGE, propertyResolver.getVoteEntryPageSize(),
                         TOTAL_PAGES, USER_1_VOTE_ENTRY_TOS[THIRD], USER_1_VOTE_ENTRY_TOS[SECOND]));
     }
 
     @Test
     void getAllEndDate() {
         checkGet(userRestTemplate(), "/api/user/votes?dateEnd=" + PREV_1D_DATE,
-                VoteEntryPageTo.class, buildPageTo(PAGE, propertyResolver.getVoteEntryPageSize(),
+                VoteEntryPageTo.class, buildPage(PAGE, propertyResolver.getVoteEntryPageSize(),
                         TOTAL_PAGES, USER_1_VOTE_ENTRY_TOS[SECOND], USER_1_VOTE_ENTRY_TOS[FIRST]));
     }
 
     @Test
     void getAllBetweenDate() {
         checkGet(userRestTemplate(), String.format("/api/user/votes?dateStart=%s&dateEnd=%s",
-                PREV_1D_DATE, PREV_1D_DATE), VoteEntryPageTo.class, buildPageTo(PAGE,
+                PREV_1D_DATE, PREV_1D_DATE), VoteEntryPageTo.class, buildPage(PAGE,
                 propertyResolver.getVoteEntryPageSize(),
                 TOTAL_PAGES, USER_1_VOTE_ENTRY_TOS[SECOND]));
     }
