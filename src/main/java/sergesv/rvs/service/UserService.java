@@ -18,6 +18,7 @@ import sergesv.rvs.web.to.UserTo;
 
 import java.util.Optional;
 
+import static sergesv.rvs.util.SortUtil.*;
 import static sergesv.rvs.util.ToUtil.toModel;
 import static sergesv.rvs.util.ToUtil.toTo;
 import static sergesv.rvs.util.ValidationUtil.*;
@@ -33,6 +34,8 @@ public class UserService {
 
     public Page<UserTo> getAll(Pageable pageable) {
         log.debug("getAll params: pageable=\"{}\"", pageable);
+
+        checkSort(pageable.getSort(), ID, NICKNAME, EMAIL, FIRST_NAME, LAST_NAME);
 
         return userRepository.findAll(pageable).map(ToUtil::toTo);
     }

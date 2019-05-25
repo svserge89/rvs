@@ -16,6 +16,7 @@ import sergesv.rvs.web.to.MenuEntryTo;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static sergesv.rvs.util.SortUtil.*;
 import static sergesv.rvs.util.ToUtil.toModel;
 import static sergesv.rvs.util.ToUtil.toTo;
 import static sergesv.rvs.util.ValidationUtil.*;
@@ -33,6 +34,8 @@ public class MenuEntryService {
         log.debug("getAllByRestaurant params: pageable=\"{}\", restaurantId={}", pageable,
                 restaurantId);
 
+        checkMenuEntrySort(pageable);
+
         return menuEntryRepository.findAllByRestaurantId(restaurantId, pageable).map(ToUtil::toTo);
     }
 
@@ -40,6 +43,8 @@ public class MenuEntryService {
                                                 Pageable pageable) {
         log.debug("getAllByRestaurant params: pageable=\"{}\", restaurantId={}, date={}", pageable,
                 restaurantId, date);
+
+        checkMenuEntrySort(pageable);
 
         return menuEntryRepository.findAllByRestaurantIdAndDate(restaurantId, date, pageable)
                 .map(ToUtil::toTo);
@@ -49,6 +54,8 @@ public class MenuEntryService {
                                                 LocalDate dateEnd, Pageable pageable) {
         log.debug("getAllByRestaurant params: pageable=\"{}\", restaurantId={}, dateStart={}, " +
                 "dateEnd={}", pageable, restaurantId, dateStart, dateEnd);
+
+        checkMenuEntrySort(pageable);
 
         return menuEntryRepository.findAllByRestaurantIdAndDateBetween(restaurantId, dateStart,
                 dateEnd, pageable).map(ToUtil::toTo);
@@ -106,5 +113,9 @@ public class MenuEntryService {
 
         menuEntryRepository.deleteAllByRestaurantIdAndDateBetween(restaurantId, dateStart,
                 dateEnd);
+    }
+
+    private void checkMenuEntrySort(Pageable pageable) {
+        checkSort(pageable.getSort(), NAME, PRICE, DATE);
     }
 }

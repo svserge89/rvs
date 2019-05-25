@@ -2,6 +2,7 @@ package sergesv.rvs.web.controller.advice;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -54,5 +55,18 @@ public class RestExceptionHandler {
                                                IllegalArgumentException exception)
             throws IOException{
         response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+    }
+
+    @ExceptionHandler(ConversionFailedException.class)
+    public void handleConversionFailedException(HttpServletResponse response,
+                                                ConversionFailedException exception)
+            throws IOException {
+        Throwable cause = exception.getCause();
+
+        if (cause instanceof IllegalArgumentException) {
+            response.sendError(HttpStatus.BAD_REQUEST.value(), cause.getMessage());
+        } else {
+            response.sendError(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+        }
     }
 }

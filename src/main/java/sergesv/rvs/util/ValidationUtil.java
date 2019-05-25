@@ -1,6 +1,7 @@
 package sergesv.rvs.util;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
 import sergesv.rvs.exception.BadRequestException;
 import sergesv.rvs.exception.EntityConflictException;
 import sergesv.rvs.model.*;
@@ -10,18 +11,22 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public final class ValidationUtil {
+    private static final int DEFAULT_NAME_SIZE = 100;
+
     public static final String CHECK_EMAIL_REGEXP =
             "^[A-Za-z0-9._%\\-+!#$&/=?^|~]+@[A-Za-z0-9.-]+[.][A-Za-z]+$";
     public static final String MIN_PRICE_VALUE = "0";
     public static final int PRICE_INTEGER = 19;
     public static final int PRICE_FRACTION = 2;
     public static final int EMAIL_SIZE = 100;
-    private static final int DEFAULT_NAME_SIZE = 100;
     public static final int NICK_NAME_SIZE = DEFAULT_NAME_SIZE;
     public static final int FIRST_NAME_SIZE = DEFAULT_NAME_SIZE;
     public static final int LAST_NAME_SIZE = DEFAULT_NAME_SIZE;
@@ -91,6 +96,29 @@ public final class ValidationUtil {
     public static String checkPassword(UserTo userTo) {
         return Optional.ofNullable(userTo.getPassword())
                 .orElseThrow(() -> new BadRequestException("Password is null"));
+    }
+
+    public static Sort checkSort(Sort sort, String... allowedFields) {
+        List<String> used = new ArrayList<>();
+        List<String> allowed = Arrays.asList(allowedFields);
+
+        for (var order : sort) {
+            var property = order.getProperty();
+
+            if (!allowed.contains(property)) {
+                throw new IllegalArgumentException(
+                        String.format("%s is not correct sort property", property));
+            }
+
+            if (used.contains(property)) {
+                throw new IllegalArgumentException(
+                        String.format("Sort property %s is already used", property));
+            }
+
+            used.add(property);
+        }
+
+        return sort;
     }
 
     public static String getConstraintViolationsMessage(ConstraintViolationException exception) {

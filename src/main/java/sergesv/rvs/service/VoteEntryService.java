@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static sergesv.rvs.util.DateTimeUtil.*;
+import static sergesv.rvs.util.SortUtil.*;
 import static sergesv.rvs.util.ToUtil.toTo;
 import static sergesv.rvs.util.ValidationUtil.*;
 
@@ -37,6 +38,8 @@ public class VoteEntryService {
     public Page<VoteEntryTo> getAll(long userId, Pageable pageable) {
         log.debug("getAll params: pageable=\"{}\", userId={}", pageable, userId);
 
+        checkVoteEntrySort(pageable);
+
         return voteEntryRepository.findAllByUserId(userId, pageable).map(ToUtil::toTo);
     }
 
@@ -44,6 +47,8 @@ public class VoteEntryService {
                                     Pageable pageable) {
         log.debug("getAll params: pageable=\"{}\", userId={}, dateStart={}, dateEnd={}", pageable,
                 userId, dateStart, dateEnd);
+
+        checkVoteEntrySort(pageable);
 
         return voteEntryRepository.findAllByUserIdAndDateBetween(userId, dateStart, dateEnd,
                 pageable).map(ToUtil::toTo);
@@ -85,5 +90,9 @@ public class VoteEntryService {
         checkException(voteEntryRepository.deleteByUserIdAndRestaurantIdAndDate(userId,
                 restaurantId, currentDate) != 0, voteEntryNotFoundSupplier(userId, restaurantId,
                 currentDate));
+    }
+
+    private void checkVoteEntrySort(Pageable pageable) {
+        checkSort(pageable.getSort(), DATE, TIME, RESTAURANT_NAME);
     }
 }

@@ -17,6 +17,7 @@ import sergesv.rvs.web.to.RestaurantTo;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static sergesv.rvs.util.SortUtil.*;
 import static sergesv.rvs.util.ToUtil.toModel;
 import static sergesv.rvs.util.ToUtil.toTo;
 import static sergesv.rvs.util.ValidationUtil.*;
@@ -33,12 +34,16 @@ public class RestaurantService {
     public Page<RestaurantTo> getAll(Pageable pageable) {
         log.debug("getAll params: pageable=\"{}\"", pageable);
 
+        checkSort(pageable.getSort(), NAME);
+
         return restaurantRepository.findAll(pageable).map(restaurant -> toTo(restaurant,
                 false, false));
     }
 
     public Page<RestaurantTo> getAllWithRating(LocalDate date, Pageable pageable) {
         log.debug("getAllWithRating params: pageable=\"{}\"", pageable);
+
+        checkSort(pageable.getSort(), NAME, RATING);
 
         return restaurantRepository.findAllWithRating(date, pageable).map(ToUtil::toTo);
     }
@@ -63,8 +68,9 @@ public class RestaurantService {
     public RestaurantTo getOneWithMenu(long id, LocalDate date, Sort sort) {
         log.debug("getOneWithMenu params: id={}, menuDate={}, sort=\"{}\"", id, date, sort);
 
-        return toTo(restaurantRepository.findByIdWithMenu(id, date, sort)
-                .orElseThrow(entityNotFoundSupplier(Restaurant.class, id)),
+        return toTo(restaurantRepository.findByIdWithMenu(id, date,
+                checkRestaurantWithMenuSort(sort))
+                        .orElseThrow(entityNotFoundSupplier(Restaurant.class, id)),
                 true, false);
     }
 
@@ -72,7 +78,8 @@ public class RestaurantService {
         log.debug("getOneWithMenuAndRating params: id={}, menuDate={}, sort=\"{}\"", id, date,
                 sort);
 
-        Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRating(id, date, sort)
+        Restaurant restaurant = restaurantRepository.findByIdWithMenuAndRating(id, date,
+                checkRestaurantWithMenuSort(sort))
                 .orElseThrow(entityNotFoundSupplier(Restaurant.class, id));
 
         return toTo(restaurant, true, true);
@@ -117,5 +124,9 @@ public class RestaurantService {
         log.debug("deleteAll params: empty");
 
         restaurantRepository.deleteAll();
+    }
+
+    private Sort checkRestaurantWithMenuSort(Sort sort) {
+        return checkSort(sort, MENU_ENTRY_NAME, MENU_ENTRY_PRICE);
     }
 }

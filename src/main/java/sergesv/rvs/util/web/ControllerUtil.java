@@ -3,12 +3,9 @@ package sergesv.rvs.util.web;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import sergesv.rvs.RvsPropertyResolver;
 
 import java.time.LocalDate;
 import java.util.Optional;
-
-import static sergesv.rvs.util.SortUtil.*;
 
 public final class ControllerUtil {
     public enum ParamsCondition {
@@ -51,13 +48,6 @@ public final class ControllerUtil {
                                            int defaultPageSize) {
         return PageRequest.of(Optional.ofNullable(page).orElse(0),
                 Optional.ofNullable(size).orElse(defaultPageSize), sort);
-    }
-
-    public static Sort resolveSort(String params, boolean withRating,
-                                   RvsPropertyResolver propertyResolver) {
-        return withRating ? getSort(params, RESTAURANT_WITH_RATING_PARAMS)
-                .orElse(propertyResolver.getRestaurantWithRatingSorter())
-                : getSort(params, RESTAURANT_PARAMS).orElse(propertyResolver.getRestaurantSorter());
     }
 
     private ControllerUtil() {

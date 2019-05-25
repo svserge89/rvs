@@ -17,7 +17,7 @@ import java.util.Optional;
 @Repository
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     @Query(value = "SELECT new sergesv.rvs.model.RestaurantWithRating(restaurant.id, " +
-                            "restaurant.name, COUNT (voteEntry)) " +
+                            "restaurant.name AS name, COUNT (voteEntry) AS rating) " +
                     "FROM Restaurant restaurant LEFT JOIN restaurant.voteEntry voteEntry " +
                             "ON voteEntry.date = :date " +
                     "GROUP BY restaurant",

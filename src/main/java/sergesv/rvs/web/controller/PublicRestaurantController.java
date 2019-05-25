@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static sergesv.rvs.util.DateTimeUtil.*;
-import static sergesv.rvs.util.SortUtil.*;
 import static sergesv.rvs.util.web.ControllerUtil.*;
 
 @RestController
@@ -31,9 +30,11 @@ public class PublicRestaurantController {
                                      @RequestParam(required = false) LocalDate date,
                                      @RequestParam(required = false) Integer page,
                                      @RequestParam(required = false) Integer size,
-                                     @RequestParam(required = false) String sort) {
-        Pageable pageable = resolvePageable(page, size, resolveSort(sort, rating,
-                propertyResolver), propertyResolver.getRestaurantPageSize());
+                                     @RequestParam(required = false) Sort sort) {
+        Pageable pageable = resolvePageable(page, size, Optional.ofNullable(sort).orElse(
+                rating ? propertyResolver.getSortRestaurantWithRating() :
+                        propertyResolver.getSortRestaurant()),
+                propertyResolver.getRestaurantPageSize());
 
         if (rating) {
             return restaurantService.getAllWithRating(
@@ -48,9 +49,9 @@ public class PublicRestaurantController {
                                @RequestParam(required = false) boolean rating,
                                @RequestParam(required = false) boolean menu,
                                @RequestParam(required = false) LocalDate date,
-                               @RequestParam(required = false) String sort) {
-        Sort sorter = menu ? getSort(sort, SINGLE_RESTAURANT_MENU_ENTRY_PARAMS)
-                .orElse(propertyResolver.getSingleRestaurantMenuEntrySorter()) : Sort.unsorted();
+                               @RequestParam(required = false) Sort sort) {
+        Sort sorter = menu ? Optional.ofNullable(sort).orElse(
+                propertyResolver.getSortSingleRestaurantMenuEntry()) : Sort.unsorted();
 
         switch (resolveParams(rating, menu)) {
             case MENU:
@@ -74,10 +75,9 @@ public class PublicRestaurantController {
                                      @RequestParam(required = false) LocalDate dateEnd,
                                      @RequestParam(required = false) Integer page,
                                      @RequestParam(required = false) Integer size,
-                                     @RequestParam(required = false) String sort) {
-        Pageable pageable = resolvePageable(page, size,
-                getSort(sort, MENU_ENTRY_PARAMS).orElse(propertyResolver.getMenuEntrySorter()),
-                propertyResolver.getMenuEntryPageSize());
+                                     @RequestParam(required = false) Sort sort) {
+        Pageable pageable = resolvePageable(page, size, Optional.ofNullable(sort).orElse(
+                propertyResolver.getSortMenuEntry()), propertyResolver.getMenuEntryPageSize());
 
         switch (resolveParams(date, dateStart, dateEnd)) {
             case BY_DATE:
