@@ -2,7 +2,6 @@ package sergesv.rvs.web.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +14,7 @@ import java.util.Optional;
 
 import static sergesv.rvs.util.DateTimeUtil.MAX_DATE;
 import static sergesv.rvs.util.DateTimeUtil.MIN_DATE;
-import static sergesv.rvs.util.web.ControllerUtil.ParamsCondition.BETWEEN_DATES;
 import static sergesv.rvs.util.web.ControllerUtil.resolvePageable;
-import static sergesv.rvs.util.web.ControllerUtil.resolveParams;
 import static sergesv.rvs.util.web.SecurityUtil.getAuthUserId;
 
 @RestController
@@ -33,13 +30,14 @@ public class UserVoteController {
                                     @RequestParam(required = false) Integer page,
                                     @RequestParam(required = false) Integer size,
                                     @RequestParam(required = false) Sort sort) {
-        Pageable pageable = resolvePageable(page, size, Optional.ofNullable(sort).orElse(
-                propertyResolver.getSortVoteEntry()), propertyResolver.getVoteEntryPageSize());
+        var pageable = resolvePageable(page, size, sort,
+                propertyResolver.getVoteEntryPageSize(), propertyResolver.getSortVoteEntry());
+        var dateStartOptional = Optional.ofNullable(dateStart);
+        var dateEndOptional = Optional.ofNullable(dateEnd);
 
-        if (resolveParams(dateStart, dateEnd) == BETWEEN_DATES) {
-            return voteEntryService.getAll(getAuthUserId(),
-                    Optional.ofNullable(dateStart).orElse(MIN_DATE),
-                    Optional.ofNullable(dateEnd).orElse(MAX_DATE), pageable);
+        if (dateStartOptional.isPresent() || dateEndOptional.isPresent()) {
+            return voteEntryService.getAll(getAuthUserId(), dateStartOptional.orElse(MIN_DATE),
+                    dateEndOptional.orElse(MAX_DATE), pageable);
         } else {
             return voteEntryService.getAll(getAuthUserId(), pageable);
         }

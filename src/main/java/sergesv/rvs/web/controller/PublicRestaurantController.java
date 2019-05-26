@@ -2,7 +2,6 @@ package sergesv.rvs.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import sergesv.rvs.RvsPropertyResolver;
@@ -31,10 +30,9 @@ public class PublicRestaurantController {
                                      @RequestParam(required = false) Integer page,
                                      @RequestParam(required = false) Integer size,
                                      @RequestParam(required = false) Sort sort) {
-        Pageable pageable = resolvePageable(page, size, Optional.ofNullable(sort).orElse(
+        var pageable = resolvePageable(page, size, sort, propertyResolver.getRestaurantPageSize(),
                 rating ? propertyResolver.getSortRestaurantWithRating() :
-                        propertyResolver.getSortRestaurant()),
-                propertyResolver.getRestaurantPageSize());
+                        propertyResolver.getSortRestaurant());
 
         if (rating) {
             return restaurantService.getAllWithRating(
@@ -50,21 +48,20 @@ public class PublicRestaurantController {
                                @RequestParam(required = false) boolean menu,
                                @RequestParam(required = false) LocalDate date,
                                @RequestParam(required = false) Sort sort) {
-        Sort sorter = menu ? Optional.ofNullable(sort).orElse(
-                propertyResolver.getSortSingleRestaurantMenuEntry()) : Sort.unsorted();
+        var sortOptional = Optional.ofNullable(sort);
+        var dateOptional = Optional.ofNullable(date);
 
-        switch (resolveParams(rating, menu)) {
-            case MENU:
-                return restaurantService.getOneWithMenu(id,
-                        Optional.ofNullable(date).orElse(getCurrentDate()), sorter);
-            case RATING:
-                return restaurantService.getOneWithRating(id,
-                        Optional.ofNullable(date).orElse(getCurrentDate()));
-            case MENU_AND_RATING:
-                return restaurantService.getOneWithMenuAndRating(id,
-                        Optional.ofNullable(date).orElse(getCurrentDate()), sorter);
-            default:
-                return restaurantService.getOne(id);
+        if (menu && rating) {
+            return restaurantService.getOneWithMenuAndRating(id,
+                    dateOptional.orElse(getCurrentDate()),
+                    sortOptional.orElse(propertyResolver.getSortSingleRestaurantMenuEntry()));
+        } else if (menu) {
+            return restaurantService.getOneWithMenu(id, dateOptional.orElse(getCurrentDate()),
+                    sortOptional.orElse(propertyResolver.getSortSingleRestaurantMenuEntry()));
+        } else if (rating) {
+            return restaurantService.getOneWithRating(id, dateOptional.orElse(getCurrentDate()));
+        } else {
+            return restaurantService.getOne(id);
         }
     }
 
@@ -76,18 +73,19 @@ public class PublicRestaurantController {
                                      @RequestParam(required = false) Integer page,
                                      @RequestParam(required = false) Integer size,
                                      @RequestParam(required = false) Sort sort) {
-        Pageable pageable = resolvePageable(page, size, Optional.ofNullable(sort).orElse(
-                propertyResolver.getSortMenuEntry()), propertyResolver.getMenuEntryPageSize());
+        var pageable = resolvePageable(page, size, sort,
+                propertyResolver.getMenuEntryPageSize(), propertyResolver.getSortMenuEntry());
+        var dateOptional = Optional.ofNullable(date);
+        var dateStartOptional = Optional.ofNullable(dateStart);
+        var dateEndOptional = Optional.ofNullable(dateEnd);
 
-        switch (resolveParams(date, dateStart, dateEnd)) {
-            case BY_DATE:
-                return menuEntryService.getAllByRestaurant(restaurantId, date, pageable);
-            case BETWEEN_DATES:
-                return menuEntryService.getAllByRestaurant(restaurantId,
-                        Optional.ofNullable(dateStart).orElse(MIN_DATE),
-                        Optional.ofNullable(dateEnd).orElse(MAX_DATE), pageable);
-            default:
-                return menuEntryService.getAllByRestaurant(restaurantId, pageable);
+        if (dateStartOptional.isPresent() || dateEndOptional.isPresent()) {
+            return menuEntryService.getAllByRestaurant(restaurantId,
+                    dateStartOptional.orElse(MIN_DATE), dateEndOptional.orElse(MAX_DATE), pageable);
+        } else if (dateOptional.isPresent()) {
+            return menuEntryService.getAllByRestaurant(restaurantId, dateOptional.get(), pageable);
+        } else {
+            return menuEntryService.getAllByRestaurant(restaurantId, pageable);
         }
     }
 

@@ -10,8 +10,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static sergesv.rvs.util.DateTimeUtil.*;
-import static sergesv.rvs.util.web.ControllerUtil.ParamsCondition.BETWEEN_DATES;
-import static sergesv.rvs.util.web.ControllerUtil.resolveParams;
 
 @RestController
 @RequestMapping("/api/admin/restaurants/{restaurantId}/menu")
@@ -45,10 +43,13 @@ public class AdminRestaurantMenuController {
                           @RequestParam(required = false) LocalDate date,
                           @RequestParam(required = false) LocalDate dateStart,
                           @RequestParam(required = false) LocalDate dateEnd) {
-        if (resolveParams(date, dateStart, dateEnd) == BETWEEN_DATES) {
+        var dateStartOptional = Optional.ofNullable(dateStart);
+        var dateEndOptional = Optional.ofNullable(dateEnd);
+
+        if (dateStartOptional.isPresent() || dateEndOptional.isPresent()) {
             menuEntryService.deleteAllByRestaurant(restaurantId,
-                    Optional.ofNullable(dateStart).orElse(MIN_DATE),
-                    Optional.ofNullable(dateEnd).orElse(MAX_DATE));
+                    dateStartOptional.orElse(MIN_DATE),
+                    dateEndOptional.orElse(MAX_DATE));
         } else {
             menuEntryService.deleteAllByRestaurant(restaurantId,
                     Optional.ofNullable(date).orElse(getCurrentDate()));
